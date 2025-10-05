@@ -188,6 +188,7 @@ MIT License - 詳細は [LICENSE](LICENSE) を参照してください。
 ## 関連ドキュメント
 
 - [使い方ガイド](docs/USAGE.md) - 詳細な使用方法
+- [自動実行設定ガイド](docs/AUTO_RUN.md) - WSL/Ubuntuでの自動実行設定
 - [実装計画書](docs/implement/sysup-implementation-plan.md) - 開発計画
 - [CHANGELOG](CHANGELOG.md) - 変更履歴
 

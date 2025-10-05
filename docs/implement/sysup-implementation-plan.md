@@ -270,11 +270,14 @@ ln -s /path/to/sysup/.venv/bin/sysup ~/.local/bin/sysup
 - [x] 全11種類のupdater実装完了
   - APT, Snap, Homebrew, npm, nvm, pipx, Rustup, Cargo, Flatpak, Gem, Firmware
 
+### 実装済み機能（基本） ✅
+- [x] 自動実行モード（--auto-run）
+
 ### 今後実装予定機能
-- [ ] 自動実行機能（WSL対応）
+- [ ] WSL統合（.bashrc自動設定）
 - [ ] バックアップ機能
 - [ ] 並列更新オプション
-- [ ] 通知機能
+- [ ] デスクトップ通知機能
 - [ ] ログローテーション
 
 ---
@@ -295,8 +298,8 @@ sysup --list                  # 利用可能なupdaterを一覧表示
 sysup --version               # バージョン情報
 sysup --help                  # ヘルプ表示
 
-# 自動実行関連（今後実装）
-sysup --auto-run              # 自動実行モード
+# 自動実行関連
+sysup --auto-run              # 自動実行モード（対話なし）
 ```
 
 ---
@@ -363,10 +366,10 @@ sysup --auto-run              # 自動実行モード
 - 全11種類のupdater実装完了
 - 主要パッケージマネージャ対応完了
 
-### v0.5.0 (Beta)
-- 全updater実装
-- 自動実行機能実装
-- ドキュメント整備
+### v0.3.0 (Beta) - 次回リリース
+- WSL統合機能
+- バックアップ機能
+- CI/CD設定
 
 ### v1.0.0 (Stable)
 - 十分なテストと安定性確認
