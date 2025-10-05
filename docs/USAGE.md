@@ -219,6 +219,15 @@ cache_dir = "~/.cache/sysup"
 
 **必要条件:** `cargo-install-update`がインストールされていること
 
+**インストール手順:**
+```bash
+# Ubuntu/Debianの場合、依存関係をインストール
+sudo apt install build-essential pkg-config libssl-dev
+
+# cargo-updateをインストール
+cargo install cargo-update
+```
+
 **必要な権限:** なし
 
 ### Flatpak

@@ -8,6 +8,7 @@ from typing import Optional
 import click
 from rich.console import Console
 
+from . import __version__
 from .core.config import SysupConfig
 from .core.logging import SysupLogger
 from .core.checks import SystemChecker
@@ -31,7 +32,7 @@ from .updaters.firmware import FirmwareUpdater
 @click.option("--auto-run", is_flag=True, help="自動実行モード（対話なし）")
 @click.option("--force", is_flag=True, help="今日既に実行済みでも強制実行")
 @click.option("--list", "list_updaters", is_flag=True, help="利用可能なupdaterを一覧表示")
-@click.version_option(version="0.1.0", prog_name="sysup")
+@click.version_option(version=__version__, prog_name="sysup")
 def main(
     config: Optional[Path],
     dry_run: bool,

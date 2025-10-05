@@ -15,9 +15,17 @@ class NvmUpdater(BaseUpdater):
         return "nvm"
     
     def is_available(self) -> bool:
-        # nvmはシェル関数なので、nvmディレクトリの存在で確認
-        nvm_dir = Path.home() / ".nvm"
-        return nvm_dir.exists() and (nvm_dir / "nvm.sh").exists()
+        # nvmはシェル関数なので、bashシェル経由で確認
+        try:
+            result = subprocess.run(
+                ["bash", "-c", "source ~/.nvm/nvm.sh 2>/dev/null && command -v nvm"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            return result.returncode == 0 and result.stdout.strip() == "nvm"
+        except Exception:
+            return False
     
     def perform_update(self) -> bool:
         """nvm更新実行"""
@@ -29,6 +37,11 @@ class NvmUpdater(BaseUpdater):
         
         try:
             nvm_dir = Path.home() / ".nvm"
+            
+            # gitリポジトリか確認
+            if not (nvm_dir / ".git").exists():
+                self.logger.info(f"{name} はgitリポジトリではありません - 更新をスキップ")
+                return True
             
             # nvmの更新はgit pullで行う
             self.logger.info(f"{name} を更新中...")

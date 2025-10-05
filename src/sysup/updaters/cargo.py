@@ -13,8 +13,8 @@ class CargoUpdater(BaseUpdater):
         return "Cargo"
     
     def is_available(self) -> bool:
-        # cargoとcargo-install-updateの両方が必要
-        return self.command_exists("cargo") and self.command_exists("cargo-install-update")
+        # cargoが存在すればOK（cargo-install-updateは後でチェック）
+        return self.command_exists("cargo")
     
     def perform_update(self) -> bool:
         """Cargo更新実行"""

@@ -150,6 +150,30 @@ $ sysup --dry-run
 
 一部のupdater（APT、Snapなど）はsudo権限が必要です。事前に`sudo -v`で認証しておくとスムーズです。
 
+### Cargoパッケージの更新ができない
+
+Cargoパッケージを更新するには`cargo-update`が必要です：
+
+```bash
+# 依存関係をインストール（Ubuntu/Debian）
+sudo apt install build-essential pkg-config libssl-dev
+
+# cargo-updateをインストール
+cargo install cargo-update
+```
+
+### nvmが検出されない
+
+nvmをgit経由でインストールすることを推奨します：
+
+```bash
+# 公式インストールスクリプト
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+# シェルを再起動
+source ~/.bashrc
+```
+
 ### 特定のupdaterを無効化したい
 
 設定ファイル（`~/.config/sysup/sysup.toml`）で該当するupdaterを`false`に設定してください。
