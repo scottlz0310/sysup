@@ -31,6 +31,7 @@ sysup/
 │           ├── flatpak.py      # Flatpakパッケージ管理
 │           ├── pipx.py         # pipx管理ツール
 │           ├── npm.py          # npmグローバルパッケージ
+│           ├── nvm.py          # Node Version Manager
 │           ├── rustup.py       # Rust toolchain
 │           ├── cargo.py        # Cargoパッケージ
 │           ├── gem.py          # Ruby gems
@@ -177,6 +178,7 @@ class BaseUpdater(ABC):
 
 **中優先度:**
 - [ ] `npm.py`
+- [ ] `nvm.py`
 - [ ] `pipx.py`
 - [ ] `rustup.py`
 - [ ] `cargo.py`
@@ -383,7 +385,7 @@ sysup --auto-run              # 自動実行モード
 ## 参考資料
 
 - 元のup.sh: 約600行の充実したBashスクリプト（`archive/up.sh`）
-- 対応予定パッケージマネージャ: apt, snap, flatpak, pipx, npm, rustup, cargo, gem, brew, firmware
+- 対応予定パッケージマネージャ: apt, snap, flatpak, pipx, npm, nvm, rustup, cargo, gem, brew, firmware
 - WSL自動実行機能: 今後実装予定
 
 ---
