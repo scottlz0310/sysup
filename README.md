@@ -83,6 +83,17 @@ sysup --help
 
 設定ファイルは `~/.config/sysup/sysup.toml` に配置します。
 
+```bash
+# 設定ディレクトリを作成
+mkdir -p ~/.config/sysup
+
+# サンプルをコピー
+cp config/sysup.toml.example ~/.config/sysup/sysup.toml
+
+# 編集
+vim ~/.config/sysup/sysup.toml
+```
+
 ```toml
 [updaters]
 apt = true
