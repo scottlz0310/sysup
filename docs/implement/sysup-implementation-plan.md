@@ -2,9 +2,9 @@
 
 ## プロジェクト概要
 
-**プロジェクト名:** sysup  
-**目的:** システムと各種パッケージマネージャを統合的に更新するツール  
-**言語:** Python 3.11+  
+**プロジェクト名:** sysup
+**目的:** システムと各種パッケージマネージャを統合的に更新するツール
+**言語:** Python 3.11+
 **現状:** `up.sh` (Bashスクリプト) から、Pythonベースのモジュール化されたツールへ移行
 
 ---
@@ -145,25 +145,25 @@ class BaseUpdater(ABC):
     def get_name(self) -> str:
         """表示名を返す"""
         pass
-    
+
     @abstractmethod
     def is_available(self) -> bool:
         """コマンドが利用可能かチェック"""
         pass
-    
+
     @abstractmethod
     def perform_update(self) -> bool:
         """更新実行（成功: True, 失敗: False）"""
         pass
-    
+
     def check_updates(self) -> Optional[int]:
         """更新可能なパッケージ数を返す（オプション）"""
         return None
-    
+
     def pre_update(self) -> bool:
         """更新前処理（オプション）"""
         return True
-    
+
     def post_update(self) -> bool:
         """更新後処理（オプション）"""
         return True
@@ -203,9 +203,39 @@ class BaseUpdater(ABC):
 
 ---
 
-### Phase 4: インストール/配布
+### Phase 4: CI/CD・品質保証 ✅ 完了
 
-#### 4.1 インストール方法（個人用）
+#### 4.1 型アノテーション ✅
+- [x] 全モジュールに完全な型アノテーションを追加
+- [x] mypy strict設定でtype check完全対応
+- [x] 23ファイル全て型エラーなし
+
+#### 4.2 CI/CD構築 ✅
+- [x] GitHub Actions CI/CDワークフロー追加
+  - [x] lint (ruff check/format)
+  - [x] type check (mypy)
+  - [x] test (pytest) - ubuntu/macos × Python 3.11/3.12/3.13
+  - [x] security check (bandit)
+  - [x] coverage測定 (pytest-cov)
+- [x] pre-commit設定追加
+- [x] Makefile追加（開発タスク自動化）
+
+#### 4.3 テスト拡充 ✅
+- [x] test_backup.py
+- [x] test_logging.py
+- [x] test_notification.py
+- [x] test_wsl.py
+- [x] テストカバレッジ設定（段階的厳格化対応）
+
+#### 4.4 バージョン管理 ✅
+- [x] セマンティックバージョニング（SemVer）の適用
+- [x] CHANGELOG.mdの更新
+
+---
+
+### Phase 5: インストール/配布
+
+#### 5.1 インストール方法（個人用） ✅
 
 **GitHubから直接インストール（推奨）:**
 ```bash
@@ -222,34 +252,31 @@ cd /path/to/sysup
 uv pip install -e .
 ```
 
-**シンボリックリンク:**
-```bash
-ln -s /path/to/sysup/.venv/bin/sysup ~/.local/bin/sysup
-```
-
-#### 4.2 バージョン管理 ✅
-- [x] セマンティックバージョニング（SemVer）の適用
-- [x] CHANGELOG.mdの更新
+#### 5.2 リリース管理（未実装）
 - [ ] Gitタグによるリリース管理
+- [ ] GitHub Releasesの自動生成
+- [ ] リリースノートの自動作成
 
 ---
 
-### Phase 5: ドキュメント整備 ✅ 完了
+---
 
-#### 5.1 README.md ✅
+### Phase 6: ドキュメント整備 ✅ 完了
+
+#### 6.1 README.md ✅
 - [x] プロジェクト説明
 - [x] インストール方法
 - [x] 基本的な使い方
 - [x] 設定例
 - [x] トラブルシューティング（Cargo、nvmの追加情報を含む）
 
-#### 5.2 USAGE.md ✅
+#### 6.2 USAGE.md ✅
 - [x] 詳細な使用方法
 - [x] 全オプションの説明
 - [x] 設定ファイルの詳細
 - [x] 各updaterの説明（Cargoの依存関係情報を含む）
 
-#### 5.3 CONTRIBUTING.md ✅
+#### 6.3 CONTRIBUTING.md ✅
 - [x] 新しいupdaterの追加方法
 - [x] コーディング規約
 - [x] プルリクエストのガイドライン
@@ -307,13 +334,20 @@ sysup --auto-run              # 自動実行モード（対話なし）
 ## テスト計画
 
 ### 実装済みテスト ✅
-- [x] 設定モジュールの基本テスト
+- [x] 設定モジュールの基本テスト (test_config.py)
+- [x] バックアップ機能テスト (test_backup.py)
+- [x] ログ機能テスト (test_logging.py)
+- [x] 通知機能テスト (test_notification.py)
+- [x] WSL統合テスト (test_wsl.py)
+- [x] CI/CD setup (GitHub Actions) ✅
 
-### 今後実装予定
+### 今後実装予定（Phase 4以降）
 - [ ] 各updaterの単体テスト
+- [ ] システムチェック機能テスト (test_checks.py)
+- [ ] 統計機能テスト (test_stats.py)
 - [ ] 統合テスト
 - [ ] エラーハンドリングテスト
-- [ ] CI/CD setup (GitHub Actions)
+- [ ] カバレッジ60%以上（staging目標）
 
 ---
 
@@ -366,14 +400,24 @@ sysup --auto-run              # 自動実行モード（対話なし）
 - 全11種類のupdater実装完了
 - 主要パッケージマネージャ対応完了
 
-### v0.2.1 (Alpha) ✅ 現在
+### v0.2.1 (Alpha) ✅ 完了
 - nvm検出方法の改善
 - cargo利用可能性判定の修正
 
-### v0.3.0 (Beta) - 次回リリース
+### v0.3.0 (Beta) ✅ 現在
 - WSL統合機能
 - バックアップ機能
-- CI/CD設定
+- 並列更新オプション
+- デスクトップ通知機能
+- ログローテーション
+- 型アノテーション完全対応
+- CI/CD環境整備完了
+
+### v0.4.0 (Beta) - 次回リリース
+- Gitタグによるリリース管理
+- GitHub Releases自動生成
+- 追加テスト実装（updaters, checks, stats）
+- カバレッジ向上
 
 ### v1.0.0 (Stable)
 - 十分なテストと安定性確認
@@ -403,7 +447,7 @@ sysup --auto-run              # 自動実行モード（対話なし）
 
 ---
 
-**作成日:** 2025-01-05  
-**最終更新:** 2025-10-05  
-**バージョン:** 2.1 (Python版 v0.2.1)  
-**現在のフェーズ:** Phase 4 進行中 (バージョン管理完了) → Phase 5 (ドキュメント整備)
+**作成日:** 2025-01-05
+**最終更新:** 2025-10-05
+**バージョン:** 3.0 (Python版 v0.3.0)
+**現在のフェーズ:** Phase 4 (CI/CD・品質保証) 完了 ✅ → Phase 5 (リリース管理) 未実装
