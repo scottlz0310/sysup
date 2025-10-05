@@ -34,20 +34,24 @@ class NvmUpdater(BaseUpdater):
             self.logger.info(f"{name} を更新中...")
             
             # nvmディレクトリでgit pullを実行
-            result = subprocess.run(
-                ["git", "pull"],
-                cwd=str(nvm_dir),
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
-            
-            if result.returncode == 0:
-                self.logger.success(f"{name} 更新完了")
-                return True
+            if not self.dry_run:
+                result = subprocess.run(
+                    ["git", "pull"],
+                    cwd=str(nvm_dir),
+                    capture_output=True,
+                    text=True,
+                    timeout=60
+                )
+                
+                if result.returncode == 0:
+                    self.logger.success(f"{name} 更新完了")
+                    return True
+                else:
+                    self.logger.warning(f"{name} 更新で問題が発生しました")
+                    return False
             else:
-                self.logger.warning(f"{name} 更新で問題が発生しました")
-                return False
+                self.logger.info(f"[DRY RUN] git pull in {nvm_dir}")
+                return True
             
         except subprocess.CalledProcessError as e:
             self.logger.warning(f"{name} 更新で問題が発生しました: {e}")

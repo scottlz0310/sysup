@@ -67,7 +67,7 @@ class SysupLogger:
     
     def error(self, message: str) -> None:
         """エラーメッセージ"""
-        self.console.print(f"[red]✗[/red] {message}", file=sys.stderr)
+        self.console.print(f"[red]✗[/red] {message}", style="bold red")
         self.logger.error(message)
     
     def section(self, title: str) -> None:
