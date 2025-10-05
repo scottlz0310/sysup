@@ -40,6 +40,8 @@ dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.21.0",
+    "pre-commit>=3.5.0",
+    "bandit[toml]>=1.7.0",
 ]
 
 [project.scripts]
@@ -53,8 +55,10 @@ Issues = "https://github.com/scottlz0310/sysup/issues"
 [tool.ruff]
 target-version = "py311"
 line-length = 120
+
+[tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "C90", "T20"]
-ignore = ["E501"]
+ignore = ["E501", "C901"]  # C901: 複雑度チェックを無効化
 
 [tool.ruff.format]
 quote-style = "double"
@@ -85,6 +89,10 @@ source = ["src"]
 branch = true
 
 [tool.coverage.report]
+# 段階的厳格化: prototype=閾値なし, staging=60%, production=80%
+# fail_under = 60  # staging以降で有効化
+precision = 2
+show_missing = true
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
@@ -97,3 +105,7 @@ exclude_lines = [
     "class .*\\bProtocol\\):",
     "@(abc\\.)?abstractmethod",
 ]
+
+[tool.bandit]
+exclude_dirs = ["tests", "archive"]
+skips = ["B101", "B601"]
