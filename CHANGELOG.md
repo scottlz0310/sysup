@@ -8,11 +8,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- 自動実行機能（WSL対応）
+- テストスイートの充実
+- CI/CD設定（GitHub Actions）
+
+## [0.3.0] - 2025-10-05
+
+### Added
+- WSL統合機能（`--setup-wsl`コマンド）
+  - WSL環境の自動検出
+  - .bashrc/.zshrcへの自動実行設定追加
+  - 対話形式のセットアップウィザード
+- デスクトップ通知機能
+  - Linux（notify-send）対応
+  - macOS（osascript）対応
+  - 成功/エラー/警告の通知
 - バックアップ機能
+  - 更新前にパッケージリストをJSON形式でバックアップ
+  - 全11種類のパッケージマネージャに対応
+  - 古いバックアップの自動削除（最新10件を保持）
 - 並列更新オプション
-- 通知機能
-- ログローテーション
+  - `parallel_updates`設定で有効化
+  - ThreadPoolExecutorで最大4並列実行
+- ログローテーション機能
+  - `retention_days`設定で保持期間を指定
+  - 古いログファイルの自動削除
+
+### Changed
+- 設定ファイルに`[notification]`セクション追加
+- ロガー初期化時にログローテーションを自動実行
+
+### Documentation
+- WSL_SETUP.md追加（WSL自動実行設定ガイド）
+- README.mdに新機能の説明追加
+- USAGE.mdに新機能セクション追加
 
 ## [0.2.1] - 2025-10-05
 
@@ -62,7 +90,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/scottlz0310/sysup/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/scottlz0310/sysup/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/scottlz0310/sysup/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/scottlz0310/sysup/releases/tag/v0.1.0

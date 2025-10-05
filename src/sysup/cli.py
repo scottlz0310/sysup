@@ -4,6 +4,7 @@ import sys
 import atexit
 from pathlib import Path
 from typing import Optional
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import click
 from rich.console import Console
@@ -13,6 +14,9 @@ from .core.config import SysupConfig
 from .core.logging import SysupLogger
 from .core.checks import SystemChecker
 from .core.stats import StatsManager
+from .core.wsl import WSLIntegration
+from .core.notification import Notifier
+from .core.backup import BackupManager
 from .updaters.apt import AptUpdater
 from .updaters.snap import SnapUpdater
 from .updaters.brew import BrewUpdater
@@ -32,13 +36,15 @@ from .updaters.firmware import FirmwareUpdater
 @click.option("--auto-run", is_flag=True, help="自動実行モード（対話なし）")
 @click.option("--force", is_flag=True, help="今日既に実行済みでも強制実行")
 @click.option("--list", "list_updaters", is_flag=True, help="利用可能なupdaterを一覧表示")
+@click.option("--setup-wsl", is_flag=True, help="WSL自動実行をセットアップ")
 @click.version_option(version=__version__, prog_name="sysup")
 def main(
     config: Optional[Path],
     dry_run: bool,
     auto_run: bool,
     force: bool,
-    list_updaters: bool
+    list_updaters: bool,
+    setup_wsl: bool
 ) -> None:
     """システムと各種パッケージマネージャを統合的に更新するツール"""
     
@@ -54,7 +60,11 @@ def main(
         sysup_config.general.dry_run = True
     
     # ロガー初期化
-    logger = SysupLogger(sysup_config.get_log_dir(), sysup_config.logging.level)
+    logger = SysupLogger(
+        sysup_config.get_log_dir(),
+        sysup_config.logging.level,
+        sysup_config.logging.retention_days
+    )
     
     # システムチェッカー初期化
     checker = SystemChecker(logger, sysup_config.get_cache_dir())
@@ -65,6 +75,11 @@ def main(
     
     # 終了時にロックファイルをクリーンアップ
     atexit.register(checker.cleanup_lock)
+    
+    # WSLセットアップ
+    if setup_wsl:
+        setup_wsl_integration(logger, sysup_config)
+        return
     
     # updater一覧表示
     if list_updaters:
@@ -80,6 +95,58 @@ def main(
     except Exception as e:
         logger.error(f"予期しないエラー: {e}")
         sys.exit(1)
+
+
+def setup_wsl_integration(logger: SysupLogger, config: SysupConfig) -> None:
+    """WSL統合をセットアップ"""
+    logger.section("WSL統合セットアップ")
+    
+    if not WSLIntegration.is_wsl():
+        logger.error("WSL環境ではありません")
+        return
+    
+    logger.info("WSL環境を検出しました")
+    
+    # 現在の設定を確認
+    rc_file = WSLIntegration.get_shell_rc_file()
+    if rc_file:
+        logger.info(f"シェル設定ファイル: {rc_file}")
+        
+        if WSLIntegration.is_auto_run_configured(rc_file):
+            logger.info("自動実行は既に設定されています")
+            
+            if click.confirm("設定を削除しますか？"):
+                success, message = WSLIntegration.setup_wsl_integration("disabled")
+                if success:
+                    logger.success(message)
+                else:
+                    logger.error(message)
+            return
+    
+    # 自動実行モードを選択
+    logger.info("\n自動実行モードを選択してください:")
+    logger.info("  1. 有効化（sudo認証なし）")
+    logger.info("  2. 有効化（sudo認証あり）")
+    logger.info("  3. キャンセル")
+    
+    choice = click.prompt("選択", type=int, default=1)
+    
+    if choice == 1:
+        mode = "enabled"
+    elif choice == 2:
+        mode = "enabled_with_auth"
+    else:
+        logger.info("キャンセルしました")
+        return
+    
+    # セットアップ実行
+    success, message = WSLIntegration.setup_wsl_integration(mode)
+    if success:
+        logger.success(message)
+        logger.info("\n次回のシェル起動時から自動実行が有効になります")
+        logger.info("今すぐ有効にするには: source " + str(rc_file))
+    else:
+        logger.error(message)
 
 
 def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
@@ -140,6 +207,17 @@ def run_updates(
             if not click.confirm("強制実行しますか？"):
                 return
     
+    # バックアップ作成
+    if config.backup.enabled:
+        backup_manager = BackupManager(config.get_backup_dir(), config.backup.enabled)
+        backup_file = backup_manager.create_backup()
+        if backup_file:
+            logger.info(f"バックアップ作成: {backup_file.name}")
+            # 古いバックアップを削除
+            deleted = backup_manager.cleanup_old_backups(keep_count=10)
+            if deleted > 0:
+                logger.info(f"古いバックアップを{deleted}件削除しました")
+    
     # 事前チェック
     logger.section("システムチェック")
     
@@ -190,20 +268,52 @@ def run_updates(
         return
     
     total_updaters = len(updaters)
-    for i, (name, updater) in enumerate(updaters, 1):
-        logger.progress_step(i, total_updaters, f"{updater.get_name()}を更新中")
+    
+    if config.general.parallel_updates:
+        # 並列更新
+        logger.info("並列更新モードで実行中...")
         
-        if not updater.is_available():
-            stats.record_skip(name, "利用不可")
-            continue
+        def update_package(item):
+            name, updater = item
+            if not updater.is_available():
+                return (name, "skip", "利用不可")
+            try:
+                if updater.perform_update():
+                    return (name, "success", None)
+                else:
+                    return (name, "failure", "更新失敗")
+            except Exception as e:
+                return (name, "failure", str(e))
         
-        try:
-            if updater.perform_update():
-                stats.record_success(name)
-            else:
-                stats.record_failure(name, "更新失敗")
-        except Exception as e:
-            stats.record_failure(name, str(e))
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {executor.submit(update_package, item): item for item in updaters}
+            
+            for i, future in enumerate(as_completed(futures), 1):
+                name, status, error = future.result()
+                logger.progress_step(i, total_updaters, f"{name}完了")
+                
+                if status == "success":
+                    stats.record_success(name)
+                elif status == "skip":
+                    stats.record_skip(name, error)
+                else:
+                    stats.record_failure(name, error)
+    else:
+        # 逐次更新
+        for i, (name, updater) in enumerate(updaters, 1):
+            logger.progress_step(i, total_updaters, f"{updater.get_name()}を更新中")
+            
+            if not updater.is_available():
+                stats.record_skip(name, "利用不可")
+                continue
+            
+            try:
+                if updater.perform_update():
+                    stats.record_success(name)
+                else:
+                    stats.record_failure(name, "更新失敗")
+            except Exception as e:
+                stats.record_failure(name, str(e))
     
     # 再起動チェック
     if checker.check_reboot_required():
@@ -221,6 +331,22 @@ def run_updates(
     stats.save_to_log(config.get_log_dir())
     
     logger.success("🎉 システム更新が完了しました！")
+    
+    # デスクトップ通知
+    if config.notification.enabled and Notifier.is_available():
+        success_count = len(stats.success)
+        failure_count = len(stats.failures)
+        
+        if failure_count > 0 and config.notification.on_error:
+            Notifier.send_error(
+                "sysup",
+                f"更新完了: {success_count}件成功, {failure_count}件失敗"
+            )
+        elif success_count > 0 and config.notification.on_success:
+            Notifier.send_success(
+                "sysup",
+                f"システム更新が完了しました ({success_count}件)"
+            )
 
 
 if __name__ == "__main__":

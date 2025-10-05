@@ -5,6 +5,7 @@
 - [基本的な使い方](#基本的な使い方)
 - [コマンドラインオプション](#コマンドラインオプション)
 - [設定ファイル](#設定ファイル)
+- [新機能 (v0.3.0)](#新機能-v030)
 - [各Updaterの詳細](#各updaterの詳細)
 - [高度な使い方](#高度な使い方)
 
@@ -70,6 +71,94 @@ sysup -c ~/my-sysup-config.toml
 # ドライランで強制実行
 sysup --dry-run --force
 ```
+
+## 新機能 (v0.3.0)
+
+### WSL自動実行
+
+WSL環境でログイン時に自動的にシステム更新を実行できます。
+
+```bash
+# WSL自動実行をセットアップ
+sysup --setup-wsl
+```
+
+**設定モード:**
+- **有効化（sudo認証なし）**: sudo権限が不要な更新のみ実行
+- **有効化（sudo認証あり）**: 全ての更新を実行（パスワード入力が必要）
+
+詳細は [WSL自動実行設定ガイド](WSL_SETUP.md) を参照してください。
+
+### デスクトップ通知
+
+更新完了時にデスクトップ通知を表示します。
+
+**対応プラットフォーム:**
+- Linux: `notify-send`を使用
+- macOS: `osascript`を使用
+
+**設定例:**
+```toml
+[notification]
+enabled = true
+on_success = true  # 成功時に通知
+on_error = true    # エラー時に通知
+on_warning = false # 警告時は通知しない
+```
+
+### バックアップ機能
+
+更新前にパッケージリストをJSON形式でバックアップします。
+
+**バックアップ内容:**
+- APT, Snap, Homebrew, npm, pipx, Cargo, Flatpak, Gemのパッケージリスト
+- タイムスタンプ付きJSONファイル
+- 最新10件を保持（古いものは自動削除）
+
+**設定例:**
+```toml
+[backup]
+dir = "~/.local/share/sysup/backups"
+enabled = true
+```
+
+**バックアップの確認:**
+```bash
+ls -lt ~/.local/share/sysup/backups/
+cat ~/.local/share/sysup/backups/packages_20251005_120000.json
+```
+
+### 並列更新
+
+複数のパッケージマネージャを同時に更新して高速化します。
+
+**設定例:**
+```toml
+[general]
+parallel_updates = true
+```
+
+**注意事項:**
+- 最大4並列で実行
+- sudo権限が必要な更新は順次実行を推奨
+- ログ出力が混在する可能性があります
+
+### ログローテーション
+
+古いログファイルを自動的に削除します。
+
+**設定例:**
+```toml
+[logging]
+dir = "~/.local/share/sysup"
+retention_days = 30  # 30日以上古いログを削除
+level = "INFO"
+```
+
+**動作:**
+- sysup起動時に自動実行
+- `retention_days`より古いログを削除
+- ディスク容量を節約
 
 ## 設定ファイル
 

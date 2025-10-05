@@ -17,6 +17,10 @@ APT、Snap、Homebrew、npm、Rustupなど、11種類のパッケージマネー
 - ⚙️ **柔軟な設定**: TOML形式の設定ファイルで細かくカスタマイズ
 - 🔒 **安全性**: 多重実行防止、日次実行チェック、ドライランモード
 - 📊 **統計情報**: 更新結果のサマリー表示とログ保存
+- 🔔 **デスクトップ通知**: 更新完了時に通知を表示
+- 💾 **バックアップ**: 更新前にパッケージリストを自動バックアップ
+- 🐧 **WSL統合**: WSL環境での自動実行設定
+- ⚡ **並列更新**: 複数のパッケージマネージャを同時に更新
 
 ### 対応パッケージマネージャ
 
@@ -77,6 +81,64 @@ sysup --list
 
 # ヘルプ表示
 sysup --help
+
+# WSL自動実行をセットアップ
+sysup --setup-wsl
+```
+
+### 新機能（v0.3.0）
+
+#### WSL自動実行設定
+
+WSL環境でログイン時に自動的にシステム更新を実行できます：
+
+```bash
+# WSL自動実行をセットアップ
+sysup --setup-wsl
+```
+
+詳細は [WSL自動実行設定ガイド](docs/WSL_SETUP.md) を参照してください。
+
+#### デスクトップ通知
+
+更新完了時にデスクトップ通知を表示します（Linux/macOS）。
+
+```toml
+[notification]
+enabled = true
+on_success = true
+on_error = true
+on_warning = false
+```
+
+#### バックアップ機能
+
+更新前にパッケージリストをJSON形式でバックアップします。
+
+```toml
+[backup]
+dir = "~/.local/share/sysup/backups"
+enabled = true
+```
+
+バックアップは `~/.local/share/sysup/backups/` に保存されます。
+
+#### 並列更新
+
+複数のパッケージマネージャを同時に更新して高速化：
+
+```toml
+[general]
+parallel_updates = true
+```
+
+#### ログローテーション
+
+古いログファイルを自動的に削除します：
+
+```toml
+[logging]
+retention_days = 30  # 30日以上古いログを削除
 ```
 
 ### 設定ファイル

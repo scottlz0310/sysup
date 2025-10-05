@@ -273,12 +273,12 @@ ln -s /path/to/sysup/.venv/bin/sysup ~/.local/bin/sysup
 ### 実装済み機能（基本） ✅
 - [x] 自動実行モード（--auto-run）
 
-### 今後実装予定機能
-- [ ] WSL統合（.bashrc自動設定）
-- [ ] バックアップ機能
-- [ ] 並列更新オプション
-- [ ] デスクトップ通知機能
-- [ ] ログローテーション
+### 実装済み機能（v0.3.0） ✅
+- [x] WSL統合（.bashrc自動設定、--setup-wslコマンド）
+- [x] バックアップ機能（パッケージリストのJSONバックアップ）
+- [x] 並列更新オプション（parallel_updates設定）
+- [x] デスクトップ通知機能（Linux/macOS対応）
+- [x] ログローテーション（retention_days設定）
 
 ---
 

@@ -31,6 +31,13 @@ level = "INFO"
 dir = "~/.local/share/sysup/backups"
 enabled = true
 
+[notification]
+# デスクトップ通知設定
+enabled = true
+on_success = true
+on_error = true
+on_warning = false
+
 [general]
 # その他の設定
 parallel_updates = false

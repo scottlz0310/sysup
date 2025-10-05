@@ -2,7 +2,7 @@
 
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 from rich.console import Console
@@ -13,10 +13,12 @@ from rich.text import Text
 class SysupLogger:
     """sysup専用ロガー"""
     
-    def __init__(self, log_dir: Path, level: str = "INFO"):
+    def __init__(self, log_dir: Path, level: str = "INFO", retention_days: int = 30):
         self.log_dir = log_dir
+        self.retention_days = retention_days
         self.console = Console()
         self.logger = self._setup_logger(level)
+        self._rotate_logs()
         
     def _setup_logger(self, level: str) -> logging.Logger:
         """ロガーのセットアップ"""
@@ -49,6 +51,29 @@ class SysupLogger:
         logger.addHandler(file_handler)
         
         return logger
+    
+    def _rotate_logs(self) -> None:
+        """古いログファイルを削除"""
+        if not self.log_dir.exists():
+            return
+        
+        cutoff_date = datetime.now() - timedelta(days=self.retention_days)
+        
+        for log_file in self.log_dir.glob("sysup_*.log"):
+            try:
+                # ファイル名から日付を抽出 (sysup_YYYYMMDD_HHMMSS.log)
+                file_date_str = log_file.stem.split("_")[1]
+                file_date = datetime.strptime(file_date_str, "%Y%m%d")
+                
+                if file_date < cutoff_date:
+                    log_file.unlink()
+                    self.logger.debug(f"古いログファイルを削除: {log_file}")
+            except (ValueError, IndexError):
+                # ファイル名が予期した形式でない場合はスキップ
+                continue
+            except Exception as e:
+                self.logger.debug(f"ログファイル削除エラー: {e}")
+                continue
     
     def success(self, message: str) -> None:
         """成功メッセージ"""

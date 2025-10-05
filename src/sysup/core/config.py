@@ -40,6 +40,14 @@ class BackupConfig(BaseModel):
     enabled: bool = True
 
 
+class NotificationConfig(BaseModel):
+    """通知設定"""
+    enabled: bool = True
+    on_success: bool = True
+    on_error: bool = True
+    on_warning: bool = False
+
+
 class GeneralConfig(BaseModel):
     """一般設定"""
     parallel_updates: bool = False
@@ -53,6 +61,7 @@ class SysupConfig(BaseSettings):
     auto_run: AutoRunConfig = Field(default_factory=AutoRunConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
     backup: BackupConfig = Field(default_factory=BackupConfig)
+    notification: NotificationConfig = Field(default_factory=NotificationConfig)
     general: GeneralConfig = Field(default_factory=GeneralConfig)
 
     @classmethod
