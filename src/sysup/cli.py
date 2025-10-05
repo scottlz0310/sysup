@@ -19,6 +19,10 @@ from .updaters.npm import NpmUpdater
 from .updaters.pipx import PipxUpdater
 from .updaters.rustup import RustupUpdater
 from .updaters.cargo import CargoUpdater
+from .updaters.flatpak import FlatpakUpdater
+from .updaters.gem import GemUpdater
+from .updaters.nvm import NvmUpdater
+from .updaters.firmware import FirmwareUpdater
 
 
 @click.command()
@@ -89,6 +93,10 @@ def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
         ("pipx", PipxUpdater(logger, config.general.dry_run)),
         ("rustup", RustupUpdater(logger, config.general.dry_run)),
         ("cargo", CargoUpdater(logger, config.general.dry_run)),
+        ("flatpak", FlatpakUpdater(logger, config.general.dry_run)),
+        ("gem", GemUpdater(logger, config.general.dry_run)),
+        ("nvm", NvmUpdater(logger, config.general.dry_run)),
+        ("firmware", FirmwareUpdater(logger, config.general.dry_run)),
     ]
     
     for name, updater in updaters:
@@ -167,6 +175,14 @@ def run_updates(
         updaters.append(("rustup", RustupUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("cargo"):
         updaters.append(("cargo", CargoUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("flatpak"):
+        updaters.append(("flatpak", FlatpakUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("gem"):
+        updaters.append(("gem", GemUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("nvm"):
+        updaters.append(("nvm", NvmUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("firmware"):
+        updaters.append(("firmware", FirmwareUpdater(logger, config.general.dry_run)))
     
     if not updaters:
         logger.warning("有効なupdaterがありません")
