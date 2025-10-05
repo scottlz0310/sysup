@@ -131,7 +131,7 @@ cache_dir = "~/.cache/sysup"
 
 ---
 
-### Phase 2: Updaterモジュール実装 🔄 進行中
+### Phase 2: Updaterモジュール実装 ✅ 完了
 
 #### 2.1 標準インターフェース定義 ✅
 
@@ -171,22 +171,22 @@ class BaseUpdater(ABC):
 
 #### 2.2 優先度順での実装
 
-**高優先度（必須）:**
+**高優先度（必須）:** ✅ 完了
 - [x] `apt.py` - 最も重要なシステムパッケージ ✅
-- [ ] `snap.py`
-- [ ] `brew.py` - よく使われる
+- [x] `snap.py` ✅
+- [x] `brew.py` - よく使われる ✅
 
-**中優先度:**
-- [ ] `npm.py`
-- [ ] `nvm.py`
-- [ ] `pipx.py`
-- [ ] `rustup.py`
-- [ ] `cargo.py`
+**中優先度:** ✅ 完了
+- [x] `npm.py` ✅
+- [x] `nvm.py` ✅
+- [x] `pipx.py` ✅
+- [x] `rustup.py` ✅
+- [x] `cargo.py` ✅
 
-**低優先度:**
-- [ ] `flatpak.py`
-- [ ] `gem.py`
-- [ ] `firmware.py`
+**低優先度:** ✅ 完了
+- [x] `flatpak.py` ✅
+- [x] `gem.py` ✅
+- [x] `firmware.py` ✅
 
 ---
 
@@ -257,12 +257,8 @@ uv pip install -e .
 - [x] ロック機能（多重実行防止）
 - [x] 日次実行チェック
 - [x] ドライランモード
-- [x] APT更新（update, upgrade, autoremove）
-
-### 実装中機能 🔄
-- [ ] Snap更新
-- [ ] Homebrew更新
-- [ ] その他パッケージマネージャ対応
+- [x] 全11種類のupdater実装完了
+  - APT, Snap, Homebrew, npm, nvm, pipx, Rustup, Cargo, Flatpak, Gem, Firmware
 
 ### 今後実装予定機能
 - [ ] 自動実行機能（WSL対応）
@@ -348,14 +344,14 @@ sysup --auto-run              # 自動実行モード
 
 ## リリース計画
 
-### v0.1.0 (Alpha) ✅ 現在
+### v0.1.0 (Alpha) ✅ 完了
 - コア機能実装完了
 - APT updater実装
 - 基本的なCLI動作確認
 
-### v0.2.0 (Alpha)
-- Snap, Brew updater実装
-- 主要updater対応完了
+### v0.2.0 (Alpha) ✅ 現在
+- 全11種類のupdater実装完了
+- 主要パッケージマネージャ対応完了
 
 ### v0.5.0 (Beta)
 - 全updater実装
@@ -393,4 +389,4 @@ sysup --auto-run              # 自動実行モード
 **作成日:** 2025-01-05  
 **最終更新:** 2025-01-05  
 **バージョン:** 2.0 (Python版)  
-**現在のフェーズ:** Phase 2 (Updaterモジュール実装中)
+**現在のフェーズ:** Phase 2 完了 → Phase 4-5 (ドキュメント整備・配布準備)
