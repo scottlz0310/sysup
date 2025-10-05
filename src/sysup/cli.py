@@ -13,6 +13,12 @@ from .core.logging import SysupLogger
 from .core.checks import SystemChecker
 from .core.stats import StatsManager
 from .updaters.apt import AptUpdater
+from .updaters.snap import SnapUpdater
+from .updaters.brew import BrewUpdater
+from .updaters.npm import NpmUpdater
+from .updaters.pipx import PipxUpdater
+from .updaters.rustup import RustupUpdater
+from .updaters.cargo import CargoUpdater
 
 
 @click.command()
@@ -75,9 +81,14 @@ def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
     """利用可能なupdaterを一覧表示"""
     logger.section("利用可能なUpdater")
     
-    # 現在はAPTのみ実装
     updaters = [
-        ("apt", AptUpdater(logger, config.general.dry_run))
+        ("apt", AptUpdater(logger, config.general.dry_run)),
+        ("snap", SnapUpdater(logger, config.general.dry_run)),
+        ("brew", BrewUpdater(logger, config.general.dry_run)),
+        ("npm", NpmUpdater(logger, config.general.dry_run)),
+        ("pipx", PipxUpdater(logger, config.general.dry_run)),
+        ("rustup", RustupUpdater(logger, config.general.dry_run)),
+        ("cargo", CargoUpdater(logger, config.general.dry_run)),
     ]
     
     for name, updater in updaters:
@@ -140,10 +151,22 @@ def run_updates(
     # 更新実行
     logger.section("パッケージ更新")
     
-    # 現在はAPTのみ実装
+    # 有効なupdaterを収集
     updaters = []
     if config.is_updater_enabled("apt"):
         updaters.append(("apt", AptUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("snap"):
+        updaters.append(("snap", SnapUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("brew"):
+        updaters.append(("brew", BrewUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("npm"):
+        updaters.append(("npm", NpmUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("pipx"):
+        updaters.append(("pipx", PipxUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("rustup"):
+        updaters.append(("rustup", RustupUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("cargo"):
+        updaters.append(("cargo", CargoUpdater(logger, config.general.dry_run)))
     
     if not updaters:
         logger.warning("有効なupdaterがありません")
