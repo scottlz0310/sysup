@@ -203,24 +203,34 @@ class BaseUpdater(ABC):
 
 ---
 
-### Phase 4: インストール/配布（Week 3-4）
+### Phase 4: インストール/配布
 
-#### 4.1 pipx/uvインストール対応
+#### 4.1 インストール方法（個人用）
+
+**GitHubから直接インストール（推奨）:**
 ```bash
-# uvでのインストール
-uv tool install sysup
+# uvで
+uv tool install git+https://github.com/scottlz0310/sysup.git
 
-# pipxでのインストール
-pipx install sysup
+# pipxで
+pipx install git+https://github.com/scottlz0310/sysup.git
+```
 
-# 開発モード
+**ローカル開発モード:**
+```bash
+cd /path/to/sysup
 uv pip install -e .
 ```
 
-#### 4.2 パッケージング
-- [ ] PyPIへの公開準備
-- [ ] バージョン管理戦略
-- [ ] リリースノート自動生成
+**シンボリックリンク:**
+```bash
+ln -s /path/to/sysup/.venv/bin/sysup ~/.local/bin/sysup
+```
+
+#### 4.2 バージョン管理
+- [ ] セマンティックバージョニング（SemVer）の適用
+- [ ] CHANGELOG.mdの更新
+- [ ] Gitタグによるリリース管理
 
 ---
 
@@ -360,8 +370,8 @@ sysup --auto-run              # 自動実行モード
 
 ### v1.0.0 (Stable)
 - 十分なテストと安定性確認
-- PyPI公開
-- 公開リリース
+- 個人環境での安定運用
+- ドキュメント完備
 
 ---
 
