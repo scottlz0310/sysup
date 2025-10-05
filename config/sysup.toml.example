@@ -1,0 +1,38 @@
+# sysup 設定ファイル
+# ~/.config/sysup/sysup.toml にコピーして使用してください
+
+[updaters]
+# 更新対象の有効/無効
+apt = true
+snap = true
+flatpak = false
+pipx = true
+npm = true
+nvm = true
+rustup = true
+cargo = true
+gem = false
+brew = true
+firmware = false
+
+[auto_run]
+# 自動実行設定
+# "disabled", "enabled", "enabled_with_auth"
+mode = "disabled"
+
+[logging]
+# ログ設定
+dir = "~/.local/share/sysup"
+retention_days = 30
+level = "INFO"
+
+[backup]
+# バックアップ設定
+dir = "~/.local/share/sysup/backups"
+enabled = true
+
+[general]
+# その他の設定
+parallel_updates = false
+dry_run = false
+cache_dir = "~/.cache/sysup"

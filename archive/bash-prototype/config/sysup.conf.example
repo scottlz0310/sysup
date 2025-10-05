@@ -1,0 +1,36 @@
+# sysup 設定ファイル
+# ~/.config/sysup/sysup.conf にコピーして使用してください
+
+# === 更新対象の有効/無効 ===
+ENABLE_APT=true
+ENABLE_SNAP=true
+ENABLE_FLATPAK=false
+ENABLE_PIPX=true
+ENABLE_NPM=true
+ENABLE_NVM=true
+ENABLE_RUSTUP=true
+ENABLE_CARGO=true
+ENABLE_GEM=false
+ENABLE_BREW=true
+ENABLE_FIRMWARE=false
+
+# === 自動実行設定 ===
+# disabled: 自動実行しない
+# enabled: 自動実行する
+# enabled_with_auth: 認証後に自動実行する
+AUTO_RUN_MODE="disabled"
+
+# === ログ設定 ===
+SYSUP_LOG_DIR="$HOME/.local/share/sysup"
+LOG_RETENTION_DAYS=30
+
+# === バックアップ設定 ===
+SYSUP_BACKUP_DIR="$HOME/.local/share/sysup/backups"
+ENABLE_BACKUP=true
+
+# === その他 ===
+# 将来的な並列実行機能（現在は未実装）
+PARALLEL_UPDATES=false
+
+# ドライランモード（実際には更新しない）
+DRY_RUN=false

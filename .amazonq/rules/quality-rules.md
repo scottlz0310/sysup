@@ -1,5 +1,8 @@
 # AI開発品質ルール
 
+- AIは以下のルールに従い、品質向上作業を進めること
+- 応答は日本語で行い、コメントやサマリーも日本語で行います
+
 ## Phase 4: リンティング・コード品質
 
 ### 4.1 リンター・フォーマッター・型
@@ -20,7 +23,7 @@ pytest -q
 - pyupgrade/UP系、B, C90x, I, T20x（print検出）を適用推奨
 
 ### 4.2 スタイルガイド
-- PEP 8準拠。行長: コード88文字、コメント/Docstring 72文字
+- PEP 8準拠。行長: コード120文字、コメント/Docstring 72文字
 - PEP 257（Docstring）、NumPyもしくはGoogleスタイルをプロジェクトで統一
 - 公開関数/クラス/モジュールにはDocstringを必須
 
@@ -31,7 +34,7 @@ pytest -q
 
 ### 4.4 セキュリティ静的解析
 - 開発中スキャン: Amazon Q Developerセキュリティースキャン等
-- 補助: bandit等のセキュリティlinterを導入可
+- 補助: bandit,safety,codeQL等のセキュリティlinterを導入可
 
 ### 4.5 デバッグ・ログ
 - print使用は禁止。loggingを使用。ruff T20xで検出
@@ -84,7 +87,7 @@ production:
   - 既存テストと入力・期待結果が同一のコピー
   - test_coverage_booster.py等といった明らかなカバレッジ稼ぎ
 - 無意味な__str__ / __repr__呼び出し
-- 既存のテストtest_*.pyに対しtest_*_expanded.pyなど既存テストと重複するファイルの作成
+- 既存のテストtest_*.pyに対しtest_*_expanded.pyなど既存テストに接尾辞を加えた重複するファイルの作成
 
 必須:
 - 各テストは以下のいずれかを含むこと
