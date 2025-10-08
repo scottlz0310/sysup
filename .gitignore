@@ -38,6 +38,7 @@ coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
+output/
 
 # Tools
 .ruff_cache/

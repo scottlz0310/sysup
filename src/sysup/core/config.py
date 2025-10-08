@@ -14,6 +14,7 @@ class UpdaterConfig(BaseModel):
     snap: bool = True
     flatpak: bool = False
     pipx: bool = True
+    uv: bool = True
     npm: bool = True
     nvm: bool = True
     rustup: bool = True

@@ -30,6 +30,7 @@ APT、Snap、Homebrew、npm、Rustupなど、11種類のパッケージマネー
 - **npm** - Node.jsグローバルパッケージ
 - **nvm** - Node Version Manager
 - **pipx** - Python CLIツール
+- **uv tool** - Python CLIツール（uvによる管理）
 - **Rustup** - Rustツールチェーン
 - **Cargo** - Rustパッケージ
 - **Flatpak** - Linuxアプリケーション配布

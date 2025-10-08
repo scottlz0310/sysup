@@ -28,6 +28,7 @@ from .updaters.nvm import NvmUpdater
 from .updaters.pipx import PipxUpdater
 from .updaters.rustup import RustupUpdater
 from .updaters.snap import SnapUpdater
+from .updaters.uv import UvUpdater
 
 
 @click.command()
@@ -148,6 +149,7 @@ def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
         ("brew", BrewUpdater(logger, config.general.dry_run)),
         ("npm", NpmUpdater(logger, config.general.dry_run)),
         ("pipx", PipxUpdater(logger, config.general.dry_run)),
+        ("uv", UvUpdater(logger, config.general.dry_run)),
         ("rustup", RustupUpdater(logger, config.general.dry_run)),
         ("cargo", CargoUpdater(logger, config.general.dry_run)),
         ("flatpak", FlatpakUpdater(logger, config.general.dry_run)),
@@ -233,6 +235,8 @@ def run_updates(logger: SysupLogger, config: SysupConfig, checker: SystemChecker
         updaters.append(("npm", NpmUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("pipx"):
         updaters.append(("pipx", PipxUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("uv"):
+        updaters.append(("uv", UvUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("rustup"):
         updaters.append(("rustup", RustupUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("cargo"):
