@@ -37,12 +37,21 @@ APT、Snap、Homebrew、npm、Rustupなど、11種類のパッケージマネー
 - **Gem** - Ruby gems
 - **Firmware** - ファームウェア更新（fwupdmgr）
 
+### 対応環境
+
+- **Linux** (Ubuntu, Debian, Fedora等)
+- **macOS** (Homebrew経由)
+- **WSL** (Windows Subsystem for Linux)
+
+> **注意**: Windows ネイティブ環境は現在サポートされていません。Windows用パッケージマネージャ（Scoop、Chocolatey、winget等）への対応は将来的な拡張として検討中です。
+
 ## インストール
 
 ### 前提条件
 
 - Python 3.11以上
 - uv または pipx
+- Linux、macOS、またはWSL環境
 
 ### GitHubから直接インストール（推奨）
 

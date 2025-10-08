@@ -134,9 +134,7 @@ production:
 - ベンチマークの基準値を設定し、回帰を検出。自動リトライは原則禁止
 
 ### 5.8 Mock戦略
-- 各プラットフォーム(Windows,Linux,macOS)依存のテストは実環境を優先して、Mockによる代替は行わない
-- 実環境に合わないテストはSKIP処理を用いて適切に除外する
-- Mockの使用は最小限とするが、以下のケースでは適切にMockを使用する
+ - Mockの使用は最小限とするが、以下のケースでは適切にMockを使用する
  - 外部依存に関係する部分
  - 破壊的変更が起こるケース
  - 非決定的挙動を含む処理
@@ -179,7 +177,7 @@ production:
 ### 6.9 CIワークフロー項目（参考）
 - トリガ: PR, push（main）, schedule
 - ジョブ: setup-uv → uv sync → lint → type → test+cov → security（CodeQL/SCA/Secret）→ sbom
-- マトリクス: os=[ubuntu-latest, windows-latest, macos-latest], python=[3.11, 3.12, 3.13]
+- マトリクス: os=[ubuntu-latest], python=[3.11, 3.12, 3.13]
 - permissions: contents: read, pull-requests: write（必要時のみ）等
 - キャッシュキー: hashFiles('pyproject.toml', 'uv.lock')
 
@@ -283,44 +281,6 @@ pip-wheel-metadata/
 .env
 .env.*
 .python-version
-```
-
-### 付録B. 推奨Makefileターゲット例
-```Makefile
-.PHONY: bootstrap lint format typecheck test cov security build release clean
-bootstrap:
-	uv venv --python 3.13
-	uv sync
-	pre-commit install
-
-lint:
-	uv run ruff check .
-
-format:
-	uv run ruff format .
-
-typecheck:
-	uv run mypy .
-
-test:
-	uv run pytest -q
-
-cov:
-	uv run pytest --cov=src --cov-report=term-missing
-
-security:
-	# 例: bandit -r src || true
-	echo "Run security scans in CI"
-
-build:
-	uv build
-
-release:
-	# タグ生成やリリースノート自動化をフック
-	echo "Release pipeline"
-
-clean:
-	rm -rf .venv .cache .pytest_cache .ruff_cache .mypy_cache dist build htmlcov .coverage
 ```
 
 ---
