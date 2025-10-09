@@ -1,4 +1,4 @@
-"""npmグローバルパッケージupdater"""
+"""npmグローバルパッケージupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class NpmUpdater(BaseUpdater):
-    """npmグローバルパッケージupdater"""
+    """npmグローバルパッケージupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "npm"
 
     def is_available(self) -> bool:
+        """npmが利用可能かチェック."""
         return self.command_exists("npm")
 
     def perform_update(self) -> bool:
-        """npm更新実行"""
+        """npm更新実行."""
         name = self.get_name()
 
         if not self.is_available():

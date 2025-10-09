@@ -1,4 +1,4 @@
-"""ファームウェア更新updater"""
+"""ファームウェア更新updater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class FirmwareUpdater(BaseUpdater):
-    """ファームウェア更新updater"""
+    """ファームウェア更新updater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "Firmware"
 
     def is_available(self) -> bool:
+        """fwupdmgrが利用可能かチェック."""
         return self.command_exists("fwupdmgr")
 
     def perform_update(self) -> bool:
-        """ファームウェア更新実行"""
+        """ファームウェア更新実行."""
         name = self.get_name()
 
         if not self.is_available():

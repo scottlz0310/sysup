@@ -1,4 +1,4 @@
-"""Flatpakパッケージマネージャupdater"""
+"""Flatpakパッケージマネージャupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class FlatpakUpdater(BaseUpdater):
-    """Flatpakパッケージマネージャupdater"""
+    """Flatpakパッケージマネージャupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "Flatpak"
 
     def is_available(self) -> bool:
+        """Flatpakが利用可能かチェック."""
         return self.command_exists("flatpak")
 
     def perform_update(self) -> bool:
-        """Flatpak更新実行"""
+        """Flatpak更新実行."""
         name = self.get_name()
 
         if not self.is_available():

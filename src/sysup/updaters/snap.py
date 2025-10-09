@@ -1,4 +1,4 @@
-"""Snapパッケージマネージャupdater"""
+"""Snapパッケージマネージャupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class SnapUpdater(BaseUpdater):
-    """Snapパッケージマネージャupdater"""
+    """Snapパッケージマネージャupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "Snap"
 
     def is_available(self) -> bool:
+        """Snapが利用可能かチェック."""
         return self.command_exists("snap")
 
     def check_updates(self) -> int | None:
-        """更新可能なパッケージ数を取得"""
+        """更新可能なパッケージ数を取得."""
         try:
             result = self.run_command(["snap", "list"], check=False)
             if result.returncode == 0:
@@ -26,7 +28,7 @@ class SnapUpdater(BaseUpdater):
             return None
 
     def perform_update(self) -> bool:
-        """Snap更新実行"""
+        """Snap更新実行."""
         name = self.get_name()
 
         if not self.is_available():

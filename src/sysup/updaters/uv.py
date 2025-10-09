@@ -1,4 +1,4 @@
-"""uv tool管理ツールupdater"""
+"""uv tool管理ツールupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class UvUpdater(BaseUpdater):
-    """uv tool管理ツールupdater"""
+    """uv tool管理ツールupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "uv tool"
 
     def is_available(self) -> bool:
+        """uvが利用可能かチェック."""
         return self.command_exists("uv")
 
     def perform_update(self) -> bool:
-        """uv tool更新実行"""
+        """Uv tool更新実行."""
         name = self.get_name()
 
         if not self.is_available():

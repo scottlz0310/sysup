@@ -1,4 +1,8 @@
-"""APTパッケージマネージャupdater"""
+"""APTパッケージマネージャupdater.
+
+Debian/UbuntuシステムのAPT (Advanced Package Tool)パッケージマネージャを
+使用したシステムパッケージの更新機能を提供します。
+"""
 
 import subprocess
 
@@ -6,16 +10,37 @@ from .base import BaseUpdater
 
 
 class AptUpdater(BaseUpdater):
-    """APTパッケージマネージャupdater"""
+    """APTパッケージマネージャupdater.
+
+    apt updateでパッケージリストを更新し、
+    apt full-upgradeでシステムパッケージを更新します。
+    """
 
     def get_name(self) -> str:
+        """updaterの名前を返す.
+
+        Returns:
+            "APT"固定.
+
+        """
         return "APT"
 
     def is_available(self) -> bool:
+        """aptコマンドが利用可能かチェックする.
+
+        Returns:
+            aptコマンドが存在する場合True.
+
+        """
         return self.command_exists("apt")
 
     def check_updates(self) -> int | None:
-        """更新可能なパッケージ数を取得"""
+        """更新可能なパッケージ数を取得する.
+
+        Returns:
+            更新可能なパッケージ数. 取得失敗時はNone.
+
+        """
         try:
             result = self.run_command(["apt", "list", "--upgradable"], check=False)
             # ヘッダー行を除いた行数
@@ -25,7 +50,14 @@ class AptUpdater(BaseUpdater):
             return None
 
     def perform_update(self) -> bool:
-        """APT更新実行"""
+        """APT更新を実行する.
+
+        apt update, apt upgrade, apt autoremove, apt autocleanを実行します。
+
+        Returns:
+            更新成功時True、失敗時False.
+
+        """
         name = self.get_name()
 
         if not self.is_available():

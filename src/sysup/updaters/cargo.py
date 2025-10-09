@@ -1,4 +1,4 @@
-"""Cargoパッケージupdater"""
+"""Cargoパッケージupdater."""
 
 import subprocess
 
@@ -6,17 +6,19 @@ from .base import BaseUpdater
 
 
 class CargoUpdater(BaseUpdater):
-    """Cargoパッケージupdater"""
+    """Cargoパッケージupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "Cargo"
 
     def is_available(self) -> bool:
+        """Cargoが利用可能かチェック."""
         # cargoが存在すればOK（cargo-install-updateは後でチェック）
         return self.command_exists("cargo")
 
     def perform_update(self) -> bool:
-        """Cargo更新実行"""
+        """Cargo更新実行."""
         name = self.get_name()
 
         if not self.command_exists("cargo"):

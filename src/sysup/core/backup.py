@@ -1,4 +1,9 @@
-"""バックアップ機能"""
+"""バックアップ機能.
+
+このモジュールはパッケージリストのバックアップ機能を提供します。
+各種パッケージマネージャのインストール済みパッケージリストを取得し、
+JSON形式でバックアップファイルに保存します。
+"""
 
 import json
 import subprocess
@@ -7,9 +12,25 @@ from pathlib import Path
 
 
 class BackupManager:
-    """パッケージリストのバックアップを管理するクラス"""
+    """パッケージリストのバックアップを管理するクラス.
+
+    各種パッケージマネージャのインストール済みパッケージリストを
+    JSON形式でバックアップし、古いバックアップの削除も管理します。
+
+    Attributes:
+        backup_dir: バックアップファイルの保存ディレクトリ.
+        enabled: バックアップ機能の有効/無効フラグ.
+
+    """
 
     def __init__(self, backup_dir: Path, enabled: bool = True):
+        """BackupManagerを初期化する.
+
+        Args:
+            backup_dir: バックアップファイルの保存ディレクトリ.
+            enabled: バックアップを有効にするかどうか. デフォルトはTrue.
+
+        """
         self.backup_dir = backup_dir
         self.enabled = enabled
 
@@ -17,10 +38,20 @@ class BackupManager:
             self.backup_dir.mkdir(parents=True, exist_ok=True)
 
     def create_backup(self) -> Path | None:
-        """現在のパッケージリストをバックアップ
+        """現在のパッケージリストをバックアップする.
+
+        各種パッケージマネージャから現在インストールされているパッケージリストを取得し、
+        タイムスタンプ付きのJSONファイルとして保存します。
 
         Returns:
-            バックアップファイルのパス（失敗時はNone）
+            バックアップファイルのパス. 失敗時またはバックアップ無効時はNone.
+
+        Examples:
+            >>> manager = BackupManager(Path("~/.local/share/sysup/backups"))
+            >>> backup_file = manager.create_backup()
+            >>> print(backup_file)
+            ~/.local/share/sysup/backups/packages_20250101_120000.json
+
         """
         if not self.enabled:
             return None
@@ -81,7 +112,12 @@ class BackupManager:
             return None
 
     def _get_apt_packages(self) -> list[str] | None:
-        """APTパッケージリストを取得"""
+        """APTパッケージリストを取得する.
+
+        Returns:
+            インストール済みAPTパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(["dpkg", "--get-selections"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
@@ -96,7 +132,12 @@ class BackupManager:
             return None
 
     def _get_snap_packages(self) -> list[str] | None:
-        """Snapパッケージリストを取得"""
+        """Snapパッケージリストを取得する.
+
+        Returns:
+            インストール済みSnapパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(["snap", "list"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
@@ -111,7 +152,12 @@ class BackupManager:
             return None
 
     def _get_brew_packages(self) -> list[str] | None:
-        """Homebrewパッケージリストを取得"""
+        """Homebrewパッケージリストを取得する.
+
+        Returns:
+            インストール済みHomebrewパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(["brew", "list", "--formula"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
@@ -121,7 +167,12 @@ class BackupManager:
             return None
 
     def _get_npm_packages(self) -> list[str] | None:
-        """npmグローバルパッケージリストを取得"""
+        """npmグローバルパッケージリストを取得する.
+
+        Returns:
+            インストール済みnpmグローバルパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(
                 ["npm", "list", "-g", "--depth=0", "--json"], capture_output=True, text=True, timeout=30
@@ -134,7 +185,12 @@ class BackupManager:
             return None
 
     def _get_pipx_packages(self) -> list[str] | None:
-        """pipxパッケージリストを取得"""
+        """pipxパッケージリストを取得する.
+
+        Returns:
+            インストール済みpipxパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(["pipx", "list", "--short"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
@@ -144,7 +200,12 @@ class BackupManager:
             return None
 
     def _get_cargo_packages(self) -> list[str] | None:
-        """Cargoパッケージリストを取得"""
+        """Cargoパッケージリストを取得する.
+
+        Returns:
+            インストール済みCargoパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(["cargo", "install", "--list"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
@@ -159,7 +220,12 @@ class BackupManager:
             return None
 
     def _get_flatpak_packages(self) -> list[str] | None:
-        """Flatpakパッケージリストを取得"""
+        """Flatpakパッケージリストを取得する.
+
+        Returns:
+            インストール済みFlatpakパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(
                 ["flatpak", "list", "--app", "--columns=application"], capture_output=True, text=True, timeout=30
@@ -171,7 +237,12 @@ class BackupManager:
             return None
 
     def _get_gem_packages(self) -> list[str] | None:
-        """Gemパッケージリストを取得"""
+        """Gemパッケージリストを取得する.
+
+        Returns:
+            インストール済みGemパッケージ名のリスト. 取得失敗時はNone.
+
+        """
         try:
             result = subprocess.run(["gem", "list", "--no-versions"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
@@ -181,20 +252,26 @@ class BackupManager:
             return None
 
     def list_backups(self) -> list[Path]:
-        """バックアップファイルのリストを取得"""
+        """バックアップファイルのリストを取得する.
+
+        Returns:
+            バックアップファイルのパスリスト(新しい順). ディレクトリが存在しない場合は空リスト.
+
+        """
         if not self.backup_dir.exists():
             return []
 
         return sorted(self.backup_dir.glob("packages_*.json"), reverse=True)
 
     def cleanup_old_backups(self, keep_count: int = 10) -> int:
-        """古いバックアップを削除
+        """古いバックアップを削除.
 
         Args:
             keep_count: 保持するバックアップ数
 
         Returns:
             削除したファイル数
+
         """
         backups = self.list_backups()
         if len(backups) <= keep_count:

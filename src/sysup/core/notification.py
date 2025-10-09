@@ -1,15 +1,28 @@
-"""デスクトップ通知機能"""
+"""デスクトップ通知機能.
+
+このモジュールはLinuxとmacOSでのデスクトップ通知機能を提供します。
+LinuxではNotify-send、macOSではosascriptを使用して通知を送信します。
+"""
 
 import platform
 import subprocess
 
 
 class Notifier:
-    """デスクトップ通知を送信するクラス"""
+    """デスクトップ通知を送信するクラス.
+
+    プラットフォームに応じて適切な通知方法を選択し、
+    デスクトップ通知を送信します。
+    """
 
     @staticmethod
     def is_available() -> bool:
-        """通知機能が利用可能かチェック"""
+        """通知機能が利用可能かチェックする.
+
+        Returns:
+            通知機能が利用可能な場合True、そうでない場合False.
+
+        """
         system = platform.system()
 
         if system == "Linux":
@@ -27,7 +40,7 @@ class Notifier:
 
     @staticmethod
     def send(title: str, message: str, urgency: str = "normal", icon: str | None = None) -> bool:
-        """デスクトップ通知を送信
+        """デスクトップ通知を送信.
 
         Args:
             title: 通知のタイトル
@@ -37,6 +50,7 @@ class Notifier:
 
         Returns:
             成功した場合True
+
         """
         system = platform.system()
 
@@ -52,7 +66,18 @@ class Notifier:
 
     @staticmethod
     def _send_linux(title: str, message: str, urgency: str, icon: str | None) -> bool:
-        """Linux (notify-send) で通知を送信"""
+        """Linux (notify-send) で通知を送信する.
+
+        Args:
+            title: 通知のタイトル.
+            message: 通知のメッセージ.
+            urgency: 緊急度 (low/normal/critical).
+            icon: アイコン名またはパス.
+
+        Returns:
+            送信成功時True、失敗時False.
+
+        """
         cmd = ["notify-send"]
 
         # 緊急度
@@ -78,22 +103,58 @@ class Notifier:
 
     @staticmethod
     def _send_macos(title: str, message: str) -> bool:
-        """macOS (osascript) で通知を送信"""
+        """MacOS (osascript) で通知を送信する.
+
+        Args:
+            title: 通知のタイトル.
+            message: 通知のメッセージ.
+
+        Returns:
+            送信成功時True、失敗時False.
+
+        """
         script = f'display notification "{message}" with title "{title}"'
         result = subprocess.run(["osascript", "-e", script], capture_output=True, timeout=5)
         return result.returncode == 0
 
     @staticmethod
     def send_success(title: str, message: str) -> bool:
-        """成功通知を送信"""
+        """成功通知を送信する.
+
+        Args:
+            title: 通知のタイトル.
+            message: 通知のメッセージ.
+
+        Returns:
+            送信成功時True、失敗時False.
+
+        """
         return Notifier.send(title, message, urgency="normal", icon="dialog-information")
 
     @staticmethod
     def send_error(title: str, message: str) -> bool:
-        """エラー通知を送信"""
+        """エラー通知を送信する.
+
+        Args:
+            title: 通知のタイトル.
+            message: 通知のメッセージ.
+
+        Returns:
+            送信成功時True、失敗時False.
+
+        """
         return Notifier.send(title, message, urgency="critical", icon="dialog-error")
 
     @staticmethod
     def send_warning(title: str, message: str) -> bool:
-        """警告通知を送信"""
+        """警告通知を送信する.
+
+        Args:
+            title: 通知のタイトル.
+            message: 通知のメッセージ.
+
+        Returns:
+            送信成功時True、失敗時False.
+
+        """
         return Notifier.send(title, message, urgency="normal", icon="dialog-warning")

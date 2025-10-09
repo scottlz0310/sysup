@@ -1,4 +1,4 @@
-"""Node Version Manager (nvm) updater"""
+"""Node Version Manager (nvm) updater."""
 
 import subprocess
 from pathlib import Path
@@ -7,12 +7,14 @@ from .base import BaseUpdater
 
 
 class NvmUpdater(BaseUpdater):
-    """Node Version Manager (nvm) updater"""
+    """Node Version Manager (nvm) updater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "nvm"
 
     def is_available(self) -> bool:
+        """nvmが利用可能かチェック."""
         # nvmはシェル関数なので、bashシェル経由で確認
         try:
             result = subprocess.run(
@@ -26,7 +28,7 @@ class NvmUpdater(BaseUpdater):
             return False
 
     def perform_update(self) -> bool:
-        """nvm更新実行"""
+        """nvm更新実行."""
         name = self.get_name()
 
         if not self.is_available():

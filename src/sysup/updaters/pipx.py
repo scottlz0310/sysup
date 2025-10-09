@@ -1,4 +1,4 @@
-"""pipx管理ツールupdater"""
+"""pipx管理ツールupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class PipxUpdater(BaseUpdater):
-    """pipx管理ツールupdater"""
+    """pipx管理ツールupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "pipx"
 
     def is_available(self) -> bool:
+        """pipxが利用可能かチェック."""
         return self.command_exists("pipx")
 
     def perform_update(self) -> bool:
-        """pipx更新実行"""
+        """pipx更新実行."""
         name = self.get_name()
 
         if not self.is_available():

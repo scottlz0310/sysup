@@ -1,4 +1,4 @@
-"""Ruby Gemパッケージupdater"""
+"""Ruby Gemパッケージupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class GemUpdater(BaseUpdater):
-    """Ruby Gemパッケージupdater"""
+    """Ruby Gemパッケージupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "Gem"
 
     def is_available(self) -> bool:
+        """Gemが利用可能かチェック."""
         return self.command_exists("gem")
 
     def perform_update(self) -> bool:
-        """Gem更新実行"""
+        """Gem更新実行."""
         name = self.get_name()
 
         if not self.is_available():

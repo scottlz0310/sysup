@@ -1,4 +1,4 @@
-"""Homebrewパッケージマネージャupdater"""
+"""Homebrewパッケージマネージャupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class BrewUpdater(BaseUpdater):
-    """Homebrewパッケージマネージャupdater"""
+    """Homebrewパッケージマネージャupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "Homebrew"
 
     def is_available(self) -> bool:
+        """Homebrewが利用可能かチェック."""
         return self.command_exists("brew")
 
     def check_updates(self) -> int | None:
-        """更新可能なパッケージ数を取得"""
+        """更新可能なパッケージ数を取得."""
         try:
             result = self.run_command(["brew", "outdated", "--quiet"], check=False)
             if result.returncode == 0:
@@ -26,7 +28,7 @@ class BrewUpdater(BaseUpdater):
             return None
 
     def perform_update(self) -> bool:
-        """Homebrew更新実行"""
+        """Homebrew更新実行."""
         name = self.get_name()
 
         if not self.is_available():

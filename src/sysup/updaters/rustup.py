@@ -1,4 +1,4 @@
-"""Rustupツールチェーンupdater"""
+"""Rustupツールチェーンupdater."""
 
 import subprocess
 
@@ -6,16 +6,18 @@ from .base import BaseUpdater
 
 
 class RustupUpdater(BaseUpdater):
-    """Rustupツールチェーンupdater"""
+    """Rustupツールチェーンupdater."""
 
     def get_name(self) -> str:
+        """Updater名を取得."""
         return "Rustup"
 
     def is_available(self) -> bool:
+        """Rustupが利用可能かチェック."""
         return self.command_exists("rustup")
 
     def perform_update(self) -> bool:
-        """Rustup更新実行"""
+        """Rustup更新実行."""
         name = self.get_name()
 
         if not self.is_available():

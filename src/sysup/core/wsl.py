@@ -1,15 +1,31 @@
-"""WSL統合機能"""
+"""WSL統合機能.
+
+このモジュールはWindows Subsystem for Linux (WSL)環境での
+自動実行設定を管理する機能を提供します。
+シェルRCファイルへの自動実行コマンドの追加・削除を行います。
+"""
 
 import os
 from pathlib import Path
 
 
 class WSLIntegration:
-    """WSL統合機能を提供するクラス"""
+    """WSL統合機能を提供するクラス.
+
+    WSL環境の判定、シェルRCファイルの管理、
+    自動実行設定の追加・削除機能を提供します。
+    """
 
     @staticmethod
     def is_wsl() -> bool:
-        """WSL環境かどうかを判定"""
+        """WSL環境かどうかを判定する.
+
+        /proc/versionファイルに"microsoft"が含まれているかをチェックします。
+
+        Returns:
+            WSL環境の場合True、そうでない場合False.
+
+        """
         # /proc/versionにMicrosoftが含まれているかチェック
         try:
             with open("/proc/version") as f:
@@ -19,7 +35,14 @@ class WSLIntegration:
 
     @staticmethod
     def get_shell_rc_file() -> Path | None:
-        """使用中のシェルのRCファイルを取得"""
+        """使用中のシェルのRCファイルを取得する.
+
+        環境変数SHELLからシェルの種類を判定し、対応するRCファイルのパスを返します。
+
+        Returns:
+            シェルRCファイルのパス. 判定不能な場合は~/.bashrcを返す.
+
+        """
         shell = os.environ.get("SHELL", "")
         home = Path.home()
 
@@ -33,7 +56,15 @@ class WSLIntegration:
 
     @staticmethod
     def is_auto_run_configured(rc_file: Path) -> bool:
-        """自動実行が既に設定されているかチェック"""
+        """自動実行が既に設定されているかチェックする.
+
+        Args:
+            rc_file: チェックするRCファイルのパス.
+
+        Returns:
+            自動実行設定が存在する場合True、そうでない場合False.
+
+        """
         if not rc_file.exists():
             return False
 
@@ -45,7 +76,7 @@ class WSLIntegration:
 
     @staticmethod
     def add_auto_run_to_rc(rc_file: Path, mode: str = "enabled") -> bool:
-        """RC ファイルに自動実行設定を追加
+        """RC ファイルに自動実行設定を追加.
 
         Args:
             rc_file: RC ファイルのパス
@@ -53,6 +84,7 @@ class WSLIntegration:
 
         Returns:
             成功した場合True
+
         """
         if WSLIntegration.is_auto_run_configured(rc_file):
             return True  # 既に設定済み
@@ -103,13 +135,14 @@ class WSLIntegration:
 
     @staticmethod
     def remove_auto_run_from_rc(rc_file: Path) -> bool:
-        """RC ファイルから自動実行設定を削除
+        """RC ファイルから自動実行設定を削除.
 
         Args:
             rc_file: RC ファイルのパス
 
         Returns:
             成功した場合True
+
         """
         if not rc_file.exists():
             return True
@@ -138,13 +171,14 @@ class WSLIntegration:
 
     @staticmethod
     def setup_wsl_integration(mode: str = "enabled") -> tuple[bool, str]:
-        """WSL統合をセットアップ
+        """WSL統合をセットアップ.
 
         Args:
             mode: 実行モード (enabled/enabled_with_auth/disabled)
 
         Returns:
             (成功フラグ, メッセージ)
+
         """
         if not WSLIntegration.is_wsl():
             return False, "WSL環境ではありません"
