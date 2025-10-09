@@ -104,8 +104,8 @@ class SystemChecker:
                 if last_run == today:
                     self.logger.info(f"今日は既に実行済みです: {today}")
                     return False
-            except Exception:
-                pass
+            except Exception as exc:
+                self.logger.warning(f"日次実行状態の読み込みに失敗しました: {exc}")
 
         # 今日の日付を記録
         lock_file.write_text(today)
@@ -131,8 +131,8 @@ class SystemChecker:
                     self.logger.info("再起動が必要なパッケージ:")
                     for pkg in packages:
                         self.logger.info(f"  - {pkg}")
-                except Exception:
-                    pass
+                except Exception as exc:
+                    self.logger.warning(f"再起動が必要なパッケージ一覧の読み込みに失敗しました: {exc}")
             return True
 
         return False
