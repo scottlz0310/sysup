@@ -21,7 +21,6 @@
 - 🔶 統合テスト・E2Eテストが未整備
 - 🔶 依存関係のSBOM生成未実施
 - 🔶 構造化ログが未導入
-- 🔶 Secret Scanning有効化（リポジトリ設定が必要）
 
 ### � スコープ外項目（将来実装）
 - ⏸️ Windows対応（Scoop、Chocolatey、winget等のWindows用パッケージマネージャ対応が必要）
@@ -215,12 +214,15 @@
     - Python言語の脆弱性スキャン自動化
   - 成果: 週次スケジュールとPR時の自動スキャン設定完了
 
-- [ ] **T6.2-2**: Secret Scanningの有効化
+- [x] **T6.2-2**: Secret Scanningの有効化
   - 優先度: 高
+  - 状態: **完了（2025-01-09）**
   - 内容:
     - リポジトリ設定でSecret scanningを有効化
+    - Push protectionの有効化（推奨）
     - Push時の自動スキャン設定
-  - 備考: GitHub Advanced Security必要（Publicリポジトリは無料）
+  - 成果: Secret scanning + Push protection有効化、過去のコミット履歴スキャン完了（機密情報検出なし）
+  - 📝 手順書: [docs/SECURITY_SETUP.md](SECURITY_SETUP.md)
 
 - [x] **T6.2-3**: Dependabot設定
   - 優先度: 高
@@ -362,7 +364,7 @@
 1. ✅ **T5.1-1**: カバレッジ80%達成（87.41%達成）
 2. ✅ **T4.2-1**: Docstring整備
 3. ✅ **T6.2-1**: CodeQL導入
-4. **T6.2-2**: Secret Scanning有効化（リポジトリ設定が必要）🔴
+4. ✅ **T6.2-2**: Secret Scanning有効化
 5. ✅ **T6.2-3**: Dependabot設定
 6. ✅ **T7.1-1**: SECURITY.md作成
 
@@ -390,12 +392,12 @@
 
 ### v0.4.0（品質向上リリース）
 **目標日**: 2025年1月中旬
-**進捗**: 5/6項目完了（83%）
+**進捗**: 6/6項目完了（100%）✅
 **Exit Criteria**:
 - ✅ テストカバレッジ80%達成（87.41%達成）
 - ✅ 全公開APIにDocstring整備
 - ✅ CodeQL導入完了
-- ⏳ Secret Scanning有効化（リポジトリ設定待ち）
+- ✅ Secret Scanning有効化（機密情報検出なし）
 - ✅ Dependabot設定完了
 - ✅ SECURITY.md作成
 - ✅ CIでカバレッジゲート有効化

@@ -4,6 +4,8 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code Coverage](https://img.shields.io/badge/coverage-87.41%25-brightgreen.svg)](https://github.com/scottlz0310/sysup)
+[![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 
 ## 概要
 
@@ -96,7 +98,21 @@ sysup --help
 sysup --setup-wsl
 ```
 
-### 新機能（v0.3.0）
+### 新機能（v0.4.0）
+
+#### 品質向上
+
+- ✅ **テストカバレッジ87.41%達成**（目標80%超過）
+- ✅ **全公開APIにDocstring整備**（Googleスタイル）
+- ✅ **CodeQL自動スキャン導入**
+- ✅ **Secret Scanning + Push Protection有効化**
+- ✅ **Dependabot依存関係管理**
+- ✅ **SECURITY.md作成**（脆弱性報告方針）
+- ✅ **CI/CDカバレッジゲート有効化**（80%閾値）
+
+詳細は [CHANGELOG](CHANGELOG.md) を参照してください。
+
+### v0.3.0の機能
 
 #### WSL自動実行設定
 

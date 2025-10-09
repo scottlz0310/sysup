@@ -8,8 +8,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- テストスイートの充実
-- CI/CD設定（GitHub Actions）
+- 統合テスト・E2Eテストの整備
+- SBOM生成の自動化
+- 構造化ログの導入
+
+## [0.4.0] - 2025-10-09
+
+### Added
+- **品質向上**: テストカバレッジ87.41%達成（目標80%超過）
+- **セキュリティ**: CodeQL自動スキャン導入
+- **セキュリティ**: Secret Scanning + Push Protection有効化
+- **セキュリティ**: Dependabot依存関係管理導入
+- **セキュリティ**: SECURITY.md作成（脆弱性報告方針）
+- **ドキュメント**: 全公開APIにDocstring整備（Googleスタイル）
+- **CI/CD**: カバレッジゲート有効化（80%閾値）
+- **CI/CD**: マトリクステスト（Ubuntu/macOS × Python 3.11/3.12/3.13）
+- **テスト**: 227テストケース追加（6つの新規テストファイル）
+  - test_additional_updaters.py（9種類のupdater）
+  - test_apt.py（APT updater）
+  - test_brew.py（Homebrew updater）
+  - test_checks.py（システムチェック機能）
+  - test_stats.py（統計情報管理）
+  - test_uv.py（uv tool updater）
+
+### Changed
+- 開発ステータス: Alpha → Beta
+- pre-commit設定強化（ruff, mypy, bandit）
+- mypy strict相当の型チェック設定
+
+### Documentation
+- SECURITY_SETUP.md追加（セキュリティ機能セットアップガイド）
+- QUALITY_IMPROVEMENT_PLAN.md更新（v0.4.0完了）
+- README.md更新（品質バッジ追加）
+
+### Fixed
+- CargoUpdaterのエラーハンドリングテスト修正
 
 ## [0.3.0] - 2025-10-05
 
@@ -90,7 +123,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/scottlz0310/sysup/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/scottlz0310/sysup/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/scottlz0310/sysup/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/scottlz0310/sysup/compare/v0.1.0...v0.2.0

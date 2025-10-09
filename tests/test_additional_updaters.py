@@ -364,7 +364,7 @@ def test_updater_error_handling(mock_logger):
     """Updater - エラーハンドリングのテスト"""
     updater = CargoUpdater(mock_logger)
 
-    with patch.object(updater, "is_available", return_value=True):
+    with patch.object(updater, "command_exists", return_value=True):
         with patch.object(updater, "run_command") as mock_run:
             mock_run.side_effect = subprocess.CalledProcessError(1, ["cargo"])
 
