@@ -1,4 +1,9 @@
-"""ログ機能モジュール"""
+"""ログ機能モジュール.
+
+このモジュールはsysupのログ出力機能を提供します。
+Richライブラリを使用した美しいコンソール出力と、
+ファイルへのログ記録を統合的に管理します。
+"""
 
 import logging
 from datetime import datetime, timedelta
@@ -9,9 +14,28 @@ from rich.logging import RichHandler
 
 
 class SysupLogger:
-    """sysup専用ロガー"""
+    """sysup専用ロガー.
+
+    コンソール出力とファイル出力を統合したロガークラスです。
+    Richライブラリを使用した美しい出力と、古いログの自動削除機能を持ちます。
+
+    Attributes:
+        log_dir: ログファイルの保存ディレクトリ.
+        retention_days: ログファイルの保持日数.
+        console: Richのコンソールインスタンス.
+        logger: Pythonの標準ロガーインスタンス.
+
+    """
 
     def __init__(self, log_dir: Path, level: str = "INFO", retention_days: int = 30):
+        """SysupLoggerを初期化する.
+
+        Args:
+            log_dir: ログファイルの保存ディレクトリ.
+            level: ログレベル. デフォルトは"INFO".
+            retention_days: ログファイルの保持日数. デフォルトは30日.
+
+        """
         self.log_dir = log_dir
         self.retention_days = retention_days
         self.console = Console()
@@ -19,7 +43,15 @@ class SysupLogger:
         self._rotate_logs()
 
     def _setup_logger(self, level: str) -> logging.Logger:
-        """ロガーのセットアップ"""
+        """ロガーをセットアップする.
+
+        Args:
+            level: ログレベル文字列.
+
+        Returns:
+            設定済みのロガーインスタンス.
+
+        """
         logger = logging.getLogger("sysup")
         logger.setLevel(getattr(logging, level.upper()))
 
@@ -44,7 +76,10 @@ class SysupLogger:
         return logger
 
     def _rotate_logs(self) -> None:
-        """古いログファイルを削除"""
+        """古いログファイルを削除する.
+
+        保持日数を超えたログファイルを自動的に削除します。
+        """
         if not self.log_dir.exists():
             return
 
@@ -67,39 +102,84 @@ class SysupLogger:
                 continue
 
     def success(self, message: str) -> None:
-        """成功メッセージ"""
+        """成功メッセージを出力する.
+
+        Args:
+            message: 出力するメッセージ.
+
+        """
         self.console.print(f"[green]✓[/green] {message}")
         self.logger.info(f"SUCCESS: {message}")
 
     def info(self, message: str) -> None:
-        """情報メッセージ"""
+        """情報メッセージを出力する.
+
+        Args:
+            message: 出力するメッセージ.
+
+        """
         self.console.print(f"[blue]ℹ[/blue] {message}")
         self.logger.info(message)
 
     def warning(self, message: str) -> None:
-        """警告メッセージ"""
+        """警告メッセージを出力する.
+
+        Args:
+            message: 出力するメッセージ.
+
+        """
         self.console.print(f"[yellow]⚠[/yellow] {message}")
         self.logger.warning(message)
 
     def error(self, message: str) -> None:
-        """エラーメッセージ"""
+        """エラーメッセージを出力する.
+
+        Args:
+            message: 出力するメッセージ.
+
+        """
         self.console.print(f"[red]✗[/red] {message}", style="bold red")
         self.logger.error(message)
 
     def section(self, title: str) -> None:
-        """セクション表示"""
+        """セクションタイトルを表示する.
+
+        Args:
+            title: セクションのタイトル.
+
+        """
         self.console.print(f"\n[cyan]=== {title} ===[/cyan]")
         self.logger.info(f"SECTION: {title}")
 
     def progress_step(self, current: int, total: int, message: str) -> None:
-        """プログレス表示"""
+        """進捗ステップを表示する.
+
+        Args:
+            current: 現在のステップ番号.
+            total: 全ステップ数.
+            message: 表示するメッセージ.
+
+        """
         percentage = int((current / total) * 100)
         self.console.print(f"[cyan]ステップ {current}/{total}:[/cyan] {message} ({percentage}%)")
         self.logger.info(f"STEP {current}/{total}: {message}")
 
 
 def get_logger(log_dir: Path | None = None, level: str = "INFO") -> SysupLogger:
-    """ロガーインスタンスを取得"""
+    """ロガーインスタンスを取得する.
+
+    Args:
+        log_dir: ログディレクトリのパス. Noneの場合はデフォルトパス.
+        level: ログレベル. デフォルトは"INFO".
+
+    Returns:
+        設定済みのSysupLoggerインスタンス.
+
+    Examples:
+        >>> logger = get_logger()
+        >>> logger.info("情報メッセージ")
+
+    """
     if log_dir is None:
         log_dir = Path.home() / ".local" / "share" / "sysup"
 

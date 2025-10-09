@@ -42,12 +42,12 @@ show_progress() {
     local width=50
     local percentage=$((current * 100 / total))
     local completed=$((current * width / total))
-    
+
     printf "\r["
     for ((i=0; i<completed; i++)); do printf "="; done
     for ((i=completed; i<width; i++)); do printf " "; done
     printf "] %d%% (%d/%d)" $percentage $current $total
-    
+
     if [[ $current -eq $total ]]; then
         echo
     fi
@@ -57,16 +57,16 @@ show_progress() {
 confirm() {
     local message="$1"
     local default="${2:-n}"
-    
+
     if [[ "$default" == "y" ]]; then
         local prompt="$message (Y/n): "
     else
         local prompt="$message (y/N): "
     fi
-    
+
     read -p "$prompt" -n 1 -r
     echo
-    
+
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         return 0
     elif [[ $REPLY =~ ^[Nn]$ ]]; then

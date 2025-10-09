@@ -1,4 +1,8 @@
-"""システムチェック機能モジュール"""
+"""システムチェック機能モジュール.
+
+このモジュールはsysup実行前のシステム状態をチェックする機能を提供します。
+ディスク容量、ネットワーク接続、sudo権限、多重実行防止などをチェックします。
+"""
 
 import os
 import shutil
@@ -10,15 +14,41 @@ from .logging import SysupLogger
 
 
 class SystemChecker:
-    """システムチェッククラス"""
+    """システムチェッククラス.
+
+    システム更新前の各種チェック機能を提供します。
+
+    Attributes:
+        logger: ロガーインスタンス.
+        cache_dir: キャッシュディレクトリのパス.
+
+    """
 
     def __init__(self, logger: SysupLogger, cache_dir: Path):
+        """SystemCheckerを初期化する.
+
+        Args:
+            logger: ロガーインスタンス.
+            cache_dir: キャッシュディレクトリのパス.
+
+        """
         self.logger = logger
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def check_disk_space(self, min_space_gb: float = 1.0) -> bool:
-        """ディスク容量チェック"""
+        """ディスク容量をチェックする.
+
+        Args:
+            min_space_gb: 必要な最小空き容量(GB). デフォルトは1.0GB.
+
+        Returns:
+            十分な空き容量がある場合True、不足している場合False.
+
+        Raises:
+            Exception: ディスク容量の取得に失敗した場合.
+
+        """
         try:
             total, used, free = shutil.disk_usage("/")
             free_gb = free / (1024**3)
@@ -34,7 +64,14 @@ class SystemChecker:
             return False
 
     def check_network(self) -> bool:
-        """ネットワーク接続チェック"""
+        """ネットワーク接続をチェックする.
+
+        複数のDNSサーバーにpingを送信してネットワーク接続を確認します。
+
+        Returns:
+            ネットワーク接続が正常な場合True、問題がある場合False.
+
+        """
         test_hosts = ["8.8.8.8", "1.1.1.1"]
 
         for host in test_hosts:
@@ -50,7 +87,14 @@ class SystemChecker:
         return False
 
     def check_daily_run(self) -> bool:
-        """日次実行チェック"""
+        """日次実行チェックを行う.
+
+        最後に実行した日付を記録し、同日の重複実行を防ぎます。
+
+        Returns:
+            今日まだ実行されていない場合True、既に実行済みの場合False.
+
+        """
         lock_file = self.cache_dir / "daily_run"
         today = date.today().isoformat()
 
@@ -68,7 +112,14 @@ class SystemChecker:
         return True
 
     def check_reboot_required(self) -> bool:
-        """再起動が必要かチェック"""
+        """再起動が必要かチェックする.
+
+        Debian/Ubuntuシステムで再起動が必要かを判定します。
+
+        Returns:
+            再起動が必要な場合True、不要な場合False.
+
+        """
         reboot_file = Path("/var/run/reboot-required")
         if reboot_file.exists():
             self.logger.warning("システムの再起動が必要です")
@@ -87,7 +138,14 @@ class SystemChecker:
         return False
 
     def check_sudo_available(self) -> bool:
-        """sudo権限チェック"""
+        """sudo権限の有無をチェックする.
+
+        パスワードなしでsudoコマンドが実行可能かを確認します。
+
+        Returns:
+            sudo権限が利用可能な場合True、そうでない場合False.
+
+        """
         try:
             result = subprocess.run(["sudo", "-n", "true"], capture_output=True, timeout=5)
             if result.returncode != 0:
@@ -98,7 +156,14 @@ class SystemChecker:
             return False
 
     def check_process_lock(self) -> bool:
-        """プロセスロックチェック（多重実行防止）"""
+        """プロセスロックをチェックする(多重実行防止).
+
+        sysupが既に実行中でないかをチェックし、ロックファイルを作成します。
+
+        Returns:
+            実行可能な場合True、既に実行中の場合False.
+
+        """
         lock_file = self.cache_dir / "sysup.lock"
         pid_file = self.cache_dir / "sysup.pid"
 
@@ -121,7 +186,10 @@ class SystemChecker:
         return True
 
     def cleanup_lock(self) -> None:
-        """ロックファイルのクリーンアップ"""
+        """ロックファイルをクリーンアップする.
+
+        プロセス終了時にロックファイルとPIDファイルを削除します。
+        """
         lock_file = self.cache_dir / "sysup.lock"
         pid_file = self.cache_dir / "sysup.pid"
 

@@ -1,4 +1,9 @@
-"""sysup CLI インターフェース"""
+"""sysup CLI インターフェース.
+
+このモジュールはsysupのコマンドラインインターフェースを提供します。
+Clickライブラリを使用して、各種オプションとサブコマンドを管理し、
+システム更新処理のメインフローを実行します。
+"""
 
 import atexit
 import sys
@@ -40,8 +45,20 @@ from .updaters.uv import UvUpdater
 @click.option("--setup-wsl", is_flag=True, help="WSL自動実行をセットアップ")
 @click.version_option(version=__version__, prog_name="sysup")
 def main(config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_updaters: bool, setup_wsl: bool) -> None:
-    """システムと各種パッケージマネージャを統合的に更新するツール"""
+    """システムと各種パッケージマネージャを統合的に更新するツール.
 
+    sysupは複数のパッケージマネージャを統一的に管理し、
+    システム全体を簡単に最新の状態に保つためのツールです。
+
+    Args:
+        config: 設定ファイルのパス.
+        dry_run: ドライランモード. 実際には更新しない.
+        auto_run: 自動実行モード. 対話なしで実行.
+        force: 強制実行. 日次チェックを無視.
+        list_updaters: updater一覧を表示.
+        setup_wsl: WSL統合セットアップモード.
+
+    """
     # 設定読み込み
     try:
         sysup_config = SysupConfig.load_config(config)
@@ -88,7 +105,15 @@ def main(config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_u
 
 
 def setup_wsl_integration(logger: SysupLogger, config: SysupConfig) -> None:
-    """WSL統合をセットアップ"""
+    """WSL統合をセットアップする.
+
+    WSL環境でのシェルRCファイルへの自動実行設定を行います。
+
+    Args:
+        logger: ロガーインスタンス.
+        config: 設定オブジェクト.
+
+    """
     logger.section("WSL統合セットアップ")
 
     if not WSLIntegration.is_wsl():
@@ -140,7 +165,15 @@ def setup_wsl_integration(logger: SysupLogger, config: SysupConfig) -> None:
 
 
 def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
-    """利用可能なupdaterを一覧表示"""
+    """利用可能なupdaterを一覧表示する.
+
+    すべてのupdaterの有効/無効状態と利用可能性を表示します。
+
+    Args:
+        logger: ロガーインスタンス.
+        config: 設定オブジェクト.
+
+    """
     logger.section("利用可能なUpdater")
 
     updaters = [
@@ -169,8 +202,19 @@ def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
 
 
 def run_updates(logger: SysupLogger, config: SysupConfig, checker: SystemChecker, auto_run: bool, force: bool) -> None:
-    """更新実行"""
+    """更新処理を実行する.
 
+    システムチェック、バックアップ作成、各種updaterの実行、
+    統計情報の表示、通知送信を行います。
+
+    Args:
+        logger: ロガーインスタンス.
+        config: 設定オブジェクト.
+        checker: システムチェッカーインスタンス.
+        auto_run: 自動実行モード. 対話なしで実行.
+        force: 強制実行. 日次チェックを無視.
+
+    """
     # ヘッダー表示
     console = Console()
     if auto_run:

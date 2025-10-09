@@ -40,9 +40,9 @@ show_update_summary() {
     local duration=$((end_time - STATS_START_TIME))
     local minutes=$((duration / 60))
     local seconds=$((duration % 60))
-    
+
     show_section "更新サマリー"
-    
+
     # 成功した更新
     local success_count=${#STATS_SUCCESS[@]}
     if [[ $success_count -gt 0 ]]; then
@@ -51,7 +51,7 @@ show_update_summary() {
             echo "  ✓ $updater"
         done
     fi
-    
+
     # 失敗した更新
     local failed_count=${#STATS_FAILED[@]}
     if [[ $failed_count -gt 0 ]]; then
@@ -60,7 +60,7 @@ show_update_summary() {
             echo "  ✗ $updater: ${STATS_FAILED[$updater]}"
         done
     fi
-    
+
     # スキップした更新
     local skipped_count=${#STATS_SKIPPED[@]}
     if [[ $skipped_count -gt 0 ]]; then
@@ -69,14 +69,14 @@ show_update_summary() {
             echo "  - $updater: ${STATS_SKIPPED[$updater]}"
         done
     fi
-    
+
     # 実行時間
     if [[ $minutes -gt 0 ]]; then
         info "実行時間: ${minutes}分${seconds}秒"
     else
         info "実行時間: ${seconds}秒"
     fi
-    
+
     # 総合結果
     local total_count=$((success_count + failed_count))
     if [[ $total_count -eq 0 ]]; then
@@ -92,26 +92,26 @@ show_update_summary() {
 save_stats_to_log() {
     local log_file="${SYSUP_LOG_DIR:-$HOME/.local/share/sysup}/update.log"
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    
+
     mkdir -p "$(dirname "$log_file")"
-    
+
     {
         echo "=== Update Summary - $timestamp ==="
         echo "Success: ${#STATS_SUCCESS[@]} items"
         for updater in "${!STATS_SUCCESS[@]}"; do
             echo "  SUCCESS: $updater"
         done
-        
+
         echo "Failed: ${#STATS_FAILED[@]} items"
         for updater in "${!STATS_FAILED[@]}"; do
             echo "  FAILED: $updater - ${STATS_FAILED[$updater]}"
         done
-        
+
         echo "Skipped: ${#STATS_SKIPPED[@]} items"
         for updater in "${!STATS_SKIPPED[@]}"; do
             echo "  SKIPPED: $updater - ${STATS_SKIPPED[$updater]}"
         done
-        
+
         echo "Duration: $(($(date +%s) - STATS_START_TIME)) seconds"
         echo ""
     } >> "$log_file"

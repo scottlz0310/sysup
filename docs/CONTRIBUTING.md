@@ -86,10 +86,10 @@ def perform_update(self) -> bool:
 def example_function(param: str) -> bool:
     """
     関数の説明
-    
+
     Args:
         param: パラメータの説明
-    
+
     Returns:
         成功した場合True、失敗した場合False
     """
@@ -114,27 +114,27 @@ from .base import BaseUpdater
 
 class ExampleUpdater(BaseUpdater):
     """Exampleパッケージマネージャupdater"""
-    
+
     def get_name(self) -> str:
         return "Example"
-    
+
     def is_available(self) -> bool:
         return self.command_exists("example")
-    
+
     def perform_update(self) -> bool:
         """Example更新実行"""
         name = self.get_name()
-        
+
         if not self.is_available():
             self.logger.info(f"{name} がインストールされていません - スキップ")
             return True
-        
+
         try:
             self.logger.info(f"{name} を更新中...")
             self.run_command(["example", "update"])
             self.logger.success(f"{name} 更新完了")
             return True
-            
+
         except subprocess.CalledProcessError as e:
             self.logger.warning(f"{name} 更新で問題が発生しました: {e}")
             return False
@@ -221,10 +221,10 @@ def test_function_name():
     """テストの説明"""
     # Arrange（準備）
     expected = "expected_value"
-    
+
     # Act（実行）
     result = function_to_test()
-    
+
     # Assert（検証）
     assert result == expected
 ```
