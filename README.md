@@ -250,6 +250,14 @@ sudo apt install build-essential pkg-config libssl-dev
 cargo install cargo-update
 ```
 
+#### `libgit2.so.1.9` が見つからないエラー
+
+`cargo install-update -a` 実行時に `error while loading shared libraries: libgit2.so.1.9: cannot open shared object file` が表示される場合、`libgit2` の共有ライブラリが不足しています。Ubuntu/Debian 系であれば以下で解決できます：
+
+```bash
+sudo apt install libgit2-1.9
+```
+
 ### nvmが検出されない
 
 nvmをgit経由でインストールすることを推奨します：
