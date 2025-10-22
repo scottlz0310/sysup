@@ -108,7 +108,7 @@ def test_show_available_updaters():
         with mock_sudo_updaters():
             # エラーが発生しないことを確認
             show_available_updaters(logger, config)
-
+        logger.close()
 
 def test_setup_wsl_integration():
     """setup_wsl_integration関数のテスト"""
@@ -119,7 +119,7 @@ def test_setup_wsl_integration():
         with patch("sysup.cli.WSLIntegration.is_wsl", return_value=False):
             # WSL環境でない場合の動作を確認
             setup_wsl_integration(logger, config)
-
+        logger.close()
 
 def test_main_setup_wsl():
     """CLI - WSLセットアップのテスト"""
@@ -216,7 +216,7 @@ def test_setup_wsl_integration_with_wsl():
                         # プロンプトへの入力をシミュレート
                         with patch("click.prompt", return_value=1):
                             setup_wsl_integration(logger, config)
-
+        logger.close()
 
 def test_setup_wsl_integration_already_configured():
     """setup_wsl_integration - 既に設定済みの場合のテスト"""
@@ -230,7 +230,7 @@ def test_setup_wsl_integration_already_configured():
                     with patch("sysup.cli.WSLIntegration.setup_wsl_integration", return_value=(True, "Disabled")):
                         with patch("click.confirm", return_value=True):
                             setup_wsl_integration(logger, config)
-
+        logger.close()
 
 def test_setup_wsl_integration_cancel():
     """setup_wsl_integration - キャンセルのテスト"""
@@ -244,7 +244,7 @@ def test_setup_wsl_integration_cancel():
                     # キャンセルを選択
                     with patch("click.prompt", return_value=3):
                         setup_wsl_integration(logger, config)
-
+        logger.close()
 
 def test_run_updates_basic():
     """run_updates - 基本的な更新実行のテスト"""
@@ -266,7 +266,7 @@ def test_run_updates_basic():
         with mock_sudo_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_with_backup():
     """run_updates - バックアップ有効時のテスト"""
@@ -293,7 +293,8 @@ def test_run_updates_with_backup():
             with mock_sudo_updaters():
                 with patch("sysup.cli.Notifier.is_available", return_value=False):
                     run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
+        logger.close()
 
 def test_run_updates_daily_check_failed():
     """run_updates - 日次チェック失敗時のテスト"""
@@ -314,7 +315,7 @@ def test_run_updates_daily_check_failed():
         with mock_sudo_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_disk_space_insufficient():
     """run_updates - ディスク容量不足時のテスト"""
@@ -336,7 +337,7 @@ def test_run_updates_disk_space_insufficient():
         with mock_sudo_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_network_failed():
     """run_updates - ネットワーク接続失敗時のテスト"""
@@ -356,7 +357,7 @@ def test_run_updates_network_failed():
         with mock_sudo_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_sudo_not_available():
     """run_updates - sudo利用不可時のテスト"""
@@ -374,7 +375,7 @@ def test_run_updates_sudo_not_available():
 
         # 自動実行モードでsudo不可の場合は早期リターン
         run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_no_updaters():
     """run_updates - 有効なupdaterなし時のテスト"""
@@ -406,7 +407,7 @@ def test_run_updates_no_updaters():
         checker.check_sudo_available.return_value = True
 
         run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_parallel_mode():
     """run_updates - 並列更新モードのテスト"""
@@ -427,7 +428,7 @@ def test_run_updates_parallel_mode():
         with mock_sudo_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_reboot_required():
     """run_updates - 再起動が必要な場合のテスト"""
@@ -448,7 +449,7 @@ def test_run_updates_reboot_required():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 # 自動実行モードでは再起動プロンプトなし
                 run_updates(logger, config, checker, auto_run=True, force=False)
-
+        logger.close()
 
 def test_run_updates_updater_exception():
     """run_updates - updaterで例外発生時のテスト"""
@@ -479,3 +480,4 @@ def test_run_updates_updater_exception():
                 with patch("sysup.cli.Notifier.is_available", return_value=False):
                     # 例外が発生しても他のupdaterに影響しない
                     run_updates(logger, config, checker, auto_run=True, force=False)
+        logger.close()

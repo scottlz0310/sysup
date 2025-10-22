@@ -22,6 +22,7 @@ def mock_logger():
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
         yield logger
+        logger.close()
 
 
 # ======================
@@ -35,8 +36,10 @@ def test_apt_get_name(mock_logger):
     assert updater.get_name() == "APT"
 
 
-def test_apt_is_available_true(mock_logger):
+@patch("sysup.updaters.apt.is_windows")
+def test_apt_is_available_true(mock_is_windows, mock_logger):
     """APTUpdater - is_available (利用可能)のテスト"""
+    mock_is_windows.return_value = False
     updater = AptUpdater(mock_logger)
 
     with patch.object(updater, "command_exists", return_value=True):

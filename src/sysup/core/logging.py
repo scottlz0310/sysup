@@ -164,6 +164,15 @@ class SysupLogger:
         self.console.print(f"[cyan]ステップ {current}/{total}:[/cyan] {message} ({percentage}%)")
         self.logger.info(f"STEP {current}/{total}: {message}")
 
+    def close(self) -> None:
+        """ロガーのハンドラーをクローズする.
+
+        Windows環境でファイルロックを解放するために使用します.
+        """
+        for handler in self.logger.handlers[:]:
+            handler.close()
+            self.logger.removeHandler(handler)
+
 
 def get_logger(log_dir: Path | None = None, level: str = "INFO") -> SysupLogger:
     """ロガーインスタンスを取得する.

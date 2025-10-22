@@ -17,17 +17,19 @@ def test_logger_initialization():
         assert logger.retention_days == 30
         assert logger.console is not None
         assert logger.logger is not None
+        logger.close()
 
 
 def test_log_file_creation():
     """ログファイル作成のテスト"""
     with tempfile.TemporaryDirectory() as tmpdir:
         log_dir = Path(tmpdir)
-        _ = SysupLogger(log_dir, "INFO")
+        logger = SysupLogger(log_dir, "INFO")
 
         # ログファイルが作成されているか確認
         log_files = list(log_dir.glob("sysup_*.log"))
         assert len(log_files) == 1
+        logger.close()
 
 
 def test_log_rotation():
@@ -40,10 +42,11 @@ def test_log_rotation():
         old_log.write_text("old log")
 
         # ロガー初期化（ローテーション実行）
-        _ = SysupLogger(log_dir, "INFO", retention_days=1)
+        logger = SysupLogger(log_dir, "INFO", retention_days=1)
 
         # 古いログファイルが削除されているか確認
         assert not old_log.exists()
+        logger.close()
 
 
 def test_log_rotation_keeps_recent():
@@ -57,10 +60,11 @@ def test_log_rotation_keeps_recent():
         recent_log.write_text("recent log")
 
         # ロガー初期化（ローテーション実行）
-        _ = SysupLogger(log_dir, "INFO", retention_days=7)
+        logger = SysupLogger(log_dir, "INFO", retention_days=7)
 
         # 最近のログファイルは保持されている
         assert recent_log.exists()
+        logger.close()
 
 
 def test_log_rotation_invalid_filename():
@@ -73,10 +77,11 @@ def test_log_rotation_invalid_filename():
         invalid_log.write_text("invalid log")
 
         # ロガー初期化（エラーが発生しない）
-        _ = SysupLogger(log_dir, "INFO", retention_days=1)
+        logger = SysupLogger(log_dir, "INFO", retention_days=1)
 
         # 無効な形式のファイルはスキップされる
         assert invalid_log.exists()
+        logger.close()
 
 
 def test_success_message():
@@ -87,6 +92,7 @@ def test_success_message():
 
         # エラーが発生しないことを確認
         logger.success("Test success message")
+        logger.close()
 
 
 def test_info_message():
@@ -97,6 +103,7 @@ def test_info_message():
 
         # エラーが発生しないことを確認
         logger.info("Test info message")
+        logger.close()
 
 
 def test_warning_message():
@@ -107,6 +114,7 @@ def test_warning_message():
 
         # エラーが発生しないことを確認
         logger.warning("Test warning message")
+        logger.close()
 
 
 def test_error_message():
@@ -117,6 +125,7 @@ def test_error_message():
 
         # エラーが発生しないことを確認
         logger.error("Test error message")
+        logger.close()
 
 
 def test_section_message():
@@ -127,6 +136,7 @@ def test_section_message():
 
         # エラーが発生しないことを確認
         logger.section("Test Section")
+        logger.close()
 
 
 def test_progress_step():
@@ -138,6 +148,7 @@ def test_progress_step():
         # エラーが発生しないことを確認
         logger.progress_step(1, 5, "Step 1")
         logger.progress_step(5, 5, "Step 5")
+        logger.close()
 
 
 def test_get_logger_with_path():
@@ -148,6 +159,7 @@ def test_get_logger_with_path():
 
         assert isinstance(logger, SysupLogger)
         assert logger.log_dir == log_dir
+        logger.close()
 
 
 def test_get_logger_without_path():
@@ -156,6 +168,7 @@ def test_get_logger_without_path():
 
     assert isinstance(logger, SysupLogger)
     assert logger.log_dir == Path.home() / ".local" / "share" / "sysup"
+    logger.close()
 
 
 def test_logger_different_levels():
@@ -166,11 +179,14 @@ def test_logger_different_levels():
         # DEBUG レベル
         logger_debug = SysupLogger(log_dir / "debug", "DEBUG")
         assert logger_debug is not None
+        logger_debug.close()
 
         # WARNING レベル
         logger_warning = SysupLogger(log_dir / "warning", "WARNING")
         assert logger_warning is not None
+        logger_warning.close()
 
         # ERROR レベル
         logger_error = SysupLogger(log_dir / "error", "ERROR")
         assert logger_error is not None
+        logger_error.close()

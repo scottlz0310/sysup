@@ -37,6 +37,7 @@ def test_get_shell_rc_file_zsh():
     """シェルRCファイル取得 - zshの場合のテスト"""
     with patch.dict(os.environ, {"SHELL": "/bin/zsh"}):
         rc_file = WSLIntegration.get_shell_rc_file()
+        assert rc_file is not None
         assert rc_file.name == ".zshrc"
 
 
@@ -44,6 +45,7 @@ def test_get_shell_rc_file_bash():
     """シェルRCファイル取得 - bashの場合のテスト"""
     with patch.dict(os.environ, {"SHELL": "/bin/bash"}):
         rc_file = WSLIntegration.get_shell_rc_file()
+        assert rc_file is not None
         assert rc_file.name == ".bashrc"
 
 
@@ -51,13 +53,17 @@ def test_get_shell_rc_file_unknown():
     """シェルRCファイル取得 - 不明なシェルの場合のテスト"""
     with patch.dict(os.environ, {"SHELL": "/bin/fish"}):
         rc_file = WSLIntegration.get_shell_rc_file()
+        assert rc_file is not None
         assert rc_file.name == ".bashrc"  # デフォルトはbashrc
 
 
 def test_get_shell_rc_file_no_shell_env():
     """シェルRCファイル取得 - SHELL環境変数がない場合のテスト"""
-    with patch.dict(os.environ, {}, clear=True):
+    home_dir = str(Path.home())
+    env_vars = {"HOME": home_dir, "USERPROFILE": home_dir}
+    with patch.dict(os.environ, env_vars, clear=True):
         rc_file = WSLIntegration.get_shell_rc_file()
+        assert rc_file is not None
         assert rc_file.name == ".bashrc"  # デフォルトはbashrc
 
 

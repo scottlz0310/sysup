@@ -31,6 +31,7 @@ def mock_logger():
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
         yield logger
+        logger.close()
 
 
 def test_base_updater_initialization(mock_logger):
@@ -222,7 +223,7 @@ def test_abstract_methods_must_be_implemented(mock_logger):
     """抽象メソッドが実装されていない場合のテスト"""
     with pytest.raises(TypeError):
         # BaseUpdaterを直接インスタンス化しようとするとTypeErrorが発生
-        BaseUpdater(mock_logger)
+        BaseUpdater(mock_logger)  # type: ignore[abstract]
 
 
 class IncompleteUpdater(BaseUpdater):
@@ -239,7 +240,8 @@ def test_incomplete_implementation():
 
         with pytest.raises(TypeError):
             # is_availableとperform_updateを実装していないため、TypeErrorが発生
-            IncompleteUpdater(logger)
+            IncompleteUpdater(logger)  # type: ignore[abstract]
+        logger.close()
 
 
 class CustomUpdater(BaseUpdater):

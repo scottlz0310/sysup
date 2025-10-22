@@ -25,6 +25,7 @@ def mock_logger():
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
         yield logger
+        logger.close()
 
 
 # ======================
@@ -170,8 +171,10 @@ def test_snap_get_name(mock_logger):
     assert updater.get_name() == "Snap"
 
 
-def test_snap_is_available(mock_logger):
+@patch("sysup.updaters.snap.is_windows")
+def test_snap_is_available(mock_is_windows, mock_logger):
     """SnapUpdater - is_availableのテスト"""
+    mock_is_windows.return_value = False
     updater = SnapUpdater(mock_logger)
 
     with patch.object(updater, "command_exists", return_value=True):
@@ -203,8 +206,10 @@ def test_flatpak_get_name(mock_logger):
     assert updater.get_name() == "Flatpak"
 
 
-def test_flatpak_is_available(mock_logger):
+@patch("sysup.updaters.flatpak.is_windows")
+def test_flatpak_is_available(mock_is_windows, mock_logger):
     """FlatpakUpdater - is_availableのテスト"""
+    mock_is_windows.return_value = False
     updater = FlatpakUpdater(mock_logger)
 
     with patch.object(updater, "command_exists", return_value=True):
@@ -269,8 +274,10 @@ def test_firmware_get_name(mock_logger):
     assert updater.get_name() == "Firmware"
 
 
-def test_firmware_is_available(mock_logger):
+@patch("sysup.updaters.firmware.is_windows")
+def test_firmware_is_available(mock_is_windows, mock_logger):
     """FirmwareUpdater - is_availableのテスト"""
+    mock_is_windows.return_value = False
     updater = FirmwareUpdater(mock_logger)
 
     with patch.object(updater, "command_exists", return_value=True):

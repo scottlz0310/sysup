@@ -1,4 +1,4 @@
-"""Scoopパッケージマネージャupdater。
+"""Scoopパッケージマネージャupdater.
 
 Windows環境でのScoopパッケージマネージャを使用した
 パッケージ更新機能を提供します。
@@ -11,39 +11,36 @@ from .base import BaseUpdater
 
 
 class ScoopUpdater(BaseUpdater):
-    """Scoopパッケージマネージャupdater。
+    """Scoopパッケージマネージャupdater.
 
     Scoop自体とインストール済みパッケージを更新します。
     """
 
     def get_name(self) -> str:
-        """updaterの名前を返す。
+        """updaterの名前を返す.
 
         Returns:
-            "Scoop"固定。
-
+            "Scoop"固定.
         """
         return "Scoop"
 
     def is_available(self) -> bool:
-        """scoopコマンドが利用可能かチェックする。
+        """scoopコマンドが利用可能かチェックする.
 
         Returns:
-            scoopコマンドが存在する場合True。
-
+            scoopコマンドが存在する場合True.
         """
         if not is_windows():
             return False
         return self.command_exists("scoop")
 
     def perform_update(self) -> bool:
-        """Scoop更新を実行する。
+        """Scoop更新を実行する.
 
         scoop update, scoop update *, scoop cleanup *を実行します。
 
         Returns:
-            更新成功時True、失敗時False。
-
+            更新成功時True、失敗時False.
         """
         name = self.get_name()
 

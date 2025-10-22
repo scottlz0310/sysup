@@ -90,6 +90,7 @@ def test_get_apt_packages_success():
             mock_run.return_value = mock_result
 
             packages = manager._get_apt_packages()
+            assert packages is not None
             assert "vim" in packages
             assert "git" in packages
 
@@ -120,6 +121,7 @@ def test_get_brew_packages():
             mock_run.return_value = mock_result
 
             packages = manager._get_brew_packages()
+            assert packages is not None
             assert "wget" in packages
 
 
@@ -137,6 +139,7 @@ def test_get_snap_packages():
 
             packages = manager._get_snap_packages()
             # Snapは"Name"ヘッダーをスキップする
+            assert packages is not None
             assert len(packages) >= 0
 
 
@@ -171,6 +174,7 @@ def test_get_pipx_packages():
             mock_run.return_value = mock_result
 
             packages = manager._get_pipx_packages()
+            assert packages is not None
             assert len(packages) >= 0
 
 
@@ -187,6 +191,7 @@ def test_get_cargo_packages():
             mock_run.return_value = mock_result
 
             packages = manager._get_cargo_packages()
+            assert packages is not None
             assert len(packages) >= 0
 
 
@@ -203,6 +208,7 @@ def test_get_flatpak_packages():
             mock_run.return_value = mock_result
 
             packages = manager._get_flatpak_packages()
+            assert packages is not None
             assert len(packages) >= 0
 
 
@@ -219,6 +225,7 @@ def test_get_gem_packages():
             mock_run.return_value = mock_result
 
             packages = manager._get_gem_packages()
+            assert packages is not None
             assert len(packages) >= 0
 
 
