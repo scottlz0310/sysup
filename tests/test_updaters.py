@@ -10,6 +10,9 @@ import pytest
 from sysup.core.logging import SysupLogger
 from sysup.updaters.apt import AptUpdater
 from sysup.updaters.brew import BrewUpdater
+from sysup.updaters.firmware import FirmwareUpdater
+from sysup.updaters.flatpak import FlatpakUpdater
+from sysup.updaters.snap import SnapUpdater
 from sysup.updaters.uv import UvUpdater
 
 
@@ -46,6 +49,14 @@ def test_apt_is_available_false(mock_logger):
 
     with patch.object(updater, "command_exists", return_value=False):
         assert updater.is_available() is False
+
+
+@patch("sysup.updaters.apt.is_windows")
+def test_apt_is_available_on_windows(mock_is_windows, mock_logger):
+    """APTUpdater - Windows環境で無効化されることを確認"""
+    mock_is_windows.return_value = True
+    updater = AptUpdater(mock_logger)
+    assert updater.is_available() is False
 
 
 def test_apt_check_updates(mock_logger):
@@ -338,3 +349,32 @@ def test_uv_perform_update_exception(mock_logger):
 
             result = updater.perform_update()
             assert result is False
+
+
+# ======================
+# Linux専用Updater Windows無効化テスト
+# ======================
+
+
+@patch("sysup.updaters.snap.is_windows")
+def test_snap_is_available_on_windows(mock_is_windows, mock_logger):
+    """SnapUpdater - Windows環境で無効化されることを確認"""
+    mock_is_windows.return_value = True
+    updater = SnapUpdater(mock_logger)
+    assert updater.is_available() is False
+
+
+@patch("sysup.updaters.flatpak.is_windows")
+def test_flatpak_is_available_on_windows(mock_is_windows, mock_logger):
+    """FlatpakUpdater - Windows環境で無効化されることを確認"""
+    mock_is_windows.return_value = True
+    updater = FlatpakUpdater(mock_logger)
+    assert updater.is_available() is False
+
+
+@patch("sysup.updaters.firmware.is_windows")
+def test_firmware_is_available_on_windows(mock_is_windows, mock_logger):
+    """FirmwareUpdater - Windows環境で無効化されることを確認"""
+    mock_is_windows.return_value = True
+    updater = FirmwareUpdater(mock_logger)
+    assert updater.is_available() is False

@@ -2,6 +2,7 @@
 
 import subprocess
 
+from ..core.platform import is_windows
 from .base import BaseUpdater
 
 
@@ -14,6 +15,8 @@ class SnapUpdater(BaseUpdater):
 
     def is_available(self) -> bool:
         """Snapが利用可能かチェック."""
+        if is_windows():
+            return False
         return self.command_exists("snap")
 
     def check_updates(self) -> int | None:

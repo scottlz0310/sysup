@@ -2,6 +2,7 @@
 
 import subprocess
 
+from ..core.platform import is_windows
 from .base import BaseUpdater
 
 
@@ -14,6 +15,8 @@ class FirmwareUpdater(BaseUpdater):
 
     def is_available(self) -> bool:
         """fwupdmgrが利用可能かチェック."""
+        if is_windows():
+            return False
         return self.command_exists("fwupdmgr")
 
     def perform_update(self) -> bool:

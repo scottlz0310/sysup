@@ -1,0 +1,52 @@
+# sysup Windows用設定ファイル
+# %USERPROFILE%\.config\sysup\sysup.toml にコピーして使用してください
+
+[updaters]
+# Windows専用パッケージマネージャ
+scoop = true
+
+# クロスプラットフォーム対応
+npm = true
+pipx = true
+uv = true
+rustup = true
+cargo = true
+gem = false
+
+# Linux専用（Windows環境では自動的に無効化）
+apt = false
+snap = false
+flatpak = false
+firmware = false
+
+# macOS/Linux（Windows環境では通常利用不可）
+brew = false
+nvm = false
+
+[auto_run]
+# 自動実行設定（Windows環境では未対応）
+mode = "disabled"
+
+[logging]
+# ログ設定
+dir = "~\\AppData\\Local\\sysup"
+retention_days = 30
+level = "INFO"
+
+[backup]
+# バックアップ設定
+dir = "~\\AppData\\Local\\sysup\\backups"
+enabled = true
+
+[notification]
+# デスクトップ通知設定（Windows環境では未対応）
+enabled = false
+on_success = false
+on_error = false
+on_warning = false
+
+[general]
+# その他の設定
+parallel_updates = true
+dry_run = false
+cache_dir = "~\\AppData\\Local\\sysup\\cache"

@@ -3,29 +3,29 @@
 ## v0.5.0: Windows基本対応
 
 ### プラットフォーム検出
-- [ ] `src/sysup/core/platform.py` 作成
-  - [ ] `is_windows()` 関数実装
-  - [ ] `is_unix()` 関数実装
-  - [ ] `get_platform()` 関数実装（オプション）
+- [x] `src/sysup/core/platform.py` 作成
+  - [x] `is_windows()` 関数実装
+  - [x] `is_unix()` 関数実装
+  - [x] `get_platform()` 関数実装（オプション）
 
 ### BaseUpdater拡張
-- [ ] `src/sysup/updaters/base.py` 修正
-  - [ ] PowerShell自動実行対応
-  - [ ] Windowsパス処理対応
-  - [ ] エラーハンドリング強化
+- [x] `src/sysup/updaters/base.py` 修正
+  - [x] PowerShell自動実行対応（command_exists）
+  - [x] Windowsパス処理対応（where/which）
+  - [x] エラーハンドリング強化
 
 ### Linux専用updater修正
-- [ ] `src/sysup/updaters/apt.py` - `is_windows()` ガード追加
-- [ ] `src/sysup/updaters/snap.py` - `is_windows()` ガード追加
-- [ ] `src/sysup/updaters/flatpak.py` - `is_windows()` ガード追加
-- [ ] `src/sysup/updaters/firmware.py` - `is_windows()` ガード追加
+- [x] `src/sysup/updaters/apt.py` - `is_windows()` ガード追加
+- [x] `src/sysup/updaters/snap.py` - `is_windows()` ガード追加
+- [x] `src/sysup/updaters/flatpak.py` - `is_windows()` ガード追加
+- [x] `src/sysup/updaters/firmware.py` - `is_windows()` ガード追加
 
 ### Scoop updater実装
-- [ ] `src/sysup/updaters/scoop.py` 作成
-  - [ ] `ScoopUpdater` クラス実装
-  - [ ] `is_available()` 実装
-  - [ ] `perform_update()` 実装（update, update *, cleanup *）
-  - [ ] エラーハンドリング
+- [x] `src/sysup/updaters/scoop.py` 作成
+  - [x] `ScoopUpdater` クラス実装
+  - [x] `is_available()` 実装
+  - [x] `perform_update()` 実装（update, update *, cleanup *）
+  - [x] エラーハンドリング
 
 ### 既存updater動作確認
 - [ ] npm - Windows動作確認
@@ -35,26 +35,26 @@
 - [ ] Cargo - Windows動作確認
 
 ### テスト追加
-- [ ] `tests/test_platform.py` 作成
-  - [ ] プラットフォーム検出テスト
-- [ ] `tests/test_scoop.py` 作成
-  - [ ] Scoop updaterテスト
-- [ ] 既存updaterテスト修正
-  - [ ] Windows環境での無効化テスト
-  - [ ] クロスプラットフォームテスト
+- [x] `tests/test_platform.py` 作成
+  - [x] プラットフォーム検出テスト
+- [x] `tests/test_scoop.py` 作成
+  - [x] Scoop updaterテスト
+- [x] 既存updaterテスト修正
+  - [x] Windows環境での無効化テスト
+  - [x] クロスプラットフォームテスト
 
 ### CI/CD
-- [ ] `.github/workflows/ci.yml` 修正
-  - [ ] Windows環境追加（windows-latest）
-  - [ ] Scoopインストール手順追加
-  - [ ] マトリクステスト確認
+- [x] `.github/workflows/ci.yml` 修正
+  - [x] Windows環境追加（windows-latest）
+  - [x] Scoopインストール手順追加
+  - [x] マトリクステスト確認
 
 ### ドキュメント
-- [ ] `README.md` 更新
-  - [ ] Windows対応を明記
-  - [ ] Scoopインストール手順追加
-- [ ] `config/sysup.windows.toml.example` 作成
-- [ ] `docs/WINDOWS_SETUP.md` 作成（オプション）
+- [x] `README.md` 更新
+  - [x] Windows対応を明記
+  - [x] Scoopインストール手順追加
+- [x] `config/sysup.windows.toml.example` 作成
+- [x] `docs/WINDOWS_SETUP.md` 作成
 
 ---
 
@@ -112,5 +112,5 @@
 
 ---
 
-**作成日**: 2025-10-09
+**作成日**: 2025-10-22
 **対象バージョン**: v0.5.0, v0.6.0

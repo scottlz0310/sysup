@@ -9,6 +9,7 @@ import subprocess
 from abc import ABC, abstractmethod
 
 from ..core.logging import SysupLogger
+from ..core.platform import is_windows
 
 
 class BaseUpdater(ABC):
@@ -146,7 +147,10 @@ class BaseUpdater(ABC):
 
         """
         try:
-            result = subprocess.run(["which", command], capture_output=True, timeout=5)
+            if is_windows():
+                result = subprocess.run(["where", command], capture_output=True, timeout=5)
+            else:
+                result = subprocess.run(["which", command], capture_output=True, timeout=5)
             return result.returncode == 0
         except Exception:
             return False

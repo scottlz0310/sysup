@@ -6,6 +6,7 @@ Debian/UbuntuシステムのAPT (Advanced Package Tool)パッケージマネー�
 
 import subprocess
 
+from ..core.platform import is_windows
 from .base import BaseUpdater
 
 
@@ -32,6 +33,8 @@ class AptUpdater(BaseUpdater):
             aptコマンドが存在する場合True.
 
         """
+        if is_windows():
+            return False
         return self.command_exists("apt")
 
     def check_updates(self) -> int | None:

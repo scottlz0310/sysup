@@ -26,26 +26,31 @@ APT、Snap、Homebrew、npm、Rustupなど、11種類のパッケージマネー
 
 ### 対応パッケージマネージャ
 
+#### Linux/macOS
 - **APT** - Debian/Ubuntu系パッケージマネージャ
 - **Snap** - Ubuntuスナップパッケージ
+- **Flatpak** - Linuxアプリケーション配布
+- **Firmware** - ファームウェア更新（fwupdmgr）
 - **Homebrew** - macOS/Linuxパッケージマネージャ
+
+#### Windows
+- **Scoop** - Windowsパッケージマネージャ
+
+#### クロスプラットフォーム
 - **npm** - Node.jsグローバルパッケージ
 - **nvm** - Node Version Manager
 - **pipx** - Python CLIツール
 - **uv tool** - Python CLIツール（uvによる管理）
 - **Rustup** - Rustツールチェーン
 - **Cargo** - Rustパッケージ
-- **Flatpak** - Linuxアプリケーション配布
 - **Gem** - Ruby gems
-- **Firmware** - ファームウェア更新（fwupdmgr）
 
 ### 対応環境
 
 - **Linux** (Ubuntu, Debian, Fedora等)
 - **macOS** (Homebrew経由)
+- **Windows** (Scoop経由) ✨ **v0.5.0で対応**
 - **WSL** (Windows Subsystem for Linux)
-
-> **注意**: Windows ネイティブ環境は現在サポートされていません。Windows用パッケージマネージャ（Scoop、Chocolatey、winget等）への対応は将来的な拡張として検討中です。
 
 ## インストール
 
@@ -53,7 +58,17 @@ APT、Snap、Homebrew、npm、Rustupなど、11種類のパッケージマネー
 
 - Python 3.11以上
 - uv または pipx
-- Linux、macOS、またはWSL環境
+- Linux、macOS、Windows、またはWSL環境
+
+#### Windows環境での追加要件
+
+- **Scoop**: Windowsパッケージマネージャ
+
+```powershell
+# Scoopインストール
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+```
 
 ### GitHubから直接インストール（推奨）
 
@@ -184,9 +199,16 @@ vim ~/.config/sysup/sysup.toml
 
 ```toml
 [updaters]
+# Linux専用
 apt = true
 snap = true
 flatpak = false
+firmware = false
+
+# Windows専用
+scoop = true
+
+# クロスプラットフォーム
 pipx = true
 npm = true
 nvm = true
@@ -194,7 +216,6 @@ rustup = true
 cargo = true
 gem = false
 brew = true
-firmware = false
 
 [logging]
 dir = "~/.local/share/sysup"

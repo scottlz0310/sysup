@@ -32,6 +32,7 @@ from .updaters.npm import NpmUpdater
 from .updaters.nvm import NvmUpdater
 from .updaters.pipx import PipxUpdater
 from .updaters.rustup import RustupUpdater
+from .updaters.scoop import ScoopUpdater
 from .updaters.snap import SnapUpdater
 from .updaters.uv import UvUpdater
 
@@ -180,6 +181,7 @@ def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
         ("apt", AptUpdater(logger, config.general.dry_run)),
         ("snap", SnapUpdater(logger, config.general.dry_run)),
         ("brew", BrewUpdater(logger, config.general.dry_run)),
+        ("scoop", ScoopUpdater(logger, config.general.dry_run)),
         ("npm", NpmUpdater(logger, config.general.dry_run)),
         ("pipx", PipxUpdater(logger, config.general.dry_run)),
         ("uv", UvUpdater(logger, config.general.dry_run)),
@@ -275,6 +277,8 @@ def run_updates(logger: SysupLogger, config: SysupConfig, checker: SystemChecker
         updaters.append(("snap", SnapUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("brew"):
         updaters.append(("brew", BrewUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("scoop"):
+        updaters.append(("scoop", ScoopUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("npm"):
         updaters.append(("npm", NpmUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("pipx"):
