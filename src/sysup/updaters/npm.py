@@ -2,6 +2,7 @@
 
 import subprocess
 
+from ..core.platform import is_windows
 from .base import BaseUpdater
 
 
@@ -26,7 +27,8 @@ class NpmUpdater(BaseUpdater):
 
         try:
             self.logger.info(f"{name} グローバルパッケージを更新中...")
-            self.run_command(["npm", "update", "-g"])
+            npm_cmd = "npm.cmd" if is_windows() else "npm"
+            self.run_command([npm_cmd, "update", "-g"])
             self.logger.success(f"{name} 更新完了")
             return True
 

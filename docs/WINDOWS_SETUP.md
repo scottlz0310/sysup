@@ -7,6 +7,9 @@ sysupをWindows環境で使用するためのセットアップガイドです�
 - Windows 10/11
 - PowerShell 5.1以上
 - Python 3.11以上
+- **Rust開発用** (オプション): Microsoft C++ Build Tools
+  - Cargoパッケージのビルドに必要
+  - [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/) からインストール
 
 ## インストール手順
 
@@ -117,12 +120,35 @@ PS> sysup --list
 ### Windows環境で利用可能
 
 - **Scoop** - Windows標準パッケージマネージャ
-- **npm** - Node.jsグローバルパッケージ
+- **npm** - Node.jsグローバルパッケージ（Node.js公式版またはScoop版）
 - **pipx** - Python CLIツール
 - **uv tool** - Python CLIツール（uvによる管理）
 - **Rustup** - Rustツールチェーン
 - **Cargo** - Rustパッケージ
 - **Gem** - Ruby gems
+
+#### Node.jsのインストール方法
+
+```powershell
+# Scoop経由（推奨）
+scoop install nodejs-lts
+
+# または公式インストーラー
+# https://nodejs.org/ からダウンロードしてインストール
+```
+
+#### Rust開発環境のセットアップ
+
+Cargoパッケージをビルドするには、Microsoft C++ Build Toolsが必要です：
+
+```powershell
+# Visual Studio Build Toolsを手動インストール
+# https://visualstudio.microsoft.com/downloads/
+# "Build Tools for Visual Studio 2022" をダウンロード
+# 「C++によるデスクトップ開発」を選択してインストール
+```
+
+**注意**: Build Toolsがインストールされていない場合、Cargo updaterは自動的にスキップされます。
 
 ### Windows環境で利用不可（自動的に無効化）
 
@@ -155,6 +181,22 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 - `%USERPROFILE%\scoop\shims`
 - `%USERPROFILE%\.local\bin`
+
+### Cargoパッケージのビルドエラー
+
+`link.exe not found` エラーが発生する場合：
+
+1. **Visual Studio Build Toolsをインストール**
+   - https://visualstudio.microsoft.com/downloads/
+   - "Build Tools for Visual Studio 2022" をダウンロード
+   - 「C++によるデスクトップ開発」を選択
+
+2. **回避策**: Build Toolsをインストールしない場合、設定ファイルでCargo updaterを無効化：
+
+```toml
+[updaters]
+cargo = false
+```
 
 ## 制限事項
 

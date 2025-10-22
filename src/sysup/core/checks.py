@@ -11,6 +11,7 @@ from datetime import date
 from pathlib import Path
 
 from .logging import SysupLogger
+from .platform import is_windows
 
 
 class SystemChecker:
@@ -76,7 +77,10 @@ class SystemChecker:
 
         for host in test_hosts:
             try:
-                result = subprocess.run(["ping", "-c", "1", "-W", "3", host], capture_output=True, timeout=5)
+                if is_windows():
+                    result = subprocess.run(["ping", "-n", "1", "-w", "3000", host], capture_output=True, timeout=5)
+                else:
+                    result = subprocess.run(["ping", "-c", "1", "-W", "3", host], capture_output=True, timeout=5)
                 if result.returncode == 0:
                     self.logger.info("ネットワーク接続: OK")
                     return True

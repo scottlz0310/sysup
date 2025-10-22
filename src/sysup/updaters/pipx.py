@@ -2,6 +2,7 @@
 
 import subprocess
 
+from ..core.platform import is_windows
 from .base import BaseUpdater
 
 
@@ -26,7 +27,8 @@ class PipxUpdater(BaseUpdater):
 
         try:
             self.logger.info(f"{name} パッケージを更新中...")
-            self.run_command(["pipx", "upgrade-all"])
+            pipx_cmd = "pipx.exe" if is_windows() else "pipx"
+            self.run_command([pipx_cmd, "upgrade-all"])
             self.logger.success(f"{name} 更新完了")
             return True
 
