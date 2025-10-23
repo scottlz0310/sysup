@@ -150,6 +150,8 @@ class SystemChecker:
             sudo権限が利用可能な場合True、そうでない場合False.
 
         """
+        if is_windows():
+            return True
         try:
             result = subprocess.run(["sudo", "-n", "true"], capture_output=True, timeout=5)
             if result.returncode != 0:
