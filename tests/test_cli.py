@@ -321,10 +321,9 @@ def test_run_updates_with_backup():
             mock_backup_instance.cleanup_old_backups.return_value = 5
             mock_backup.return_value = mock_backup_instance
 
-            with mock_sudo_updaters():
+            with mock_all_updaters():
                 with patch("sysup.cli.Notifier.is_available", return_value=False):
                     run_updates(logger, config, checker, auto_run=True, force=False)
-        logger.close()
         logger.close()
 
 
@@ -343,8 +342,7 @@ def test_run_updates_daily_check_failed():
         checker.check_sudo_available.return_value = True
         checker.check_reboot_required.return_value = False
 
-        # auto_run=Trueでも処理が続行されるため、sudo必要なupdaterをモック化
-        with mock_sudo_updaters():
+        with mock_all_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
@@ -367,7 +365,7 @@ def test_run_updates_disk_space_insufficient():
         checker.check_sudo_available.return_value = True
         checker.check_reboot_required.return_value = False
 
-        with mock_sudo_updaters():
+        with mock_all_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
@@ -388,7 +386,7 @@ def test_run_updates_network_failed():
         checker.check_sudo_available.return_value = True
         checker.check_reboot_required.return_value = False
 
-        with mock_sudo_updaters():
+        with mock_all_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
@@ -462,7 +460,7 @@ def test_run_updates_parallel_mode():
         checker.check_sudo_available.return_value = True
         checker.check_reboot_required.return_value = False
 
-        with mock_sudo_updaters():
+        with mock_all_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
@@ -483,9 +481,8 @@ def test_run_updates_reboot_required():
         checker.check_sudo_available.return_value = True
         checker.check_reboot_required.return_value = True
 
-        with mock_sudo_updaters():
+        with mock_all_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
-                # 自動実行モードでは再起動プロンプトなし
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
