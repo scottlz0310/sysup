@@ -52,13 +52,13 @@ sysupプロジェクトのWindows対応について、拡張案と新規プロ�
    ```python
    # src/sysup/core/platform.py
    import platform
-   
+
    def is_windows() -> bool:
        return platform.system() == "Windows"
-   
+
    def is_linux() -> bool:
        return platform.system() == "Linux"
-   
+
    def is_macos() -> bool:
        return platform.system() == "Darwin"
    ```
