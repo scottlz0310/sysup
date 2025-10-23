@@ -78,7 +78,7 @@ class SystemChecker:
         for host in test_hosts:
             try:
                 if is_windows():
-                    result = subprocess.run(["ping", "-n", "1", "-w", "3000", host], capture_output=True, timeout=5)
+                    result = subprocess.run(["ping", "-n", "1", "-w", "1000", host], capture_output=True, timeout=3)
                 else:
                     result = subprocess.run(["ping", "-c", "1", "-W", "3", host], capture_output=True, timeout=5)
                 if result.returncode == 0:
