@@ -41,6 +41,7 @@ dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.21.0",
+    "pytest-timeout>=2.2.0",
     "pre-commit>=3.5.0",
     "bandit[toml]>=1.7.0",
 ]
@@ -116,6 +117,8 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+timeout = 300
+timeout_method = "thread"
 
 [tool.coverage.run]
 source = ["src"]
