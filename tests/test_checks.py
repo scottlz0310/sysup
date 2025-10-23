@@ -226,25 +226,27 @@ def test_check_sudo_available_true(system_checker):
 
 def test_check_sudo_available_false(system_checker):
     """sudo権限が利用不可な場合のテスト"""
-    with patch("subprocess.run") as mock_run:
-        mock_result = Mock()
-        mock_result.returncode = 1
-        mock_run.return_value = mock_result
+    with patch("sysup.core.checks.is_windows", return_value=False):
+        with patch("subprocess.run") as mock_run:
+            mock_result = Mock()
+            mock_result.returncode = 1
+            mock_run.return_value = mock_result
 
-        result = system_checker.check_sudo_available()
+            result = system_checker.check_sudo_available()
 
-        assert result is False
-        system_checker.logger.warning.assert_called()
+            assert result is False
+            system_checker.logger.warning.assert_called()
 
 
 def test_check_sudo_available_exception(system_checker):
     """sudo権限チェックで例外が発生した場合のテスト"""
-    with patch("subprocess.run") as mock_run:
-        mock_run.side_effect = Exception("Subprocess error")
+    with patch("sysup.core.checks.is_windows", return_value=False):
+        with patch("subprocess.run") as mock_run:
+            mock_run.side_effect = Exception("Subprocess error")
 
-        result = system_checker.check_sudo_available()
+            result = system_checker.check_sudo_available()
 
-        assert result is False
+            assert result is False
 
 
 def test_check_process_lock_first_run(system_checker):

@@ -121,7 +121,7 @@ def test_add_auto_run_to_rc_enabled():
         result = WSLIntegration.add_auto_run_to_rc(rc_file, mode="enabled")
         assert result is True
 
-        content = rc_file.read_text()
+        content = rc_file.read_text(encoding="utf-8")
         assert "sysup --auto-run" in content
         assert "# sysup - システム自動更新" in content
     finally:
@@ -140,7 +140,7 @@ def test_add_auto_run_to_rc_enabled_with_auth():
         result = WSLIntegration.add_auto_run_to_rc(rc_file, mode="enabled_with_auth")
         assert result is True
 
-        content = rc_file.read_text()
+        content = rc_file.read_text(encoding="utf-8")
         assert "sysup --auto-run" in content
     finally:
         rc_file.unlink(missing_ok=True)
@@ -169,7 +169,7 @@ def test_add_auto_run_to_rc_new_file():
         result = WSLIntegration.add_auto_run_to_rc(rc_file, mode="enabled")
         assert result is True
 
-        content = rc_file.read_text()
+        content = rc_file.read_text(encoding="utf-8")
         assert "sysup --auto-run" in content
 
 
