@@ -25,9 +25,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Install dependencies
-        run: |
-          uv venv
-          uv pip install -e ".[dev]"
+        run: uv sync --all-groups
 
       - name: Run ruff check
         run: uv run ruff check .
@@ -50,9 +48,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Install dependencies
-        run: |
-          uv venv
-          uv pip install -e ".[dev]"
+        run: uv sync --all-extras --dev
 
       - name: Run mypy
         run: uv run mypy src/sysup
@@ -83,9 +79,7 @@ jobs:
           Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
       - name: Install dependencies
-        run: |
-          uv venv --python ${{ matrix.python-version }}
-          uv pip install -e ".[dev]"
+        run: uv sync --all-extras --dev
 
       - name: Run tests with coverage
         run: |
@@ -118,9 +112,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Install dependencies
-        run: |
-          uv venv
-          uv pip install -e ".[dev]"
+        run: uv sync --all-extras --dev
 
       - name: Run bandit
         run: uv run bandit -r src/sysup -c pyproject.toml -ll
