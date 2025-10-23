@@ -85,10 +85,11 @@ def test_finish():
 
     assert stats.end_time is None
 
+    time.sleep(0.01)  # Windows環境での時間分解能対策
     stats.finish()
 
     assert stats.end_time is not None
-    assert stats.end_time > stats.start_time
+    assert stats.end_time >= stats.start_time
 
 
 def test_duration_before_finish():

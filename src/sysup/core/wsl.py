@@ -69,7 +69,7 @@ class WSLIntegration:
             return False
 
         try:
-            content = rc_file.read_text()
+            content = rc_file.read_text(encoding="utf-8")
             return "sysup --auto-run" in content
         except Exception:
             return False
@@ -121,13 +121,13 @@ class WSLIntegration:
             if rc_file.exists():
                 backup_file = rc_file.with_suffix(rc_file.suffix + ".sysup.bak")
                 rc_file.rename(backup_file)
-                content = backup_file.read_text()
+                content = backup_file.read_text(encoding="utf-8")
             else:
                 content = ""
 
             # 新しい設定を追加
             new_content = content + "\n" + "\n".join(config_lines) + "\n"
-            rc_file.write_text(new_content)
+            rc_file.write_text(new_content, encoding="utf-8")
 
             return True
         except Exception:
@@ -148,7 +148,7 @@ class WSLIntegration:
             return True
 
         try:
-            lines = rc_file.read_text().splitlines()
+            lines = rc_file.read_text(encoding="utf-8").splitlines()
             new_lines = []
             skip = False
 
@@ -164,7 +164,7 @@ class WSLIntegration:
 
                 new_lines.append(line)
 
-            rc_file.write_text("\n".join(new_lines) + "\n")
+            rc_file.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
             return True
         except Exception:
             return False

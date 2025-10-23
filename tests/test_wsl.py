@@ -113,7 +113,7 @@ def test_is_auto_run_configured_read_error():
 
 def test_add_auto_run_to_rc_enabled():
     """RC ファイルへの自動実行追加 - enabledモードのテスト"""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False, encoding="utf-8") as f:
         f.write("# existing content\n")
         rc_file = Path(f.name)
 
@@ -132,7 +132,7 @@ def test_add_auto_run_to_rc_enabled():
 
 def test_add_auto_run_to_rc_enabled_with_auth():
     """RC ファイルへの自動実行追加 - enabled_with_authモードのテスト"""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False, encoding="utf-8") as f:
         f.write("# existing content\n")
         rc_file = Path(f.name)
 
@@ -175,7 +175,7 @@ def test_add_auto_run_to_rc_new_file():
 
 def test_remove_auto_run_from_rc():
     """RC ファイルからの自動実行削除のテスト"""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False, encoding="utf-8") as f:
         f.write(
             """# some content
 # sysup - システム自動更新
@@ -218,7 +218,7 @@ def test_setup_wsl_integration_not_wsl():
 
 def test_setup_wsl_integration_enabled():
     """WSL統合セットアップ - enabledモードのテスト"""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False, encoding="utf-8") as f:
         f.write("# existing content\n")
         rc_file = Path(f.name)
 
@@ -236,7 +236,7 @@ def test_setup_wsl_integration_enabled():
 
 def test_setup_wsl_integration_disabled():
     """WSL統合セットアップ - disabledモードのテスト"""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".bashrc", delete=False, encoding="utf-8") as f:
         f.write("# sysup - システム自動更新\nsysup --auto-run\nfi\n")
         rc_file = Path(f.name)
 
