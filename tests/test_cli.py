@@ -507,13 +507,8 @@ def test_run_updates_updater_exception():
         mock_apt.perform_update.side_effect = Exception("Update failed")
         mock_apt.get_name.return_value = "APT"
 
-        mock_snap = MagicMock()
-        mock_snap.is_available.return_value = False
-        mock_snap.get_name.return_value = "Snap"
-
-        with patch("sysup.cli.AptUpdater", return_value=mock_apt):
-            with patch("sysup.cli.SnapUpdater", return_value=mock_snap):
+        with mock_all_updaters():
+            with patch("sysup.cli.AptUpdater", return_value=mock_apt):
                 with patch("sysup.cli.Notifier.is_available", return_value=False):
-                    # 例外が発生しても他のupdaterに影響しない
                     run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
