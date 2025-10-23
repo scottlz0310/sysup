@@ -30,6 +30,31 @@ def mock_sudo_updaters():
             yield (mock_apt, mock_snap)
 
 
+@contextmanager
+def mock_all_updaters():
+    """Windows環境でのハングを防ぐため、全てのupdaterをモック化."""
+    mock = MagicMock()
+    mock.is_available.return_value = False
+    mock.perform_update.return_value = True
+
+    with (
+        patch("sysup.cli.AptUpdater", return_value=mock),
+        patch("sysup.cli.SnapUpdater", return_value=mock),
+        patch("sysup.cli.BrewUpdater", return_value=mock),
+        patch("sysup.cli.NpmUpdater", return_value=mock),
+        patch("sysup.cli.PipxUpdater", return_value=mock),
+        patch("sysup.cli.UvUpdater", return_value=mock),
+        patch("sysup.cli.RustupUpdater", return_value=mock),
+        patch("sysup.cli.CargoUpdater", return_value=mock),
+        patch("sysup.cli.FlatpakUpdater", return_value=mock),
+        patch("sysup.cli.GemUpdater", return_value=mock),
+        patch("sysup.cli.NvmUpdater", return_value=mock),
+        patch("sysup.cli.FirmwareUpdater", return_value=mock),
+        patch("sysup.cli.ScoopUpdater", return_value=mock),
+    ):
+        yield mock
+
+
 def test_main_version():
     """CLI - バージョン表示のテスト"""
     runner = CliRunner()
@@ -267,8 +292,8 @@ def test_run_updates_basic():
         checker.check_sudo_available.return_value = True
         checker.check_reboot_required.return_value = False
 
-        # sudoが必要なupdaterのみモック化
-        with mock_sudo_updaters():
+        # 全てのupdaterをモック化
+        with mock_all_updaters():
             with patch("sysup.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
