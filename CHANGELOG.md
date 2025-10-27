@@ -12,6 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.5.1] - 2025-10-23
+
+### Fixed
+- **Windows CI**: Windows環境でのCI実行時間を大幅改善（22分→数分）
+  - `check_sudo_available()`でWindows環境をスキップ
+  - テストで全updaterをモック化してハングを防止
+  - `pytest-timeout`導入（5分タイムアウト）
+- **CI/CD**: `uv sync --all-groups`に変更（PEP 735対応）
+- **GemUpdater**: Windows環境での利用可能性判定を修正
+  - `is_windows()`ガードを追加してWindows環境で自動無効化
+- **エンコーディング**: WSL関連ファイルでUTF-8を明示的に指定
+
+### Changed
+- pytest実行時に`-vv`オプションを追加（詳細な出力）
+- Windows環境でもカバレッジ収集を有効化
+
 ## [0.5.0] - 2025-10-22
 
 ### Added
@@ -147,7 +163,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/scottlz0310/sysup/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/scottlz0310/sysup/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/scottlz0310/sysup/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/scottlz0310/sysup/compare/v0.2.1...v0.3.0
