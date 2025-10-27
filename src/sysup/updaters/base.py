@@ -121,12 +121,18 @@ class BaseUpdater(ABC):
             subprocess.TimeoutExpired: コマンドがタイムアウトした場合.
 
         """
+        self.logger.debug(f"実行コマンド: {' '.join(command)}")
+        
         if self.dry_run:
             self.logger.info(f"[DRY RUN] {' '.join(command)}")
             return subprocess.CompletedProcess(command, 0, "", "")
 
         try:
             result = subprocess.run(command, capture_output=True, text=True, timeout=timeout, check=check)
+            if result.stdout:
+                self.logger.debug(f"標準出力: {result.stdout.strip()}")
+            if result.stderr:
+                self.logger.debug(f"標準エラー: {result.stderr.strip()}")
             return result
         except subprocess.CalledProcessError as e:
             self.logger.error(f"コマンド実行エラー: {' '.join(command)}")

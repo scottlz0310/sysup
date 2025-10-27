@@ -60,7 +60,7 @@ class SysupLogger:
 
         # コンソールハンドラー（Rich使用）
         console_handler = RichHandler(console=self.console, show_time=True, show_path=False, markup=True)
-        console_handler.setLevel(logging.INFO)
+        console_handler.setLevel(getattr(logging, level.upper()))
         logger.addHandler(console_handler)
 
         # ファイルハンドラー
@@ -120,6 +120,16 @@ class SysupLogger:
         """
         self.console.print(f"[blue]ℹ[/blue] {message}")
         self.logger.info(message)
+
+    def debug(self, message: str) -> None:
+        """デバッグメッセージを出力する.
+
+        Args:
+            message: 出力するメッセージ.
+
+        """
+        self.console.print(f"[dim]🔍 {message}[/dim]")
+        self.logger.debug(message)
 
     def warning(self, message: str) -> None:
         """警告メッセージを出力する.

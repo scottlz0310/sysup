@@ -44,8 +44,9 @@ from .updaters.uv import UvUpdater
 @click.option("--force", is_flag=True, help="今日既に実行済みでも強制実行")
 @click.option("--list", "list_updaters", is_flag=True, help="利用可能なupdaterを一覧表示")
 @click.option("--setup-wsl", is_flag=True, help="WSL自動実行をセットアップ")
+@click.option("--verbose", "-v", is_flag=True, help="詳細な出力を表示")
 @click.version_option(version=__version__, prog_name="sysup")
-def main(config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_updaters: bool, setup_wsl: bool) -> None:
+def main(config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_updaters: bool, setup_wsl: bool, verbose: bool) -> None:
     """システムと各種パッケージマネージャを統合的に更新するツール.
 
     sysupは複数のパッケージマネージャを統一的に管理し、
@@ -58,6 +59,7 @@ def main(config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_u
         force: 強制実行. 日次チェックを無視.
         list_updaters: updater一覧を表示.
         setup_wsl: WSL統合セットアップモード.
+        verbose: 詳細出力モード.
 
     """
     # 設定読み込み
@@ -72,7 +74,8 @@ def main(config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_u
         sysup_config.general.dry_run = True
 
     # ロガー初期化
-    logger = SysupLogger(sysup_config.get_log_dir(), sysup_config.logging.level, sysup_config.logging.retention_days)
+    log_level = "DEBUG" if verbose else sysup_config.logging.level
+    logger = SysupLogger(sysup_config.get_log_dir(), log_level, sysup_config.logging.retention_days)
 
     # システムチェッカー初期化
     checker = SystemChecker(logger, sysup_config.get_cache_dir())
