@@ -19,6 +19,7 @@ from .core.checks import SystemChecker
 from .core.config import SysupConfig
 from .core.logging import SysupLogger
 from .core.notification import Notifier
+from .core.self_update import SelfUpdater
 from .core.stats import StatsManager
 from .core.wsl import WSLIntegration
 from .updaters.apt import AptUpdater
@@ -44,10 +45,18 @@ from .updaters.uv import UvUpdater
 @click.option("--force", is_flag=True, help="今日既に実行済みでも強制実行")
 @click.option("--list", "list_updaters", is_flag=True, help="利用可能なupdaterを一覧表示")
 @click.option("--setup-wsl", is_flag=True, help="WSL自動実行をセットアップ")
+@click.option("--no-self-update", is_flag=True, help="sysup自身の更新をスキップ")
 @click.option("--verbose", "-v", is_flag=True, help="詳細な出力を表示")
 @click.version_option(version=__version__, prog_name="sysup")
 def main(
-    config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_updaters: bool, setup_wsl: bool, verbose: bool
+    config: Path | None,
+    dry_run: bool,
+    auto_run: bool,
+    force: bool,
+    list_updaters: bool,
+    setup_wsl: bool,
+    no_self_update: bool,
+    verbose: bool,
 ) -> None:
     """システムと各種パッケージマネージャを統合的に更新するツール.
 
@@ -61,6 +70,7 @@ def main(
         force: 強制実行. 日次チェックを無視.
         list_updaters: updater一覧を表示.
         setup_wsl: WSL統合セットアップモード.
+        no_self_update: sysup自身の更新をスキップ.
         verbose: 詳細出力モード.
 
     """
@@ -78,6 +88,11 @@ def main(
     # ロガー初期化
     log_level = "DEBUG" if verbose else sysup_config.logging.level
     logger = SysupLogger(sysup_config.get_log_dir(), log_level, sysup_config.logging.retention_days)
+
+    # セルフアップデート（--list, --setup-wsl以外）
+    if not list_updaters and not setup_wsl and not no_self_update:
+        self_updater = SelfUpdater(logger, sysup_config.get_cache_dir())
+        self_updater.check_and_update()
 
     # システムチェッカー初期化
     checker = SystemChecker(logger, sysup_config.get_cache_dir())

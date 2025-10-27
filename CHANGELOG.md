@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.6.0] - 2025-01-24
+
+### Added
+- **セルフアップデート機能**: sysup実行時に自動的に最新版に更新
+  - 起動毎に`uv tool upgrade sysup`を実行
+  - 更新された場合は自動的に再実行
+  - `--no-self-update`オプションでスキップ可能
+  - リリース前のpush版にも対応
+
 ## [0.5.2] - 2025-10-23
 
 ### Fixed
@@ -169,7 +178,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/scottlz0310/sysup/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/scottlz0310/sysup/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/scottlz0310/sysup/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/scottlz0310/sysup/compare/v0.4.0...v0.5.0
