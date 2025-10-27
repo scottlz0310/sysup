@@ -28,6 +28,7 @@ class GemUpdater(BaseUpdater):
             self.logger.info(f"{name} パッケージを更新中...")
             # Windows環境では gem.cmd を使用
             from ..core.platform import is_windows
+
             gem_cmd = "gem.cmd" if is_windows() else "gem"
             self.run_command([gem_cmd, "update"])
             self.logger.success(f"{name} 更新完了")

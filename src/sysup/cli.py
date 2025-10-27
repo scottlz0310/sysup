@@ -46,7 +46,9 @@ from .updaters.uv import UvUpdater
 @click.option("--setup-wsl", is_flag=True, help="WSL自動実行をセットアップ")
 @click.option("--verbose", "-v", is_flag=True, help="詳細な出力を表示")
 @click.version_option(version=__version__, prog_name="sysup")
-def main(config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_updaters: bool, setup_wsl: bool, verbose: bool) -> None:
+def main(
+    config: Path | None, dry_run: bool, auto_run: bool, force: bool, list_updaters: bool, setup_wsl: bool, verbose: bool
+) -> None:
     """システムと各種パッケージマネージャを統合的に更新するツール.
 
     sysupは複数のパッケージマネージャを統一的に管理し、
