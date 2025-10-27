@@ -26,7 +26,7 @@ class GemUpdater(BaseUpdater):
 
         try:
             self.logger.info(f"{name} パッケージを更新中...")
-            self.run_command(["gem", "update", "--user-install"])
+            self.run_command(["gem", "update"])
             self.logger.success(f"{name} 更新完了")
             return True
 

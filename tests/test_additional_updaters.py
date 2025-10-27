@@ -261,6 +261,7 @@ def test_gem_perform_update(mock_logger):
 
             result = updater.perform_update()
             assert result is True
+            mock_run.assert_called_once_with(["gem", "update"])
 
 
 # ======================
