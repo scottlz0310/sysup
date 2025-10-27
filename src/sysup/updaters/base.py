@@ -122,7 +122,7 @@ class BaseUpdater(ABC):
 
         """
         self.logger.debug(f"実行コマンド: {' '.join(command)}")
-        
+
         if self.dry_run:
             self.logger.info(f"[DRY RUN] {' '.join(command)}")
             return subprocess.CompletedProcess(command, 0, "", "")
