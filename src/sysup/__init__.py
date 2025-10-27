@@ -6,6 +6,6 @@ APT、Homebrew、npm、pipx、uv tool、Rust関連ツールなど、
 多様なパッケージマネージャに対応しています。
 """
 
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 __author__ = "scottlz0310"
 __email__ = "scottlz0310@users.noreply.github.com"

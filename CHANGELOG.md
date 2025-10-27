@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.5.2] - 2025-10-23
+
+### Fixed
+- **pre-commit**: ruff-formatが変更した場合にexit 1で終了するように修正
+  - `fail_fast: true`を追加してコミットを中断
+
 ## [0.5.1] - 2025-10-23
 
 ### Fixed
@@ -163,7 +169,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/scottlz0310/sysup/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/scottlz0310/sysup/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/scottlz0310/sysup/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/scottlz0310/sysup/compare/v0.3.0...v0.4.0
