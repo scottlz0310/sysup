@@ -261,7 +261,10 @@ def test_gem_perform_update(mock_logger):
 
             result = updater.perform_update()
             assert result is True
-            mock_run.assert_called_once_with(["gem", "update"])
+            # 実際のWindows環境では gem.cmd が呼ばれる
+            import platform
+            expected_cmd = "gem.cmd" if platform.system() == "Windows" else "gem"
+            mock_run.assert_called_once_with([expected_cmd, "update"])
 
 
 # ======================
