@@ -11,6 +11,7 @@ repos:
         args: [--fix]
       # Formatter
       - id: ruff-format
+        fail_fast: true
 
   # Mypy - Static type checker
   - repo: https://github.com/pre-commit/mirrors-mypy
