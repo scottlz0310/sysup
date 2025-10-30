@@ -33,6 +33,7 @@ def system_checker(mock_logger):
         try:
             shutil.rmtree(tmpdir, ignore_errors=True)
         except Exception:
+            # Windows環境でのファイルロック問題を回避するため、削除エラーは無視
             pass
 
 
