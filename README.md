@@ -91,26 +91,37 @@ uv pip install -e .
 
 ## 使い方
 
+### クイックスタート
+
+最初に設定ウィザードを実行してください：
+
+```bash
+# 対話型ウィザードで設定
+sysup init
+```
+
+詳細は [設定ガイド](docs/CONFIGURATION.md) を参照してください。
+
 ### 基本的な使い方
 
 ```bash
 # 全ての有効な更新を実行
-sysup
+sysup update
 
 # ドライラン（実際には更新しない）
-sysup --dry-run
+sysup update --dry-run
 
 # 今日既に実行済みでも強制実行
-sysup --force
+sysup update --force
 
 # 利用可能なupdaterを一覧表示
-sysup --list
+sysup update --list
 
 # ヘルプ表示
 sysup --help
 
 # WSL自動実行をセットアップ
-sysup --setup-wsl
+sysup update --setup-wsl
 ```
 
 ### 新機能（v0.4.0）

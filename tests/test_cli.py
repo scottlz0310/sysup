@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 from click.testing import CliRunner
 
-from sysup.cli import main, setup_wsl_integration, show_available_updaters
+from sysup.cli.cli import main, setup_wsl_integration, show_available_updaters
 from sysup.core.config import SysupConfig
 from sysup.core.logging import SysupLogger
 
@@ -25,8 +25,8 @@ def mock_sudo_updaters():
     mock_snap.get_name.return_value = "Snap"
     mock_snap.perform_update.return_value = True
 
-    with patch("sysup.cli.AptUpdater", return_value=mock_apt):
-        with patch("sysup.cli.SnapUpdater", return_value=mock_snap):
+    with patch("sysup.cli.cli.AptUpdater", return_value=mock_apt):
+        with patch("sysup.cli.cli.SnapUpdater", return_value=mock_snap):
             yield (mock_apt, mock_snap)
 
 
@@ -38,19 +38,19 @@ def mock_all_updaters():
     mock.perform_update.return_value = True
 
     with (
-        patch("sysup.cli.AptUpdater", return_value=mock),
-        patch("sysup.cli.SnapUpdater", return_value=mock),
-        patch("sysup.cli.BrewUpdater", return_value=mock),
-        patch("sysup.cli.NpmUpdater", return_value=mock),
-        patch("sysup.cli.PipxUpdater", return_value=mock),
-        patch("sysup.cli.UvUpdater", return_value=mock),
-        patch("sysup.cli.RustupUpdater", return_value=mock),
-        patch("sysup.cli.CargoUpdater", return_value=mock),
-        patch("sysup.cli.FlatpakUpdater", return_value=mock),
-        patch("sysup.cli.GemUpdater", return_value=mock),
-        patch("sysup.cli.NvmUpdater", return_value=mock),
-        patch("sysup.cli.FirmwareUpdater", return_value=mock),
-        patch("sysup.cli.ScoopUpdater", return_value=mock),
+        patch("sysup.cli.cli.AptUpdater", return_value=mock),
+        patch("sysup.cli.cli.SnapUpdater", return_value=mock),
+        patch("sysup.cli.cli.BrewUpdater", return_value=mock),
+        patch("sysup.cli.cli.NpmUpdater", return_value=mock),
+        patch("sysup.cli.cli.PipxUpdater", return_value=mock),
+        patch("sysup.cli.cli.UvUpdater", return_value=mock),
+        patch("sysup.cli.cli.RustupUpdater", return_value=mock),
+        patch("sysup.cli.cli.CargoUpdater", return_value=mock),
+        patch("sysup.cli.cli.FlatpakUpdater", return_value=mock),
+        patch("sysup.cli.cli.GemUpdater", return_value=mock),
+        patch("sysup.cli.cli.NvmUpdater", return_value=mock),
+        patch("sysup.cli.cli.FirmwareUpdater", return_value=mock),
+        patch("sysup.cli.cli.ScoopUpdater", return_value=mock),
     ):
         yield mock
 
@@ -77,13 +77,13 @@ def test_main_list_updaters():
     """CLI - updater一覧表示のテスト"""
     runner = CliRunner()
 
-    with patch("sysup.cli.SystemChecker") as mock_checker:
+    with patch("sysup.cli.cli.SystemChecker") as mock_checker:
         mock_checker_instance = MagicMock()
         mock_checker_instance.check_process_lock.return_value = True
         mock_checker.return_value = mock_checker_instance
 
         with mock_sudo_updaters():
-            result = runner.invoke(main, ["--list"])
+            result = runner.invoke(main, ["update", "--list"])
 
             # プロセスロックのクリーンアップは常に実行されるべき
             assert result.exit_code == 0
@@ -99,7 +99,7 @@ def test_main_config_load_error():
         config_file = Path(f.name)
 
     try:
-        result = runner.invoke(main, ["--config", str(config_file)])
+        result = runner.invoke(main, ["update", "--config", str(config_file)])
 
         assert result.exit_code == 1
         assert "設定ファイル読み込みエラー" in result.output
@@ -111,14 +111,14 @@ def test_main_process_lock_failed():
     """CLI - プロセスロック失敗のテスト"""
     runner = CliRunner()
 
-    with patch("sysup.cli.SysupConfig.load_config"):
-        with patch("sysup.cli.SysupLogger"):
-            with patch("sysup.cli.SystemChecker") as mock_checker:
+    with patch("sysup.cli.cli.SysupConfig.load_config"):
+        with patch("sysup.cli.cli.SysupLogger"):
+            with patch("sysup.cli.cli.SystemChecker") as mock_checker:
                 mock_checker_instance = MagicMock()
                 mock_checker_instance.check_process_lock.return_value = False
                 mock_checker.return_value = mock_checker_instance
 
-                result = runner.invoke(main, [])
+                result = runner.invoke(main, ["update"])
 
                 assert result.exit_code == 1
 
@@ -142,7 +142,7 @@ def test_setup_wsl_integration():
         logger = SysupLogger(Path(tmpdir), "INFO")
         config = SysupConfig()
 
-        with patch("sysup.cli.WSLIntegration.is_wsl", return_value=False):
+        with patch("sysup.cli.cli.WSLIntegration.is_wsl", return_value=False):
             # WSL環境でない場合の動作を確認
             setup_wsl_integration(logger, config)
         logger.close()
@@ -152,13 +152,13 @@ def test_main_setup_wsl():
     """CLI - WSLセットアップのテスト"""
     runner = CliRunner()
 
-    with patch("sysup.cli.SystemChecker") as mock_checker:
+    with patch("sysup.cli.cli.SystemChecker") as mock_checker:
         mock_checker_instance = MagicMock()
         mock_checker_instance.check_process_lock.return_value = True
         mock_checker.return_value = mock_checker_instance
 
-        with patch("sysup.cli.WSLIntegration.is_wsl", return_value=False):
-            result = runner.invoke(main, ["--setup-wsl"])
+        with patch("sysup.cli.cli.WSLIntegration.is_wsl", return_value=False):
+            result = runner.invoke(main, ["update", "--setup-wsl"])
 
             assert result.exit_code == 0
 
@@ -167,13 +167,13 @@ def test_main_dry_run():
     """CLI - ドライランモードのテスト"""
     runner = CliRunner()
 
-    with patch("sysup.cli.SystemChecker") as mock_checker:
-        with patch("sysup.cli.run_updates") as mock_run_updates:
+    with patch("sysup.cli.cli.SystemChecker") as mock_checker:
+        with patch("sysup.cli.cli.run_updates") as mock_run_updates:
             mock_checker_instance = MagicMock()
             mock_checker_instance.check_process_lock.return_value = True
             mock_checker.return_value = mock_checker_instance
 
-            result = runner.invoke(main, ["--dry-run"])
+            result = runner.invoke(main, ["update", "--dry-run"])
 
             # ドライランモードが設定されたことを確認
             assert result.exit_code == 0
@@ -184,13 +184,13 @@ def test_main_force_run():
     """CLI - 強制実行モードのテスト"""
     runner = CliRunner()
 
-    with patch("sysup.cli.SystemChecker") as mock_checker:
-        with patch("sysup.cli.run_updates") as mock_run_updates:
+    with patch("sysup.cli.cli.SystemChecker") as mock_checker:
+        with patch("sysup.cli.cli.run_updates") as mock_run_updates:
             mock_checker_instance = MagicMock()
             mock_checker_instance.check_process_lock.return_value = True
             mock_checker.return_value = mock_checker_instance
 
-            result = runner.invoke(main, ["--force"])
+            result = runner.invoke(main, ["update", "--force"])
 
             assert result.exit_code == 0
             mock_run_updates.assert_called_once()
@@ -200,15 +200,15 @@ def test_main_keyboard_interrupt():
     """CLI - キーボード割り込みのテスト"""
     runner = CliRunner()
 
-    with patch("sysup.cli.SystemChecker") as mock_checker:
-        with patch("sysup.cli.run_updates") as mock_run_updates:
+    with patch("sysup.cli.cli.SystemChecker") as mock_checker:
+        with patch("sysup.cli.cli.run_updates") as mock_run_updates:
             mock_checker_instance = MagicMock()
             mock_checker_instance.check_process_lock.return_value = True
             mock_checker.return_value = mock_checker_instance
 
             mock_run_updates.side_effect = KeyboardInterrupt()
 
-            result = runner.invoke(main, [])
+            result = runner.invoke(main, ["update"])
 
             assert result.exit_code == 1
 
@@ -217,15 +217,15 @@ def test_main_unexpected_exception():
     """CLI - 予期しないエラーのテスト"""
     runner = CliRunner()
 
-    with patch("sysup.cli.SystemChecker") as mock_checker:
-        with patch("sysup.cli.run_updates") as mock_run_updates:
+    with patch("sysup.cli.cli.SystemChecker") as mock_checker:
+        with patch("sysup.cli.cli.run_updates") as mock_run_updates:
             mock_checker_instance = MagicMock()
             mock_checker_instance.check_process_lock.return_value = True
             mock_checker.return_value = mock_checker_instance
 
             mock_run_updates.side_effect = Exception("Unexpected error")
 
-            result = runner.invoke(main, [])
+            result = runner.invoke(main, ["update"])
 
             assert result.exit_code == 1
 
@@ -236,10 +236,10 @@ def test_setup_wsl_integration_with_wsl():
         logger = SysupLogger(Path(tmpdir), "INFO")
         config = SysupConfig()
 
-        with patch("sysup.cli.WSLIntegration.is_wsl", return_value=True):
-            with patch("sysup.cli.WSLIntegration.get_shell_rc_file", return_value=Path("/home/user/.bashrc")):
-                with patch("sysup.cli.WSLIntegration.is_auto_run_configured", return_value=False):
-                    with patch("sysup.cli.WSLIntegration.setup_wsl_integration", return_value=(True, "Success")):
+        with patch("sysup.cli.cli.WSLIntegration.is_wsl", return_value=True):
+            with patch("sysup.cli.cli.WSLIntegration.get_shell_rc_file", return_value=Path("/home/user/.bashrc")):
+                with patch("sysup.cli.cli.WSLIntegration.is_auto_run_configured", return_value=False):
+                    with patch("sysup.cli.cli.WSLIntegration.setup_wsl_integration", return_value=(True, "Success")):
                         # プロンプトへの入力をシミュレート
                         with patch("click.prompt", return_value=1):
                             setup_wsl_integration(logger, config)
@@ -252,10 +252,10 @@ def test_setup_wsl_integration_already_configured():
         logger = SysupLogger(Path(tmpdir), "INFO")
         config = SysupConfig()
 
-        with patch("sysup.cli.WSLIntegration.is_wsl", return_value=True):
-            with patch("sysup.cli.WSLIntegration.get_shell_rc_file", return_value=Path("/home/user/.bashrc")):
-                with patch("sysup.cli.WSLIntegration.is_auto_run_configured", return_value=True):
-                    with patch("sysup.cli.WSLIntegration.setup_wsl_integration", return_value=(True, "Disabled")):
+        with patch("sysup.cli.cli.WSLIntegration.is_wsl", return_value=True):
+            with patch("sysup.cli.cli.WSLIntegration.get_shell_rc_file", return_value=Path("/home/user/.bashrc")):
+                with patch("sysup.cli.cli.WSLIntegration.is_auto_run_configured", return_value=True):
+                    with patch("sysup.cli.cli.WSLIntegration.setup_wsl_integration", return_value=(True, "Disabled")):
                         with patch("click.confirm", return_value=True):
                             setup_wsl_integration(logger, config)
         logger.close()
@@ -267,9 +267,9 @@ def test_setup_wsl_integration_cancel():
         logger = SysupLogger(Path(tmpdir), "INFO")
         config = SysupConfig()
 
-        with patch("sysup.cli.WSLIntegration.is_wsl", return_value=True):
-            with patch("sysup.cli.WSLIntegration.get_shell_rc_file", return_value=Path("/home/user/.bashrc")):
-                with patch("sysup.cli.WSLIntegration.is_auto_run_configured", return_value=False):
+        with patch("sysup.cli.cli.WSLIntegration.is_wsl", return_value=True):
+            with patch("sysup.cli.cli.WSLIntegration.get_shell_rc_file", return_value=Path("/home/user/.bashrc")):
+                with patch("sysup.cli.cli.WSLIntegration.is_auto_run_configured", return_value=False):
                     # キャンセルを選択
                     with patch("click.prompt", return_value=3):
                         setup_wsl_integration(logger, config)
@@ -278,7 +278,7 @@ def test_setup_wsl_integration_cancel():
 
 def test_run_updates_basic():
     """run_updates - 基本的な更新実行のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -294,14 +294,14 @@ def test_run_updates_basic():
 
         # 全てのupdaterをモック化
         with mock_all_updaters():
-            with patch("sysup.cli.Notifier.is_available", return_value=False):
+            with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
 
 def test_run_updates_with_backup():
     """run_updates - バックアップ有効時のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -315,21 +315,21 @@ def test_run_updates_with_backup():
         checker.check_sudo_available.return_value = True
         checker.check_reboot_required.return_value = False
 
-        with patch("sysup.cli.BackupManager") as mock_backup:
+        with patch("sysup.cli.cli.BackupManager") as mock_backup:
             mock_backup_instance = MagicMock()
             mock_backup_instance.create_backup.return_value = Path(tmpdir) / "backup.json"
             mock_backup_instance.cleanup_old_backups.return_value = 5
             mock_backup.return_value = mock_backup_instance
 
             with mock_all_updaters():
-                with patch("sysup.cli.Notifier.is_available", return_value=False):
+                with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                     run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
 
 def test_run_updates_daily_check_failed():
     """run_updates - 日次チェック失敗時のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -343,14 +343,14 @@ def test_run_updates_daily_check_failed():
         checker.check_reboot_required.return_value = False
 
         with mock_all_updaters():
-            with patch("sysup.cli.Notifier.is_available", return_value=False):
+            with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
 
 def test_run_updates_disk_space_insufficient():
     """run_updates - ディスク容量不足時のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -366,14 +366,14 @@ def test_run_updates_disk_space_insufficient():
         checker.check_reboot_required.return_value = False
 
         with mock_all_updaters():
-            with patch("sysup.cli.Notifier.is_available", return_value=False):
+            with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
 
 def test_run_updates_network_failed():
     """run_updates - ネットワーク接続失敗時のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -387,14 +387,14 @@ def test_run_updates_network_failed():
         checker.check_reboot_required.return_value = False
 
         with mock_all_updaters():
-            with patch("sysup.cli.Notifier.is_available", return_value=False):
+            with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
 
 def test_run_updates_sudo_not_available():
     """run_updates - sudo利用不可時のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -413,7 +413,7 @@ def test_run_updates_sudo_not_available():
 
 def test_run_updates_no_updaters():
     """run_updates - 有効なupdaterなし時のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -446,7 +446,7 @@ def test_run_updates_no_updaters():
 
 def test_run_updates_parallel_mode():
     """run_updates - 並列更新モードのテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -461,14 +461,14 @@ def test_run_updates_parallel_mode():
         checker.check_reboot_required.return_value = False
 
         with mock_all_updaters():
-            with patch("sysup.cli.Notifier.is_available", return_value=False):
+            with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
 
 def test_run_updates_reboot_required():
     """run_updates - 再起動が必要な場合のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -482,14 +482,14 @@ def test_run_updates_reboot_required():
         checker.check_reboot_required.return_value = True
 
         with mock_all_updaters():
-            with patch("sysup.cli.Notifier.is_available", return_value=False):
+            with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                 run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
 
 
 def test_run_updates_updater_exception():
     """run_updates - updaterで例外発生時のテスト"""
-    from sysup.cli import run_updates
+    from sysup.cli.cli import run_updates
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = SysupLogger(Path(tmpdir), "INFO")
@@ -508,7 +508,7 @@ def test_run_updates_updater_exception():
         mock_apt.get_name.return_value = "APT"
 
         with mock_all_updaters():
-            with patch("sysup.cli.AptUpdater", return_value=mock_apt):
-                with patch("sysup.cli.Notifier.is_available", return_value=False):
+            with patch("sysup.cli.cli.AptUpdater", return_value=mock_apt):
+                with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
                     run_updates(logger, config, checker, auto_run=True, force=False)
         logger.close()
