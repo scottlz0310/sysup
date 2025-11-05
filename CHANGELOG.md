@@ -12,6 +12,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.7.0] - 2025-11-05
+
+### Added
+- **init コマンド**: 対話的セットアップウィザード実装
+  - システム環境自動検出
+  - パッケージマネージャ選択UI
+  - 実行モード（標準/自動実行）選択
+  - 詳細設定（ログレベル、並列実行、バックアップ、通知）
+  - 設定ファイル自動生成
+  - 既存設定の上書き保護
+- **Pre-commit 強化**: CI で実行されるすべてのチェックをローカルで実行可能に
+  - pytest フック追加（テスト実行）
+  - ruff（リント・フォーマット）
+  - mypy（型チェック）
+  - bandit（セキュリティチェック）
+
+### Changed
+- **CLI リファクタリング**: cli.py をパッケージ構造に変更
+  - src/sysup/cli/__init__.py
+  - src/sysup/cli/cli.py
+  - src/sysup/cli/init.py
+- **ドキュメント更新**: INIT_COMMAND_SPEC.md, CONFIGURATION.md 追加
+- **コード品質**: 不要なインポート削除、フォーマット統一
+
+### Fixed
+- ruff リント警告の修正
+- コードフォーマットの統一
+
 ## [0.6.0] - 2025-01-24
 
 ### Added
@@ -178,7 +206,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/scottlz0310/sysup/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/scottlz0310/sysup/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/scottlz0310/sysup/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/scottlz0310/sysup/compare/v0.5.0...v0.5.1
