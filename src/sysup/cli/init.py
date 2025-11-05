@@ -374,9 +374,9 @@ def step5_save_config(
 
     console.print("\n[bold green]✓ セットアップが完了しました！[/bold green]")
     console.print("\n次のコマンドで実行できます:")
-    console.print("  [cyan]sysup[/cyan]              # システムを更新")
-    console.print("  [cyan]sysup --list[/cyan]       # インストール済みマネージャを確認")
-    console.print("  [cyan]sysup init[/cyan]         # 設定を変更する場合")
+    console.print("  [cyan]sysup update[/cyan]         # システムを更新")
+    console.print("  [cyan]sysup update --list[/cyan]  # 利用可能なマネージャを確認")
+    console.print("  [cyan]sysup init[/cyan]           # 設定を変更する場合")
 
 
 def _generate_toml(config: SysupConfig) -> str:
