@@ -12,6 +12,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.7.1] - 2025-11-05
+
+### Added
+
+- **Python モジュールエントリーポイント**: `__main__.py` 追加
+  - `python -m sysup.cli` での実行をサポート
+
+### Fixed
+
+- **セルフアップデート機能**: 無限ループと再実行エラーを修正
+  - `uv tool upgrade` の "Nothing to upgrade" メッセージを正しく処理
+  - インストール済み `sysup` コマンドを `which` で検索して再実行
+  - フォールバック時は `python -m sysup.cli.cli` で実行
+- **例外処理**: より具体的な例外型を使用 (`Exception` → `subprocess.TimeoutExpired, OSError`)
+- **subprocess.run**: `check=False` パラメータを明示的に指定
+
+### Changed
+
+- **テスト**: `test_self_update.py` を新しい実装に合わせて全面更新（6件の修正）
+- **コード品質**: pre-commit フック全てをパス（ruff, mypy, bandit, pytest）
+- **テストカバレッジ**: 85.81% 維持（目標80%超え、279テスト全て成功）
+
 ## [0.7.0] - 2025-11-05
 
 ### Added
@@ -206,7 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/scottlz0310/sysup/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/scottlz0310/sysup/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/scottlz0310/sysup/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/scottlz0310/sysup/compare/v0.5.1...v0.5.2

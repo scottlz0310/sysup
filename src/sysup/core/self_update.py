@@ -38,6 +38,7 @@ class SelfUpdater:
                 capture_output=True,
                 text=True,
                 timeout=60,
+                check=False,
             )
 
             if result.returncode != 0:
@@ -46,13 +47,17 @@ class SelfUpdater:
 
             # 出力から更新されたかを判断
             output = result.stdout + result.stderr
-            if "Updated" in output or "Installed" in output:
+            if "Nothing to upgrade" in output:
+                self.logger.debug("sysupは既に最新です")
+                return False
+            elif "Updated" in output or "Installed" in output:
                 self.logger.info("✓ sysupが更新されました")
                 return True
             else:
-                self.logger.debug("sysupは既に最新です")
+                # 不明な出力の場合は更新なしとみなす
+                self.logger.debug(f"sysup更新チェック結果: {output}")
                 return False
-        except Exception as e:
+        except (subprocess.TimeoutExpired, OSError) as e:
             self.logger.debug(f"sysup更新エラー: {e}")
             return False
 
@@ -64,7 +69,24 @@ class SelfUpdater:
 
         """
         self.logger.info("更新されたsysupで再実行中...")
-        os.execv(sys.executable, [sys.executable, "-m", "sysup.cli", *sys.argv[1:]])
+
+        # インストール済みのsysupコマンドを探す
+        sysup_path = subprocess.run(
+            ["which", "sysup"],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+
+        if sysup_path:
+            # インストール済みのsysupコマンドで再実行
+            os.execv(sysup_path, ["sysup", *sys.argv[1:]])
+        else:
+            # フォールバック: Pythonモジュールとして実行
+            os.execv(
+                sys.executable,
+                [sys.executable, "-m", "sysup.cli.cli", *sys.argv[1:]],
+            )
 
     def check_and_update(self) -> bool:
         """sysup自身を更新し、更新された場合は再実行する.

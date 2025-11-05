@@ -51,6 +51,7 @@ class TestUpdateSelf:
             capture_output=True,
             text=True,
             timeout=60,
+            check=False,
         )
 
     @patch("sysup.core.self_update.subprocess.run")
@@ -82,7 +83,7 @@ class TestUpdateSelf:
         # 最新の場合
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = "sysup is already at version 0.6.0"
+        mock_result.stdout = "Nothing to upgrade"
         mock_result.stderr = ""
         mock_run.return_value = mock_result
 
@@ -127,14 +128,14 @@ class TestUpdateSelf:
         assert "sysup更新エラー" in logger.debug.call_args[0][0]
 
     @patch("sysup.core.self_update.subprocess.run")
-    def test_update_self_generic_exception(self, mock_run: MagicMock) -> None:
-        """update_self - 一般的な例外."""
+    def test_update_self_oserror_exception(self, mock_run: MagicMock) -> None:
+        """update_self - OSError例外."""
         logger = MagicMock(spec=SysupLogger)
         cache_dir = Path("/tmp/cache")
         updater = SelfUpdater(logger, cache_dir)
 
-        # 一般的な例外
-        mock_run.side_effect = RuntimeError("Unexpected error")
+        # OSError例外
+        mock_run.side_effect = OSError("Command not found")
 
         result = updater.update_self()
 
@@ -146,8 +147,9 @@ class TestUpdateSelf:
 class TestRestartSelf:
     """SelfUpdater.restart_self()のテスト."""
 
+    @patch("sysup.core.self_update.subprocess.run")
     @patch("sysup.core.self_update.os.execv")
-    def test_restart_self(self, mock_execv: MagicMock) -> None:
+    def test_restart_self(self, mock_execv: MagicMock, mock_run: MagicMock) -> None:
         """restart_self - プロセス置き換え."""
         logger = MagicMock(spec=SysupLogger)
         cache_dir = Path("/tmp/cache")
@@ -156,6 +158,11 @@ class TestRestartSelf:
         # sys.argv をモック
         original_argv = sys.argv
         sys.argv = ["sysup", "update", "--dry-run"]
+
+        # which sysup の結果をモック
+        mock_which_result = MagicMock()
+        mock_which_result.stdout = "/usr/local/bin/sysup\n"
+        mock_run.return_value = mock_which_result
 
         try:
             # execvは戻らないので、例外を発生させてシミュレート
@@ -170,17 +177,18 @@ class TestRestartSelf:
 
             # execvの引数を確認
             call_args = mock_execv.call_args
-            assert call_args[0][0] == sys.executable
-            assert call_args[0][1][0] == sys.executable
-            assert call_args[0][1][1] == "-m"
-            assert call_args[0][1][2] == "sysup.cli"
-            # sys.argv[1:]が追加されている
-            assert call_args[0][1][3:] == ["update", "--dry-run"]
+            assert call_args[0][0] == "/usr/local/bin/sysup"
+            assert call_args[0][1] == [
+                "sysup",
+                "update",
+                "--dry-run",
+            ]
         finally:
             sys.argv = original_argv
 
+    @patch("sysup.core.self_update.subprocess.run")
     @patch("sysup.core.self_update.os.execv")
-    def test_restart_self_no_args(self, mock_execv: MagicMock) -> None:
+    def test_restart_self_no_args(self, mock_execv: MagicMock, mock_run: MagicMock) -> None:
         """restart_self - 引数なしで再実行."""
         logger = MagicMock(spec=SysupLogger)
         cache_dir = Path("/tmp/cache")
@@ -189,16 +197,25 @@ class TestRestartSelf:
         original_argv = sys.argv
         sys.argv = ["sysup"]
 
+        # which sysup の結果をモック（見つからない場合）
+        mock_which_result = MagicMock()
+        mock_which_result.stdout = ""
+        mock_run.return_value = mock_which_result
+
         try:
             mock_execv.side_effect = OSError("execv simulation")
 
             with pytest.raises(OSError):
                 updater.restart_self()
 
-            # execvの引数を確認
+            # execvの引数を確認（フォールバック）
             call_args = mock_execv.call_args
-            # sys.argv[1:]が空なので、-m sysup.cliの後は何もない
-            assert call_args[0][1] == [sys.executable, "-m", "sysup.cli"]
+            assert call_args[0][0] == sys.executable
+            assert call_args[0][1] == [
+                sys.executable,
+                "-m",
+                "sysup.cli.cli",
+            ]
         finally:
             sys.argv = original_argv
 
@@ -292,12 +309,18 @@ class TestIntegration:
         cache_dir = Path("/tmp/cache")
         updater = SelfUpdater(logger, cache_dir)
 
-        # シミュレート: アップデートが利用可能
-        mock_result = MagicMock()
-        mock_result.returncode = 0
-        mock_result.stdout = "Updated sysup"
-        mock_result.stderr = ""
-        mock_run.return_value = mock_result
+        # uv tool upgrade の結果をモック
+        mock_upgrade_result = MagicMock()
+        mock_upgrade_result.returncode = 0
+        mock_upgrade_result.stdout = "Updated sysup"
+        mock_upgrade_result.stderr = ""
+
+        # which sysup の結果をモック
+        mock_which_result = MagicMock()
+        mock_which_result.stdout = "/usr/local/bin/sysup\n"
+
+        # subprocess.run を2回呼び出すので side_effect を使用
+        mock_run.side_effect = [mock_upgrade_result, mock_which_result]
 
         # execvで例外を発生させる
         mock_execv.side_effect = OSError("execv simulation")
@@ -305,6 +328,6 @@ class TestIntegration:
         with pytest.raises(OSError):
             updater.check_and_update()
 
-        # 両方が呼ばれたことを確認
-        mock_run.assert_called_once()
+        # subprocess.runが2回呼ばれたことを確認（upgrade + which）
+        assert mock_run.call_count == 2
         mock_execv.assert_called_once()
