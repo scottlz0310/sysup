@@ -49,3 +49,15 @@ repos:
       - id: bandit
         args: [-c, pyproject.toml, -ll]  # -ll: Low重要度を無視
         additional_dependencies: ["bandit[toml]"]
+
+  # Pytest - Unit tests
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: uv run pytest
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        verbose: false
