@@ -141,7 +141,6 @@ public
 requirements.txt
 temp/
 tmp/
-uv.lock
 venv.bak/
 yarn-debug.log*
 yarn-error.log*
