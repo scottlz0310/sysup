@@ -177,3 +177,12 @@ vendor/
 .vscode/*
 PATCHES/
 out/
+
+# Auto-generated entries from templates
+*.vsix
+.history/
+.vscode/*.code-snippets
+.vscode/extensions.json
+.vscode/launch.json
+.vscode/settings.json
+.vscode/tasks.json
