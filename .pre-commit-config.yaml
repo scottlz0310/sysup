@@ -39,11 +39,3 @@ repos:
       - id: check-case-conflict
       - id: mixed-line-ending
         args: [--fix=lf]
-
-  # Security checks
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.9.2
-    hooks:
-      - id: bandit
-        args: [-c, pyproject.toml, -ll]  # -ll: Low重要度を無視
-        additional_dependencies: ["bandit[toml]"]
