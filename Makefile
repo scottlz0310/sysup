@@ -16,7 +16,7 @@ format:
 
 # 型チェック
 typecheck:
-	uv run mypy src/sysup
+	uv run basedpyright
 
 # テスト実行
 test:
@@ -39,7 +39,7 @@ clean:
 	rm -rf .cache
 	rm -rf .pytest_cache
 	rm -rf .ruff_cache
-	rm -rf .mypy_cache
+	rm -rf .pyright
 	rm -rf dist
 	rm -rf build
 	rm -rf htmlcov

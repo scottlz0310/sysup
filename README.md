@@ -337,7 +337,7 @@ uv run ruff check .
 uv run ruff format .
 
 # 型チェック
-uv run mypy .
+uv run basedpyright
 ```
 
 ## ライセンス

@@ -42,9 +42,8 @@ output/
 
 # Tools
 .ruff_cache/
-.mypy_cache/
-.dmypy.json
-dmypy.json
+.pyright/
+pyrightconfig.json
 
 # IDEs
 .vscode/

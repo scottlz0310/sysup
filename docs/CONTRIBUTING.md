@@ -58,10 +58,10 @@ uv run ruff format .
 uv run ruff check --fix .
 ```
 
-#### Mypy（型チェック）
+#### basedpyright（型チェック）
 
 ```bash
-uv run mypy .
+uv run basedpyright
 ```
 
 ### 型ヒント
@@ -296,7 +296,7 @@ feat: Exampleupdaterを追加
 - [ ] テストが追加されている
 - [ ] テストが全て通る
 - [ ] Ruffでlint/formatが通る
-- [ ] Mypyで型チェックが通る
+- [ ] basedpyrightで型チェックが通る
 - [ ] ドキュメントが更新されている（必要な場合）
 
 ## コードレビュー

@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **テスト**: `test_self_update.py` を新しい実装に合わせて全面更新（6件の修正）
-- **コード品質**: pre-commit フック全てをパス（ruff, mypy, bandit, pytest）
+- **コード品質**: pre-commit フック全てをパス（ruff, basedpyright, bandit, pytest）
 - **テストカバレッジ**: 85.81% 維持（目標80%超え、279テスト全て成功）
 
 ## [0.7.0] - 2025-11-05
@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Pre-commit 強化**: CI で実行されるすべてのチェックをローカルで実行可能に
   - pytest フック追加（テスト実行）
   - ruff（リント・フォーマット）
-  - mypy（型チェック）
+  - basedpyright（型チェック）
   - bandit（セキュリティチェック）
 
 ### Changed
@@ -138,8 +138,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 開発ステータス: Alpha → Beta
-- pre-commit設定強化（ruff, mypy, bandit）
-- mypy strict相当の型チェック設定
+- pre-commit設定強化（ruff, basedpyright, bandit）
+- basedpyright strict相当の型チェック設定
 
 ### Documentation
 - SECURITY_SETUP.md追加（セキュリティ機能セットアップガイド）

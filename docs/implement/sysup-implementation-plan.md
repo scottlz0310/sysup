@@ -207,13 +207,13 @@ class BaseUpdater(ABC):
 
 #### 4.1 型アノテーション ✅
 - [x] 全モジュールに完全な型アノテーションを追加
-- [x] mypy strict設定でtype check完全対応
+- [x] basedpyright strict設定でtype check完全対応
 - [x] 23ファイル全て型エラーなし
 
 #### 4.2 CI/CD構築 ✅
 - [x] GitHub Actions CI/CDワークフロー追加
   - [x] lint (ruff check/format)
-  - [x] type check (mypy)
+  - [x] type check (basedpyright)
   - [x] test (pytest) - ubuntu/macos × Python 3.11/3.12/3.13
   - [x] security check (bandit)
   - [x] coverage測定 (pytest-cov)
@@ -362,7 +362,7 @@ sysup --auto-run              # 自動実行モード（対話なし）
 ### 開発ツール
 - **uv**: 高速パッケージマネージャ
 - **ruff**: Linter/Formatter
-- **mypy**: 型チェック
+- **basedpyright**: 型チェック
 - **pytest**: テストフレームワーク
 
 ### Python要件

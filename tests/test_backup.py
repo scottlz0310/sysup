@@ -170,7 +170,7 @@ def test_get_pipx_packages():
         with patch("subprocess.run") as mock_run:
             mock_result = Mock()
             mock_result.returncode = 0
-            mock_result.stdout = "black\npylint\nmypy\n"
+            mock_result.stdout = "black\npylint\nbasedpyright\n"
             mock_run.return_value = mock_result
 
             packages = manager._get_pipx_packages()

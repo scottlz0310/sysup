@@ -7,13 +7,13 @@
 
 ### 4.1 リンター・フォーマッター・型
 標準ツール:
-- ruff（lint/format）, mypy（型）, pytest（テスト）
+- ruff（lint/format）, basedpyright（型）, pytest（テスト）
 
 基本コマンド:
 ```bash
 ruff check .
 ruff format .
-mypy .
+basedpyright
 pytest -q
 ```
 
@@ -29,8 +29,8 @@ pytest -q
 
 ### 4.3 型ヒント
 - PEP 484準拠。Any使用時はPRで理由を明記
-- 段階的厳格化: prototypeでは緩和、stagingで強化、productionでmypy strict相当へ
-  - 推奨フラグ例: disallow-any-generics, no-implicit-optional, warn-redundant-casts等
+- 段階的厳格化: prototypeでは緩和、stagingで強化、productionでbasedpyright strict相当へ
+  - 推奨設定例: typeCheckingMode="strict", reportUnusedVariable=true等
 
 ### 4.4 セキュリティ静的解析
 - 開発中スキャン: Amazon Q Developerセキュリティースキャン等
@@ -44,14 +44,14 @@ pytest -q
 ### 4.6 推奨ruffルール（例）
 - E/F/W（pycodestyle/pyflakes）, I（import order）, UP（pyupgrade）, B（bugbear）, C90x, T20x（print禁止）
 
-### 4.7 推奨mypy strict設定（例）
-```
-warn_unused_ignores = True
-warn_redundant_casts = True
-no_implicit_optional = True
-disallow_any_generics = True
-warn_return_any = True
-strict_equality = True
+### 4.7 推奨basedpyright strict設定（例）
+```toml
+[tool.basedpyright]
+typeCheckingMode = "strict"
+reportUnusedVariable = true
+reportUnusedImport = true
+reportUnnecessaryCast = true
+reportUnnecessaryTypeIgnoreComment = true
 ```
 
 ## Phase 5: テスト戦略・カバレッジ
@@ -70,11 +70,11 @@ strict_equality = True
 ### 5.3 段階別方針
 ```
 prototype:
-  - 単体テスト中心、mypy緩和、カバレッジ目標なし
+  - 単体テスト中心、basedpyright緩和、カバレッジ目標なし
 staging:
-  - 統合テスト追加、mypy厳格化、カバレッジ60%
+  - 統合テスト追加、basedpyright厳格化、カバレッジ60%
 production:
-  - E2E/パフォーマンス、mypy strict、カバレッジ80%以上必須
+  - E2E/パフォーマンス、basedpyright strict、カバレッジ80%以上必須
 ```
 
 ### 5.4 絶対ルール
@@ -148,7 +148,7 @@ production:
 
 ### 6.2 必須チェック
 - 依存再現性（uv sync）
-- lint（ruff）、type（mypy）、test+cov>=閾値
+- lint（ruff）、type（basedpyright）、test+cov>=閾値
 - セキュリティスキャン（CodeQL/SCA/Secret scan/SBOM）
 - 秘密情報検出
 
@@ -264,7 +264,7 @@ output/
 .cache/
 .pytest_cache/
 .ruff_cache/
-.mypy_cache/
+.pyright/
 *.log
 *.tmp
 *.bak

@@ -13,18 +13,16 @@ repos:
       - id: ruff-format
         fail_fast: true
 
-  # Mypy - Static type checker
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.0
+  # basedpyright - Static type checker
+  - repo: https://github.com/DetachHead/basedpyright-pre-commit-mirror
+    rev: 1.35.0
     hooks:
-      - id: mypy
+      - id: basedpyright
         files: ^src/
         additional_dependencies:
-          - types-toml
           - pydantic
           - click
           - rich
-        args: [--ignore-missing-imports]
 
   # Standard pre-commit hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -49,15 +47,3 @@ repos:
       - id: bandit
         args: [-c, pyproject.toml, -ll]  # -ll: Low重要度を無視
         additional_dependencies: ["bandit[toml]"]
-
-  # Pytest - Unit tests
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: uv run pytest
-        language: system
-        types: [python]
-        pass_filenames: false
-        always_run: true
-        verbose: false

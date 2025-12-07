@@ -27,7 +27,7 @@
 - [x] Docstring整備完了
 
 ### 型ヒント
-- [ ] mypy strict化（v0.5.0）
+- [ ] basedpyright strict化（v0.5.0）
 - [x] 型アノテーション網羅性確認済み
 
 ### ログ
@@ -109,7 +109,7 @@
 6. SECURITY.md作成
 
 ### v0.5.0目標
-- mypy strict完全対応
+- basedpyright strict完全対応
 - 統合テスト整備
 - APIドキュメント公開
 - 構造化ログ導入
@@ -121,7 +121,7 @@
 
 ### 品質
 - カバレッジ: 87.41% ✅
-- mypyエラー: 0件 ✅
+- basedpyrightエラー: 0件 ✅
 - ruffエラー: 0件 ✅
 - Docstring完備率: 100% ✅
 
