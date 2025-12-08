@@ -2,21 +2,25 @@
 
 import subprocess
 
+from .._typing_compat import override
 from .base import BaseUpdater
 
 
 class CargoUpdater(BaseUpdater):
     """Cargoパッケージupdater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "Cargo"
 
+    @override
     def is_available(self) -> bool:
         """Cargoが利用可能かチェック."""
         # cargoが存在すればOK（cargo-install-updateは後でチェック）
         return self.command_exists("cargo")
 
+    @override
     def perform_update(self) -> bool:
         """Cargo更新実行."""
         name = self.get_name()

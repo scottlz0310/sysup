@@ -6,6 +6,7 @@ Windows環境でのScoopパッケージマネージャを使用した
 
 import subprocess
 
+from .._typing_compat import override
 from ..core.platform import is_windows
 from .base import BaseUpdater
 
@@ -16,6 +17,7 @@ class ScoopUpdater(BaseUpdater):
     Scoop自体とインストール済みパッケージを更新します。
     """
 
+    @override
     def get_name(self) -> str:
         """updaterの名前を返す.
 
@@ -24,6 +26,7 @@ class ScoopUpdater(BaseUpdater):
         """
         return "Scoop"
 
+    @override
     def is_available(self) -> bool:
         """scoopコマンドが利用可能かチェックする.
 
@@ -34,6 +37,7 @@ class ScoopUpdater(BaseUpdater):
             return False
         return self.command_exists("scoop")
 
+    @override
     def perform_update(self) -> bool:
         """Scoop更新を実行する.
 

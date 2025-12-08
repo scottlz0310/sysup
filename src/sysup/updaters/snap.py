@@ -2,6 +2,7 @@
 
 import subprocess
 
+from .._typing_compat import override
 from ..core.platform import is_windows
 from .base import BaseUpdater
 
@@ -9,16 +10,19 @@ from .base import BaseUpdater
 class SnapUpdater(BaseUpdater):
     """Snapパッケージマネージャupdater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "Snap"
 
+    @override
     def is_available(self) -> bool:
         """Snapが利用可能かチェック."""
         if is_windows():
             return False
         return self.command_exists("snap")
 
+    @override
     def check_updates(self) -> int | None:
         """更新可能なパッケージ数を取得."""
         try:
@@ -30,6 +34,7 @@ class SnapUpdater(BaseUpdater):
         except Exception:
             return None
 
+    @override
     def perform_update(self) -> bool:
         """Snap更新実行."""
         name = self.get_name()

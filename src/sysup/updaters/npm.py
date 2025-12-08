@@ -2,6 +2,7 @@
 
 import subprocess
 
+from .._typing_compat import override
 from ..core.platform import is_windows
 from .base import BaseUpdater
 
@@ -9,14 +10,17 @@ from .base import BaseUpdater
 class NpmUpdater(BaseUpdater):
     """npmグローバルパッケージupdater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "npm"
 
+    @override
     def is_available(self) -> bool:
         """npmが利用可能かチェック."""
         return self.command_exists("npm")
 
+    @override
     def perform_update(self) -> bool:
         """npm更新実行."""
         name = self.get_name()

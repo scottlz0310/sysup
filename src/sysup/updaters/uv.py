@@ -2,20 +2,24 @@
 
 import subprocess
 
+from .._typing_compat import override
 from .base import BaseUpdater
 
 
 class UvUpdater(BaseUpdater):
     """uv tool管理ツールupdater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "uv tool"
 
+    @override
     def is_available(self) -> bool:
         """uvが利用可能かチェック."""
         return self.command_exists("uv")
 
+    @override
     def perform_update(self) -> bool:
         """Uv tool更新実行."""
         name = self.get_name()

@@ -22,8 +22,8 @@ class SelfUpdater:
             cache_dir: キャッシュディレクトリのパス.
 
         """
-        self.logger = logger
-        self.cache_dir = cache_dir
+        self.logger: SysupLogger = logger
+        self.cache_dir: Path = cache_dir
 
     def update_self(self) -> bool:
         """sysup自身を更新する.

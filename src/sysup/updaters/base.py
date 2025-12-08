@@ -32,8 +32,8 @@ class BaseUpdater(ABC):
             dry_run: ドライランモード. デフォルトはFalse.
 
         """
-        self.logger = logger
-        self.dry_run = dry_run
+        self.logger: SysupLogger = logger
+        self.dry_run: bool = dry_run
 
     @abstractmethod
     def get_name(self) -> str:
@@ -103,7 +103,9 @@ class BaseUpdater(ABC):
         """
         return True
 
-    def run_command(self, command: list[str], check: bool = True, timeout: int = 300) -> subprocess.CompletedProcess:
+    def run_command(
+        self, command: list[str], check: bool = True, timeout: int = 300
+    ) -> subprocess.CompletedProcess[str]:
         """コマンドを実行するヘルパーメソッド.
 
         dry_runモードの場合、実際にはコマンドを実行せずログに出力するのみです。
@@ -136,7 +138,7 @@ class BaseUpdater(ABC):
             return result
         except subprocess.CalledProcessError as e:
             self.logger.error(f"コマンド実行エラー: {' '.join(command)}")
-            self.logger.error(f"エラー出力: {e.stderr}")
+            self.logger.error(f"エラー出力: {e.stderr}")  # type: ignore
             raise
         except subprocess.TimeoutExpired:
             self.logger.error(f"コマンドタイムアウト: {' '.join(command)}")

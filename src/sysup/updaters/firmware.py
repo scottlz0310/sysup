@@ -2,6 +2,7 @@
 
 import subprocess
 
+from .._typing_compat import override
 from ..core.platform import is_windows
 from .base import BaseUpdater
 
@@ -9,16 +10,19 @@ from .base import BaseUpdater
 class FirmwareUpdater(BaseUpdater):
     """ファームウェア更新updater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "Firmware"
 
+    @override
     def is_available(self) -> bool:
         """fwupdmgrが利用可能かチェック."""
         if is_windows():
             return False
         return self.command_exists("fwupdmgr")
 
+    @override
     def perform_update(self) -> bool:
         """ファームウェア更新実行."""
         name = self.get_name()

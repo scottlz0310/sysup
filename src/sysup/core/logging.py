@@ -36,10 +36,10 @@ class SysupLogger:
             retention_days: ログファイルの保持日数. デフォルトは30日.
 
         """
-        self.log_dir = log_dir
-        self.retention_days = retention_days
-        self.console = Console()
-        self.logger = self._setup_logger(level)
+        self.log_dir: Path = log_dir
+        self.retention_days: int = retention_days
+        self.console: Console = Console()
+        self.logger: logging.Logger = self._setup_logger(level)
         self._rotate_logs()
 
     def _setup_logger(self, level: str) -> logging.Logger:
@@ -53,14 +53,14 @@ class SysupLogger:
 
         """
         logger = logging.getLogger("sysup")
-        logger.setLevel(getattr(logging, level.upper()))
+        logger.setLevel(getattr(logging, level.upper()))  # type: ignore
 
         # 既存のハンドラーをクリア
         logger.handlers.clear()
 
         # コンソールハンドラー（Rich使用）
         console_handler = RichHandler(console=self.console, show_time=True, show_path=False, markup=True)
-        console_handler.setLevel(getattr(logging, level.upper()))
+        console_handler.setLevel(getattr(logging, level.upper()))  # type: ignore
         logger.addHandler(console_handler)
 
         # ファイルハンドラー

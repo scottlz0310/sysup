@@ -33,8 +33,8 @@ class SystemChecker:
             cache_dir: キャッシュディレクトリのパス.
 
         """
-        self.logger = logger
-        self.cache_dir = cache_dir
+        self.logger: SysupLogger = logger
+        self.cache_dir: Path = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def check_disk_space(self, min_space_gb: float = 1.0) -> bool:

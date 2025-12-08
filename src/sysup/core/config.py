@@ -192,8 +192,10 @@ class SysupConfig(BaseSettings):
 
         if config_path and config_path.exists():
             with open(config_path, "rb") as f:
-                config_data = tomllib.load(f)
-            return cls(**config_data)
+                from typing import Any
+
+                config_data: dict[str, Any] = tomllib.load(f)  # type: ignore
+            return cls(**config_data)  # type: ignore
 
         # デフォルト設定を返す
         return cls()

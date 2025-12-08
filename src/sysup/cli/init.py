@@ -46,7 +46,7 @@ class PackageManagerDetector:
             各マネージャ名と利用可能性のマッピング.
 
         """
-        available = {}
+        available: dict[str, bool] = {}
         for name, command in cls.MANAGERS.items():
             available[name] = shutil.which(command) is not None
         return available
@@ -262,7 +262,8 @@ def step3_select_updaters(available: dict[str, bool]) -> dict[str, bool]:
             console.print("[red]✗ 数字を入力してください[/red]")
 
     console.print("[green]✓ 選択完了[/green]\n")
-    return selected
+    selected_typed: dict[str, bool] = selected
+    return selected_typed
 
 
 def step4_advanced_settings() -> dict[str, bool | str]:
@@ -330,7 +331,7 @@ def step5_save_config(
     mode: str,
     updaters: dict[str, bool],
     settings: dict[str, bool | str],
-    existing_config: Path | None,
+    _existing_config: Path | None,
 ) -> None:
     """工程5: 設定ファイルの生成と保存.
 

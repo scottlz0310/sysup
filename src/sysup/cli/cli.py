@@ -145,7 +145,7 @@ def update(
         sys.exit(1)
 
 
-def setup_wsl_integration(logger: SysupLogger, config: SysupConfig) -> None:
+def setup_wsl_integration(logger: SysupLogger, _config: SysupConfig) -> None:
     """WSL統合をセットアップする.
 
     WSL環境でのシェルRCファイルへの自動実行設定を行います。
@@ -185,7 +185,7 @@ def setup_wsl_integration(logger: SysupLogger, config: SysupConfig) -> None:
     logger.info("  2. 有効化（sudo認証あり）")
     logger.info("  3. キャンセル")
 
-    choice = click.prompt("選択", type=int, default=1)
+    choice: int = click.prompt("選択", type=int, default=1)  # type: ignore
 
     if choice == 1:
         mode = "enabled"

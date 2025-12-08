@@ -2,20 +2,24 @@
 
 import subprocess
 
+from .._typing_compat import override
 from .base import BaseUpdater
 
 
 class RustupUpdater(BaseUpdater):
     """Rustupツールチェーンupdater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "Rustup"
 
+    @override
     def is_available(self) -> bool:
         """Rustupが利用可能かチェック."""
         return self.command_exists("rustup")
 
+    @override
     def perform_update(self) -> bool:
         """Rustup更新実行."""
         name = self.get_name()

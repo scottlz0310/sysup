@@ -2,20 +2,24 @@
 
 import subprocess
 
+from .._typing_compat import override
 from .base import BaseUpdater
 
 
 class BrewUpdater(BaseUpdater):
     """Homebrewパッケージマネージャupdater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "Homebrew"
 
+    @override
     def is_available(self) -> bool:
         """Homebrewが利用可能かチェック."""
         return self.command_exists("brew")
 
+    @override
     def check_updates(self) -> int | None:
         """更新可能なパッケージ数を取得."""
         try:
@@ -27,6 +31,7 @@ class BrewUpdater(BaseUpdater):
         except Exception:
             return None
 
+    @override
     def perform_update(self) -> bool:
         """Homebrew更新実行."""
         name = self.get_name()

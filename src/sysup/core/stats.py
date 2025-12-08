@@ -125,8 +125,8 @@ class StatsManager:
             logger: ロガーインスタンス.
 
         """
-        self.logger = logger
-        self.stats = UpdateStats()
+        self.logger: SysupLogger = logger
+        self.stats: UpdateStats = UpdateStats()
 
     def record_success(self, updater: str) -> None:
         """成功を記録する.

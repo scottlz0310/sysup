@@ -31,8 +31,8 @@ class BackupManager:
             enabled: バックアップを有効にするかどうか. デフォルトはTrue.
 
         """
-        self.backup_dir = backup_dir
-        self.enabled = enabled
+        self.backup_dir: Path = backup_dir
+        self.enabled: bool = enabled
 
         if self.enabled:
             self.backup_dir.mkdir(parents=True, exist_ok=True)
@@ -121,7 +121,7 @@ class BackupManager:
         try:
             result = subprocess.run(["dpkg", "--get-selections"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
-                packages = []
+                packages: list[str] = []
                 for line in result.stdout.splitlines():
                     parts = line.split()
                     if len(parts) >= 2 and parts[1] == "install":
@@ -141,7 +141,7 @@ class BackupManager:
         try:
             result = subprocess.run(["snap", "list"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
-                packages = []
+                packages: list[str] = []
                 for line in result.stdout.splitlines()[1:]:  # ヘッダーをスキップ
                     parts = line.split()
                     if parts:
@@ -178,7 +178,7 @@ class BackupManager:
                 ["npm", "list", "-g", "--depth=0", "--json"], capture_output=True, text=True, timeout=30
             )
             if result.returncode == 0:
-                data = json.loads(result.stdout)
+                data: dict[str, dict[str, str]] = json.loads(result.stdout)  # type: ignore
                 return list(data.get("dependencies", {}).keys())
             return None
         except Exception:
@@ -209,7 +209,7 @@ class BackupManager:
         try:
             result = subprocess.run(["cargo", "install", "--list"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
-                packages = []
+                packages: list[str] = []
                 for line in result.stdout.splitlines():
                     if line and not line.startswith(" "):
                         package = line.split()[0]

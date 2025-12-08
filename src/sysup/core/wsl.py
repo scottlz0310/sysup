@@ -149,7 +149,7 @@ class WSLIntegration:
 
         try:
             lines = rc_file.read_text(encoding="utf-8").splitlines()
-            new_lines = []
+            new_lines: list[str] = []
             skip = False
 
             for line in lines:

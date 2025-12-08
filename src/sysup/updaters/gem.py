@@ -2,20 +2,24 @@
 
 import subprocess
 
+from .._typing_compat import override
 from .base import BaseUpdater
 
 
 class GemUpdater(BaseUpdater):
     """Ruby Gemパッケージupdater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "Gem"
 
+    @override
     def is_available(self) -> bool:
         """Gemが利用可能かチェック."""
         return self.command_exists("gem")
 
+    @override
     def perform_update(self) -> bool:
         """Gem更新実行."""
         name = self.get_name()

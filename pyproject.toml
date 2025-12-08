@@ -44,6 +44,7 @@ dev = [
     "pytest-timeout>=2.2.0",
     "pre-commit>=3.5.0",
     "bandit[toml]>=1.7.0",
+    "typing-extensions>=4.12.0; python_version<'3.12'",
 ]
 
 [project.scripts]
@@ -95,14 +96,29 @@ docstring-code-format = true
 
 [tool.basedpyright]
 pythonVersion = "3.11"
-typeCheckingMode = "standard"
+typeCheckingMode = "all"
 reportUnusedVariable = true
 reportUnusedImport = true
 reportMissingTypeStubs = false
 reportUnnecessaryTypeIgnoreComment = true
 reportUnnecessaryCast = true
+reportImplicitStringConcatenation = true
+reportMissingSuperCall = true
+reportPropertyTypeMismatch = true
+reportUninitializedInstanceVariable = true
+reportUnnecessaryContains = true
+reportUnnecessaryIsInstance = true
+reportUnusedCallResult = false  # CLI tools often ignore return values
+reportDeprecated = true
+reportIncompatibleMethodOverride = true
+reportIncompatibleVariableOverride = true
+reportInconsistentConstructor = true
+reportOverlappingOverload = true
+reportPossiblyUnboundVariable = true
+reportAny = false  # Dynamic config/JSON parsing unavoidably uses Any
+reportExplicitAny = false  # Dynamic config/JSON parsing requires explicit Any
 include = ["src"]
-exclude = ["**/__pycache__", "**/.venv"]
+exclude = ["**/__pycache__", "**/.venv", "src/sysup/_typing_compat.py"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

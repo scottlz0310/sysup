@@ -3,16 +3,19 @@
 import subprocess
 from pathlib import Path
 
+from .._typing_compat import override
 from .base import BaseUpdater
 
 
 class NvmUpdater(BaseUpdater):
     """Node Version Manager (nvm) updater."""
 
+    @override
     def get_name(self) -> str:
         """Updater名を取得."""
         return "nvm"
 
+    @override
     def is_available(self) -> bool:
         """nvmが利用可能かチェック."""
         # nvmはシェル関数なので、bashシェル経由で確認
@@ -27,6 +30,7 @@ class NvmUpdater(BaseUpdater):
         except Exception:
             return False
 
+    @override
     def perform_update(self) -> bool:
         """nvm更新実行."""
         name = self.get_name()

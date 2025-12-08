@@ -6,6 +6,7 @@ Debian/UbuntuシステムのAPT (Advanced Package Tool)パッケージマネー�
 
 import subprocess
 
+from .._typing_compat import override
 from ..core.platform import is_windows
 from .base import BaseUpdater
 
@@ -17,6 +18,7 @@ class AptUpdater(BaseUpdater):
     apt full-upgradeでシステムパッケージを更新します。
     """
 
+    @override
     def get_name(self) -> str:
         """updaterの名前を返す.
 
@@ -26,6 +28,7 @@ class AptUpdater(BaseUpdater):
         """
         return "APT"
 
+    @override
     def is_available(self) -> bool:
         """aptコマンドが利用可能かチェックする.
 
@@ -37,6 +40,7 @@ class AptUpdater(BaseUpdater):
             return False
         return self.command_exists("apt")
 
+    @override
     def check_updates(self) -> int | None:
         """更新可能なパッケージ数を取得する.
 
@@ -52,6 +56,7 @@ class AptUpdater(BaseUpdater):
         except Exception:
             return None
 
+    @override
     def perform_update(self) -> bool:
         """APT更新を実行する.
 
