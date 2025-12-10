@@ -190,3 +190,6 @@ out/
 .dmypy.json
 .mypy_cache/
 dmypy.json
+
+# Auto-generated entries from templates
+.pyrightcache/
