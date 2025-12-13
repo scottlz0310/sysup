@@ -15,7 +15,7 @@ repos:
 
   # basedpyright - Static type checker
   - repo: https://github.com/DetachHead/basedpyright-pre-commit-mirror
-    rev: 1.35.0
+    rev: 1.36.0
     hooks:
       - id: basedpyright
         files: ^src/
