@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.8.0] - 2025-12-14
+
+### Added
+- **uv updater**: `uv self update` を `uv tool upgrade --all` の前に自動実行し、uv本体とツール群の両方を常に最新状態に維持。スタンドアロン以外のインストールでは警告のみで処理を継続し、順序を保証する回帰テストも追加。
+
+### Changed
+- **型ヒント互換レイヤー**: `_typing_compat` モジュールを新設し、25ファイル超にわたって型ヒントを整理。Python 3.13/3.14 での `typing_extensions` 依存や互換性課題を吸収できるようになりました。
+- **開発体験**: タイプチェックを basedpyright へ全面移行し（pyproject/Makefile/CI/ドキュメント更新）、pre-commit と GitHub Actions を最新の ruff v0.14.9・basedpyright 1.36.1・actions/checkout v6・Python 3.14.2 へ更新。Renovate 設定もプリセット中心に再構成し、保守トラフィックを削減。
+
+### Fixed
+- **初期セットアップメッセージ**: `sysup init` 完了時に `sysup update` / `sysup update --list` へ誘導するよう文言を修正。
+- **uv.lock の取り扱い**: `.gitignore` から除外してリポジトリに含め、依存ピン留めが誤って外れないようにしました。
+
 ## [0.7.1] - 2025-11-05
 
 ### Added
@@ -228,7 +241,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/scottlz0310/sysup/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/scottlz0310/sysup/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/scottlz0310/sysup/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/scottlz0310/sysup/compare/v0.5.2...v0.6.0
