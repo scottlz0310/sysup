@@ -307,18 +307,57 @@ def test_uv_is_available_false(mock_logger):
         assert updater.is_available() is False
 
 
+def test_uv_self_update_success(mock_logger):
+    """UvUpdater - _self_update (成功)のテスト"""
+    updater = UvUpdater(mock_logger)
+
+    with patch.object(updater, "run_command") as mock_run:
+        mock_result = Mock()
+        mock_result.returncode = 0
+        mock_run.return_value = mock_result
+
+        result = updater._self_update()
+        assert result is True
+        mock_run.assert_called_once_with(["uv", "self", "update"])
+
+
+def test_uv_self_update_not_standalone(mock_logger):
+    """UvUpdater - _self_update (standalone以外でインストール)のテスト"""
+    updater = UvUpdater(mock_logger)
+
+    with patch.object(updater, "run_command") as mock_run:
+        mock_run.side_effect = subprocess.CalledProcessError(1, ["uv", "self", "update"])
+
+        # standalone以外でも継続可能（Trueを返す）
+        result = updater._self_update()
+        assert result is True
+
+
+def test_uv_self_update_exception(mock_logger):
+    """UvUpdater - _self_update (例外発生)のテスト"""
+    updater = UvUpdater(mock_logger)
+
+    with patch.object(updater, "run_command") as mock_run:
+        mock_run.side_effect = Exception("Unexpected error")
+
+        # 例外でも継続可能（Trueを返す）
+        result = updater._self_update()
+        assert result is True
+
+
 def test_uv_perform_update_success(mock_logger):
     """UvUpdater - perform_update (成功)のテスト"""
     updater = UvUpdater(mock_logger)
 
     with patch.object(updater, "is_available", return_value=True):
-        with patch.object(updater, "run_command") as mock_run:
-            mock_result = Mock()
-            mock_result.returncode = 0
-            mock_run.return_value = mock_result
+        with patch.object(updater, "_self_update", return_value=True):
+            with patch.object(updater, "run_command") as mock_run:
+                mock_result = Mock()
+                mock_result.returncode = 0
+                mock_run.return_value = mock_result
 
-            result = updater.perform_update()
-            assert result is True
+                result = updater.perform_update()
+                assert result is True
 
 
 def test_uv_perform_update_not_available(mock_logger):
@@ -335,11 +374,12 @@ def test_uv_perform_update_error(mock_logger):
     updater = UvUpdater(mock_logger)
 
     with patch.object(updater, "is_available", return_value=True):
-        with patch.object(updater, "run_command") as mock_run:
-            mock_run.side_effect = subprocess.CalledProcessError(1, ["uv"])
+        with patch.object(updater, "_self_update", return_value=True):
+            with patch.object(updater, "run_command") as mock_run:
+                mock_run.side_effect = subprocess.CalledProcessError(1, ["uv"])
 
-            result = updater.perform_update()
-            assert result is False
+                result = updater.perform_update()
+                assert result is False
 
 
 def test_uv_perform_update_exception(mock_logger):
@@ -347,11 +387,36 @@ def test_uv_perform_update_exception(mock_logger):
     updater = UvUpdater(mock_logger)
 
     with patch.object(updater, "is_available", return_value=True):
-        with patch.object(updater, "run_command") as mock_run:
-            mock_run.side_effect = Exception("Unexpected error")
+        with patch.object(updater, "_self_update", return_value=True):
+            with patch.object(updater, "run_command") as mock_run:
+                mock_run.side_effect = Exception("Unexpected error")
 
-            result = updater.perform_update()
-            assert result is False
+                result = updater.perform_update()
+                assert result is False
+
+
+def test_uv_perform_update_calls_self_update_first(mock_logger):
+    """UvUpdater - perform_updateがself_updateを先に呼ぶことを確認"""
+    updater = UvUpdater(mock_logger)
+    call_order = []
+
+    def track_self_update():
+        call_order.append("self_update")
+        return True
+
+    def track_run_command(cmd):
+        call_order.append(f"run_command:{cmd}")
+        mock_result = Mock()
+        mock_result.returncode = 0
+        return mock_result
+
+    with patch.object(updater, "is_available", return_value=True):
+        with patch.object(updater, "_self_update", side_effect=track_self_update):
+            with patch.object(updater, "run_command", side_effect=track_run_command):
+                result = updater.perform_update()
+                assert result is True
+                assert call_order[0] == "self_update"
+                assert "run_command:['uv', 'tool', 'upgrade', '--all']" in call_order[1]
 
 
 # ======================
