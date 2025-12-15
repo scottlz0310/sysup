@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.8.2] - 2025-12-15
+
+### Fixed
+- **Windows（Scoop実行）**: `.cmd/.ps1` ラッパーを直接実行した際に `WinError 2` になるケースに対応し、`scoop update` / `scoop update *` / `scoop cleanup *` が実行できるように改善。
+
 ## [0.8.1] - 2025-12-15
 
 ### Fixed
@@ -249,7 +254,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.8.2...HEAD
+[0.8.2]: https://github.com/scottlz0310/sysup/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/scottlz0310/sysup/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/scottlz0310/sysup/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/scottlz0310/sysup/compare/v0.7.0...v0.7.1
