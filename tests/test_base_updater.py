@@ -114,6 +114,52 @@ def test_run_command_success(mock_logger):
         mock_run.assert_called_once()
 
 
+def test_run_command_windows_resolves_cmd(mock_logger):
+    """run_commandメソッド - Windowsで.cmdをcmd.exe経由で実行することを確認"""
+    updater = TestUpdater(mock_logger)
+
+    with patch("sysup.updaters.base.is_windows", return_value=True):
+        with patch("sysup.updaters.base.shutil.which", return_value=r"C:\Scoop\shims\scoop.cmd"):
+            with patch("subprocess.run") as mock_run:
+                mock_result = Mock()
+                mock_result.returncode = 0
+                mock_result.stdout = ""
+                mock_result.stderr = ""
+                mock_run.return_value = mock_result
+
+                updater.run_command(["scoop", "update"])
+
+                called_command = mock_run.call_args[0][0]
+                assert called_command == ["cmd.exe", "/c", r"C:\Scoop\shims\scoop.cmd", "update"]
+
+
+def test_run_command_windows_resolves_ps1(mock_logger):
+    """run_commandメソッド - Windowsで.ps1をpowershell.exe経由で実行することを確認"""
+    updater = TestUpdater(mock_logger)
+
+    with patch("sysup.updaters.base.is_windows", return_value=True):
+        with patch("sysup.updaters.base.shutil.which", return_value=r"C:\Scoop\shims\scoop.ps1"):
+            with patch("subprocess.run") as mock_run:
+                mock_result = Mock()
+                mock_result.returncode = 0
+                mock_result.stdout = ""
+                mock_result.stderr = ""
+                mock_run.return_value = mock_result
+
+                updater.run_command(["scoop", "update"])
+
+                called_command = mock_run.call_args[0][0]
+                assert called_command == [
+                    "powershell.exe",
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    r"C:\Scoop\shims\scoop.ps1",
+                    "update",
+                ]
+
+
 def test_run_command_dry_run(mock_logger):
     """run_commandメソッド - ドライランモードのテスト"""
     updater = TestUpdater(mock_logger, dry_run=True)
