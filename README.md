@@ -7,6 +7,8 @@
 [![Code Coverage](https://img.shields.io/badge/coverage-87.41%25-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 
+最新リリース: **v0.8.1**
+
 ## 概要
 
 `sysup`は、複数のパッケージマネージャを一括で更新できるPython製のCLIツールです。
@@ -75,10 +77,10 @@ Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 ```bash
 # uvで
-uv tool install git+https://github.com/scottlz0310/sysup.git
+uv tool install git+https://github.com/scottlz0310/sysup.git@v0.8.1
 
 # pipxで
-pipx install git+https://github.com/scottlz0310/sysup.git
+pipx install git+https://github.com/scottlz0310/sysup.git@v0.8.1
 ```
 
 ### ローカル開発モード

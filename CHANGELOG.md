@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.8.1] - 2025-12-15
+
+### Fixed
+- **init コマンド（Windows/Scoop）**: `sysup init` の検出・選択・設定ファイル生成に `scoop` を追加し、`src/sysup/updaters/scoop.py` と整合するように修正。
+
+### Changed
+- **改行コードの統一**: `.gitattributes` と `.editorconfig` を追加し、`mixed-line-ending` フック（`--fix=lf`）と `git add` の挙動が衝突しにくいよう LF に統一。
+
 ## [0.8.0] - 2025-12-14
 
 ### Added
@@ -241,7 +249,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.8.1...HEAD
+[0.8.1]: https://github.com/scottlz0310/sysup/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/scottlz0310/sysup/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/scottlz0310/sysup/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/scottlz0310/sysup/compare/v0.6.0...v0.7.0
