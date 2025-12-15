@@ -35,6 +35,7 @@ class PackageManagerDetector:
         "cargo": "cargo",
         "gem": "gem",
         "brew": "brew",
+        "scoop": "scoop",
         "firmware": "fwupdmgr",
     }
 
@@ -74,6 +75,7 @@ class PackageManagerDetector:
             "cargo": "Cargoパッケージマネージャ",
             "gem": "Rubygemsパッケージマネージャ",
             "brew": "Homebrewパッケージマネージャ",
+            "scoop": "Scoopパッケージマネージャ",
             "firmware": "ファームウェア更新",
         }
         return descriptions.get(name, name)
@@ -403,6 +405,7 @@ def _generate_toml(config: SysupConfig) -> str:
         f"cargo = {str(config.updaters.cargo).lower()}",
         f"gem = {str(config.updaters.gem).lower()}",
         f"brew = {str(config.updaters.brew).lower()}",
+        f"scoop = {str(config.updaters.scoop).lower()}",
         f"firmware = {str(config.updaters.firmware).lower()}",
         "",
         "[auto_run]",

@@ -29,6 +29,7 @@ class UpdaterConfig(BaseModel):
         cargo: Cargoパッケージマネージャを有効にする.
         gem: Rubygemsパッケージマネージャを有効にする.
         brew: Homebrewパッケージマネージャを有効にする.
+        scoop: Scoopパッケージマネージャ(Windows)を有効にする.
         firmware: ファームウェア更新を有効にする.
 
     """
@@ -44,6 +45,7 @@ class UpdaterConfig(BaseModel):
     cargo: bool = True
     gem: bool = False
     brew: bool = True
+    scoop: bool = True
     firmware: bool = False
 
 
