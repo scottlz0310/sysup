@@ -24,7 +24,7 @@ sysup init
 
 1. **システム環境の確認** - 利用可能なパッケージマネージャを自動検出
 2. **実行モードの選択** - 標準モード/自動実行モード
-3. **更新対象の選択** - 有効にするマネージャを選択
+3. **更新対象の選択** - 不要なマネージャを無効化
 4. **詳細設定** - ログレベル、並列実行、バックアップなど
 5. **セットアップ完了** - 設定ファイル生成
 
@@ -39,7 +39,7 @@ sysup init
 sysup update
 ```
 
-初回実行時は、設定ファイルが存在しない場合、デフォルト設定で実行されます。
+初回実行時は、設定ファイルが存在しない場合、デフォルト設定（全updater有効）で実行されます。未インストールのupdaterは自動的にスキップされます。
 
 ### ドライラン
 
@@ -213,15 +213,17 @@ vim ~/.config/sysup/sysup.toml
 [updaters]
 apt = true          # APTパッケージマネージャ
 snap = true         # Snapパッケージ
-flatpak = false     # Flatpak（デフォルト無効）
+flatpak = true      # Flatpak
 pipx = true         # pipx
+uv = true           # uv tool
 npm = true          # npm
 nvm = true          # nvm
 rustup = true       # Rustup
 cargo = true        # Cargo
-gem = false         # Gem（デフォルト無効）
+gem = true          # Gem
 brew = true         # Homebrew
-firmware = false    # ファームウェア更新（デフォルト無効）
+firmware = true     # ファームウェア更新
+scoop = true        # Scoop（Windows）
 ```
 
 #### [logging] - ログ設定

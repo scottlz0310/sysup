@@ -70,13 +70,13 @@ sysup init
       選択: 2
 
 [3/5] 更新対象の選択
-      有効なパッケージマネージャ:
+      有効（初期状態は全て有効）:
       ✓ apt (Debian/Ubuntu)
       ✓ npm (Node.js)
       ✓ rustup (Rust)
       - pipx (Python - インストール未検出)
 
-      有効にするマネージャを選択 (スペース=トグル, Enter=確定):
+      無効化するマネージャを選択 (スペース=トグル, Enter=確定):
 
 [4/5] 詳細設定
       1. ログ設定
@@ -120,7 +120,7 @@ sysup init
 
 ### 工程 3: 更新対象の選択
 
-利用可能なパッケージマネージャの一覧から選択:
+利用可能なパッケージマネージャの一覧から「不要なものを無効化」します（初期状態は全て有効）:
 
 ```
 有効にするパッケージマネージャを選択してください (スペース: トグル, Enter: 確定):
@@ -205,17 +205,18 @@ sysup init
 ```toml
 [updaters]
 apt = true
-snap = false
-flatpak = false
+snap = true
+flatpak = true
 pipx = true
 uv = true
 npm = true
 nvm = true
 rustup = true
 cargo = true
-gem = false
-brew = false
-firmware = false
+gem = true
+brew = true
+firmware = true
+scoop = true
 
 [auto_run]
 mode = "disabled"

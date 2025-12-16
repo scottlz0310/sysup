@@ -64,11 +64,11 @@ sysupの動作モードを選択してください:
 
 ### 工程3: 更新対象パッケージマネージャの選択
 
-有効にするマネージャを選択します：
+不要なマネージャを無効化します（初期状態は全て有効）：
 
 ```
 工程 3/5: 更新対象パッケージマネージャの選択
-有効にするマネージャを選択してください (数字入力でトグル, Enterで確定):
+無効化するマネージャを選択してください (数字入力でトグル, Enterで確定):
 
 ┏━━━━━━━━┳━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ No.    ┃ 状態 ┃ マネージャ ┃ 説明                         ┃
@@ -199,16 +199,17 @@ mkdir -p ~/.config/sysup
 # パッケージマネージャの有効/無効 (true/false)
 apt = true
 snap = true
-flatpak = false
+flatpak = true
 pipx = true
 uv = true
 npm = true
 nvm = true
 rustup = true
 cargo = true
-gem = false
-brew = false
-firmware = false
+gem = true
+brew = true
+firmware = true
+scoop = true
 
 [auto_run]
 # 自動実行モード: disabled | enabled | enabled_with_auth
@@ -257,16 +258,17 @@ cache_dir = "~/.cache/sysup"
 |------|------|----------|--------|
 | `apt` | APT (Debian/Ubuntu) | true | Linux |
 | `snap` | Snap packages | true | Linux |
-| `flatpak` | Flatpak | false | Linux |
+| `flatpak` | Flatpak | true | Linux |
 | `pipx` | pipx (Python CLIツール) | true | Linux/macOS/Windows |
 | `uv` | uv tool | true | Linux/macOS/Windows |
 | `npm` | npm (Node.js) | true | Linux/macOS/Windows |
 | `nvm` | nvm (Node Version Manager) | true | Linux/macOS/Windows |
 | `rustup` | Rustup | true | Linux/macOS/Windows |
 | `cargo` | Cargo | true | Linux/macOS/Windows |
-| `gem` | Ruby gems | false | Linux/macOS/Windows |
+| `gem` | Ruby gems | true | Linux/macOS/Windows |
 | `brew` | Homebrew | true | macOS/Linux |
-| `firmware` | ファームウェア更新 | false | Linux |
+| `firmware` | ファームウェア更新 | true | Linux |
+| `scoop` | Scoop | true | Windows |
 
 ### auto_run セクション
 

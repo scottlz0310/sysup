@@ -263,7 +263,7 @@ def step3_select_updaters(available: dict[str, bool]) -> dict[str, bool]:
     for i, name in enumerate(managers_list, 1):
         is_enabled = default_config.is_updater_enabled(name)
         is_available = available[name]
-        selected[name] = is_enabled and is_available
+        selected[name] = is_enabled
 
         status = "✓" if selected[name] else " "
         availability = "検出済み" if is_available else "未検出"
@@ -285,12 +285,12 @@ def step3_select_updaters(available: dict[str, bool]) -> dict[str, bool]:
             idx = int(user_input) - 1
             if 0 <= idx < len(managers_list):
                 name = managers_list[idx]
-                if available[name]:
-                    selected[name] = not selected[name]
-                    status = "✓" if selected[name] else " "
-                    console.print(f"[blue]{name}: {status if selected[name] else '無効に変更'}[/blue]")
+                selected[name] = not selected[name]
+                status = "✓" if selected[name] else " "
+                if selected[name] and not available[name]:
+                    console.print(f"[yellow]⚠ {name} は未検出ですが有効にしました（後でインストール可能）[/yellow]")
                 else:
-                    console.print(f"[yellow]⚠ {name} はシステムに見つかりません[/yellow]")
+                    console.print(f"[blue]{name}: {status if selected[name] else '無効に変更'}[/blue]")
             else:
                 console.print("[red]✗ 無効な選択です[/red]")
         except ValueError:

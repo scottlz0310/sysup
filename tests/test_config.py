@@ -12,7 +12,7 @@ def test_default_config():
 
     assert config.updaters.apt is True
     assert config.updaters.snap is True
-    assert config.updaters.flatpak is False
+    assert config.updaters.flatpak is True
     assert config.auto_run.mode == "disabled"
     assert config.logging.level == "INFO"
     assert config.backup.enabled is True
@@ -52,7 +52,7 @@ def test_is_updater_enabled():
     config = SysupConfig()
 
     assert config.is_updater_enabled("apt") is True
-    assert config.is_updater_enabled("flatpak") is False
+    assert config.is_updater_enabled("flatpak") is True
     assert config.is_updater_enabled("nonexistent") is False
 
 

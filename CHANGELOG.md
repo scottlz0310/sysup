@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+### Changed
+- **デフォルト設定**: 設定ファイルがない場合でも全updaterが有効（未検出はスキップ）になるようデフォルト値を変更。`sysup init` は「有効にする」ではなく「不要なものを無効化」するフローに変更予定（v0.9.0向け）。
+
 ## [0.8.2] - 2025-12-15
 
 ### Fixed

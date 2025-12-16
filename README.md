@@ -12,7 +12,7 @@
 ## 概要
 
 `sysup`は、複数のパッケージマネージャを一括で更新できるPython製のCLIツールです。
-APT、Snap、Homebrew、npm、Rustupなど、11種類のパッケージマネージャに対応しています。
+APT、Snap、Homebrew、npm、Rustupなど、13種類のパッケージマネージャに対応しています。
 
 ### 特徴
 
@@ -216,8 +216,8 @@ vim ~/.config/sysup/sysup.toml
 # Linux専用
 apt = true
 snap = true
-flatpak = false
-firmware = false
+flatpak = true
+firmware = true
 
 # Windows専用
 scoop = true
@@ -228,7 +228,7 @@ npm = true
 nvm = true
 rustup = true
 cargo = true
-gem = false
+gem = true
 brew = true
 
 [logging]
