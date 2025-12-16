@@ -57,7 +57,8 @@ dry_run = false
 cache_dir = "~/.cache/sysup"
 """)
 
-        result = run_cli(["update", "--list"], timeout=60)
+        # --no-self-update: CI環境ではuv toolとしてインストールされていないため
+        result = run_cli(["update", "--list", "--no-self-update"], timeout=60)
 
         # プロセスロックの取得に失敗した場合も考慮
         # 成功または「既に実行中」のメッセージ
@@ -109,7 +110,8 @@ dry_run = true
 cache_dir = "~/.cache/sysup"
 """)
 
-        result = run_cli(["update", "--dry-run"], timeout=60)
+        # --no-self-update: CI環境ではuv toolとしてインストールされていないため
+        result = run_cli(["update", "--dry-run", "--no-self-update"], timeout=60)
 
         # ドライランモードで実行（すべてのupdaterを無効にしているので何も実行されない）
         # プロセスロックの取得に失敗した場合も考慮

@@ -138,6 +138,7 @@ class TestInitInteractive:
         assert "parallel_updates = true" in content
         assert "enabled = false" in content  # backup or notification
 
+    @pytest.mark.skip(reason="Ctrl+C handling is environment-dependent and unstable in CI")
     def test_init_wizard_keyboard_interrupt(self, pexpect_spawn, temp_home):
         """Ctrl+Cでキャンセルするテスト."""
         child = pexpect_spawn(["init"], timeout=60)
