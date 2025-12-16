@@ -6,6 +6,7 @@
 
 import os
 import shutil
+import socket
 import subprocess
 from datetime import date
 from pathlib import Path
@@ -67,24 +68,25 @@ class SystemChecker:
     def check_network(self) -> bool:
         """ネットワーク接続をチェックする.
 
-        複数のDNSサーバーにpingを送信してネットワーク接続を確認します。
+        CI環境などではICMP(ping)がブロックされていることがあるため、
+        TCP接続で疎通を確認します。
 
         Returns:
             ネットワーク接続が正常な場合True、問題がある場合False.
 
         """
-        test_hosts = ["8.8.8.8", "1.1.1.1"]
+        test_endpoints: list[tuple[str, int]] = [
+            ("1.1.1.1", 443),
+            ("8.8.8.8", 53),
+            ("github.com", 443),
+        ]
 
-        for host in test_hosts:
+        for host, port in test_endpoints:
             try:
-                if is_windows():
-                    result = subprocess.run(["ping", "-n", "1", "-w", "1000", host], capture_output=True, timeout=3)
-                else:
-                    result = subprocess.run(["ping", "-c", "1", "-W", "3", host], capture_output=True, timeout=5)
-                if result.returncode == 0:
+                with socket.create_connection((host, port), timeout=3):
                     self.logger.info("ネットワーク接続: OK")
                     return True
-            except (subprocess.TimeoutExpired, subprocess.SubprocessError):
+            except OSError:
                 continue
 
         self.logger.warning("ネットワーク接続に問題があります")
