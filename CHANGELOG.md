@@ -7,9 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **E2Eテスト整備**: pexpectを使用した対話型CLI（init コマンド）のE2Eテストを追加
+  - TTYモードでの矢印キー操作、スペースでのトグル、qキーでの確定をテスト
+  - 既存設定ファイルの検出・続行・スキップ・リセット処理をテスト
+  - Ctrl+Cでのキャンセル処理をテスト
+- **統合テスト**: updateコマンドの統合テストを追加
+  - --help, --version, --list, --dry-run オプションのテスト
+  - 不正な設定ファイルでのエラーハンドリングテスト
+
+### Changed
+- **テスト戦略**: 対話型CLI（TTY/キー入力）のテストはE2Eで担保し、ユニットテストは仕様が固まるまで最小限にする方針を実装
+
 ### Planned
-- 統合テスト・E2Eテストの整備
-- 対話型CLI（TTY/キー入力）のテストはE2Eで担保し、ユニットテストは仕様が固まるまで最小限にする
 - SBOM生成の自動化
 - 構造化ログの導入
 
