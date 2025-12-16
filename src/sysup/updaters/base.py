@@ -5,11 +5,10 @@
 必要なメソッドを実装します。
 """
 
-import shutil
 import subprocess
 from abc import ABC, abstractmethod
-from pathlib import Path
 
+from ..core.command import resolve_command
 from ..core.logging import SysupLogger
 from ..core.platform import is_windows
 
@@ -125,24 +124,7 @@ class BaseUpdater(ABC):
             subprocess.TimeoutExpired: コマンドがタイムアウトした場合.
 
         """
-        if is_windows() and command:
-            resolved = shutil.which(command[0])
-            if resolved:
-                suffix = Path(resolved).suffix.lower()
-                if suffix in {".cmd", ".bat"}:
-                    command = ["cmd.exe", "/c", resolved, *command[1:]]
-                elif suffix == ".ps1":
-                    command = [
-                        "powershell.exe",
-                        "-NoProfile",
-                        "-ExecutionPolicy",
-                        "Bypass",
-                        "-File",
-                        resolved,
-                        *command[1:],
-                    ]
-                else:
-                    command = [resolved, *command[1:]]
+        command = resolve_command(command)
 
         self.logger.debug(f"実行コマンド: {' '.join(command)}")
 

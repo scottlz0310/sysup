@@ -5,6 +5,7 @@ richを使用した対話型メニューで、ユーザーが簡単にsysupを�
 """
 
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import ClassVar
@@ -14,6 +15,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
+from sysup.core.command import resolve_command
 from sysup.core.config import SysupConfig
 
 console = Console()
@@ -39,6 +41,22 @@ class PackageManagerDetector:
         "firmware": "fwupdmgr",
     }
 
+    PROBE_COMMANDS: ClassVar[dict[str, list[str]]] = {
+        "apt": ["apt", "--version"],
+        "snap": ["snap", "--version"],
+        "flatpak": ["flatpak", "--version"],
+        "pipx": ["pipx", "--version"],
+        "uv": ["uv", "--version"],
+        "npm": ["npm", "--version"],
+        "nvm": ["node", "--version"],
+        "rustup": ["rustup", "--version"],
+        "cargo": ["cargo", "--version"],
+        "gem": ["gem", "--version"],
+        "brew": ["brew", "--version"],
+        "scoop": ["scoop", "--version"],
+        "firmware": ["fwupdmgr", "--version"],
+    }
+
     @classmethod
     def get_available_managers(cls) -> dict[str, bool]:
         """利用可能なパッケージマネージャを検出.
@@ -49,8 +67,23 @@ class PackageManagerDetector:
         """
         available: dict[str, bool] = {}
         for name, command in cls.MANAGERS.items():
-            available[name] = shutil.which(command) is not None
+            if shutil.which(command) is None:
+                available[name] = False
+                continue
+
+            probe = cls.PROBE_COMMANDS.get(name, [command, "--version"])
+            available[name] = cls._probe_runnable(probe)
         return available
+
+    @staticmethod
+    def _probe_runnable(command: list[str]) -> bool:
+        """実際にコマンドが起動できるかを軽く確認する."""
+        try:
+            resolved = resolve_command(command)
+            result = subprocess.run(resolved, capture_output=True, text=True, timeout=5, check=False)
+            return result.returncode == 0
+        except Exception:
+            return False
 
     @classmethod
     def get_manager_description(cls, name: str) -> str:
