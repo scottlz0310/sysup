@@ -7,7 +7,7 @@
 [![Code Coverage](https://img.shields.io/badge/coverage-87.41%25-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 
-最新リリース: **v0.8.2**
+最新リリース: **v0.9.0**
 
 ## 概要
 
@@ -77,10 +77,10 @@ Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 ```bash
 # uvで
-uv tool install git+https://github.com/scottlz0310/sysup.git@v0.8.2
+uv tool install git+https://github.com/scottlz0310/sysup.git@v0.9.0
 
 # pipxで
-pipx install git+https://github.com/scottlz0310/sysup.git@v0.8.2
+pipx install git+https://github.com/scottlz0310/sysup.git@v0.9.0
 ```
 
 ### ローカル開発モード
