@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 - 統合テスト・E2Eテストの整備
+- 対話型CLI（TTY/キー入力）のテストはE2Eで担保し、ユニットテストは仕様が固まるまで最小限にする
 - SBOM生成の自動化
 - 構造化ログの導入
 
