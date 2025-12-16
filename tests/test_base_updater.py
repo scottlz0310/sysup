@@ -118,8 +118,8 @@ def test_run_command_windows_resolves_cmd(mock_logger):
     """run_commandメソッド - Windowsで.cmdをcmd.exe経由で実行することを確認"""
     updater = TestUpdater(mock_logger)
 
-    with patch("sysup.updaters.base.is_windows", return_value=True):
-        with patch("sysup.updaters.base.shutil.which", return_value=r"C:\Scoop\shims\scoop.cmd"):
+    with patch("sysup.core.command.is_windows", return_value=True):
+        with patch("sysup.core.command.shutil.which", return_value=r"C:\Scoop\shims\scoop.cmd"):
             with patch("subprocess.run") as mock_run:
                 mock_result = Mock()
                 mock_result.returncode = 0
@@ -137,8 +137,8 @@ def test_run_command_windows_resolves_ps1(mock_logger):
     """run_commandメソッド - Windowsで.ps1をpowershell.exe経由で実行することを確認"""
     updater = TestUpdater(mock_logger)
 
-    with patch("sysup.updaters.base.is_windows", return_value=True):
-        with patch("sysup.updaters.base.shutil.which", return_value=r"C:\Scoop\shims\scoop.ps1"):
+    with patch("sysup.core.command.is_windows", return_value=True):
+        with patch("sysup.core.command.shutil.which", return_value=r"C:\Scoop\shims\scoop.ps1"):
             with patch("subprocess.run") as mock_run:
                 mock_result = Mock()
                 mock_result.returncode = 0

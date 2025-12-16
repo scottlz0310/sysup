@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SBOM生成の自動化
 - 構造化ログの導入
 
+## [0.9.0] - 2025-12-16
+
+### Changed
+- **init コマンド**: 工程2で検出済みupdaterを選択（デフォルトは検出済みのみ有効）、工程3で実行モード選択に変更。TTYでは矢印キー移動+スペースでトグル、非TTYでは番号入力トグルにフォールバック。
+- **検出精度**: `--version` 等の軽い実行を含めて「実際に起動できるか」を検出に反映。
+
 ## [0.8.2] - 2025-12-15
 
 ### Fixed
@@ -254,7 +260,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bashスクリプト（up.sh）からPython版への移行
 
-[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.8.2...HEAD
+[Unreleased]: https://github.com/scottlz0310/sysup/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/scottlz0310/sysup/compare/v0.8.2...v0.9.0
 [0.8.2]: https://github.com/scottlz0310/sysup/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/scottlz0310/sysup/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/scottlz0310/sysup/compare/v0.7.1...v0.8.0

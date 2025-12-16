@@ -7,12 +7,12 @@
 [![Code Coverage](https://img.shields.io/badge/coverage-87.41%25-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 
-最新リリース: **v0.8.2**
+最新リリース: **v0.9.0**
 
 ## 概要
 
 `sysup`は、複数のパッケージマネージャを一括で更新できるPython製のCLIツールです。
-APT、Snap、Homebrew、npm、Rustupなど、11種類のパッケージマネージャに対応しています。
+APT、Snap、Homebrew、npm、Rustupなど、13種類のパッケージマネージャに対応しています。
 
 ### 特徴
 
@@ -77,10 +77,10 @@ Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 ```bash
 # uvで
-uv tool install git+https://github.com/scottlz0310/sysup.git@v0.8.2
+uv tool install git+https://github.com/scottlz0310/sysup.git@v0.9.0
 
 # pipxで
-pipx install git+https://github.com/scottlz0310/sysup.git@v0.8.2
+pipx install git+https://github.com/scottlz0310/sysup.git@v0.9.0
 ```
 
 ### ローカル開発モード
@@ -216,8 +216,8 @@ vim ~/.config/sysup/sysup.toml
 # Linux専用
 apt = true
 snap = true
-flatpak = false
-firmware = false
+flatpak = true
+firmware = true
 
 # Windows専用
 scoop = true
@@ -228,7 +228,7 @@ npm = true
 nvm = true
 rustup = true
 cargo = true
-gem = false
+gem = true
 brew = true
 
 [logging]

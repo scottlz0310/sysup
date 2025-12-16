@@ -5,16 +5,17 @@
 # 更新対象の有効/無効
 apt = true
 snap = true
-flatpak = false
+flatpak = true
 pipx = true
 uv = true
 npm = true
 nvm = true
 rustup = true
 cargo = true
-gem = false
+gem = true
 brew = true
-firmware = false
+firmware = true
+scoop = true
 
 [auto_run]
 # 自動実行設定

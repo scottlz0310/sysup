@@ -11,17 +11,17 @@ pipx = true
 uv = true
 rustup = true
 cargo = true
-gem = false
+gem = true
 
-# Linux専用（Windows環境では自動的に無効化）
-apt = false
-snap = false
-flatpak = false
-firmware = false
+# Linux専用（Windows環境では自動的にスキップ）
+apt = true
+snap = true
+flatpak = true
+firmware = true
 
-# macOS/Linux（Windows環境では通常利用不可）
-brew = false
-nvm = false
+# macOS/Linux（Windows環境では未検出ならスキップ）
+brew = true
+nvm = true
 
 [auto_run]
 # 自動実行設定（Windows環境では未対応）

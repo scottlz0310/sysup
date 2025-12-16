@@ -242,15 +242,17 @@ cat > ~/.config/sysup/sysup.toml << 'EOF'
 [updaters]
 apt = true
 snap = true
-flatpak = false
+flatpak = true
 pipx = true
+uv = true
 npm = true
 nvm = true
 rustup = true
 cargo = true
-gem = false
+gem = true
 brew = true
-firmware = false
+firmware = true
+scoop = true
 
 [logging]
 dir = "~/.local/share/sysup"

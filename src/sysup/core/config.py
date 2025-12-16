@@ -36,17 +36,17 @@ class UpdaterConfig(BaseModel):
 
     apt: bool = True
     snap: bool = True
-    flatpak: bool = False
+    flatpak: bool = True
     pipx: bool = True
     uv: bool = True
     npm: bool = True
     nvm: bool = True
     rustup: bool = True
     cargo: bool = True
-    gem: bool = False
+    gem: bool = True
     brew: bool = True
     scoop: bool = True
-    firmware: bool = False
+    firmware: bool = True
 
 
 class AutoRunConfig(BaseModel):

@@ -42,12 +42,26 @@ sysup init
 ✓ 検出完了
 ```
 
-### 工程2: 実行モードの選択
+### 工程2: 更新対象パッケージマネージャの選択
+
+工程1で検出できたマネージャのみをデフォルトで有効化し、不要なものを無効化します：
+
+```
+工程 2/5: 更新対象パッケージマネージャの選択
+矢印キーで移動、スペースでトグル、Enter または q で確定:
+```
+
+**操作方法：**
+
+- 矢印キーで移動、スペースでトグル、`Enter` または `q` で確定
+- 対話入力が利用できない環境では「数字入力でトグル」方式にフォールバックします
+
+### 工程3: 実行モードの選択
 
 sysup をどのように使用するかを選択します：
 
 ```
-工程 2/5: 実行モードの選択
+工程 3/5: 実行モードの選択
 sysupの動作モードを選択してください:
   1. 標準モード（対話的、手動実行用）
   2. 自動実行モード（cronやスケジューラで定期実行用）
@@ -61,33 +75,6 @@ sysupの動作モードを選択してください:
 - **標準モード**: 通常の手動実行時に確認プロンプトを表示
 - **自動実行モード**: cron や Task Scheduler で定期実行する場合（確認プロンプトなし）
 - **スキップ**: デフォルト値（標準モード）を使用
-
-### 工程3: 更新対象パッケージマネージャの選択
-
-有効にするマネージャを選択します：
-
-```
-工程 3/5: 更新対象パッケージマネージャの選択
-有効にするマネージャを選択してください (数字入力でトグル, Enterで確定):
-
-┏━━━━━━━━┳━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ No.    ┃ 状態 ┃ マネージャ ┃ 説明                         ┃
-┡━━━━━━━━╇━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ 1      │ ✓    │ apt       │ Debian/Ubuntu パッケージマネージャ │
-│ 2      │      │ snap      │ Snapパッケージマネージャ (未検出)    │
-│ 3      │ ✓    │ npm       │ Node.jsパッケージマネージャ (検出済み) │
-└────────┴──────┴───────────┴────────────────────────────────┘
-
-数字を入力してトグル (1-3, q で確定):
-1
-apt: 無効に変更
-```
-
-**操作方法：**
-
-- 数字を入力してマネージャの有効/無効をトグル
-- `q` を入力して確定
-- 系列化実行対象の確認
 
 ### 工程4: 詳細設定
 
@@ -199,16 +186,17 @@ mkdir -p ~/.config/sysup
 # パッケージマネージャの有効/無効 (true/false)
 apt = true
 snap = true
-flatpak = false
+flatpak = true
 pipx = true
 uv = true
 npm = true
 nvm = true
 rustup = true
 cargo = true
-gem = false
-brew = false
-firmware = false
+gem = true
+brew = true
+firmware = true
+scoop = true
 
 [auto_run]
 # 自動実行モード: disabled | enabled | enabled_with_auth
@@ -257,16 +245,17 @@ cache_dir = "~/.cache/sysup"
 |------|------|----------|--------|
 | `apt` | APT (Debian/Ubuntu) | true | Linux |
 | `snap` | Snap packages | true | Linux |
-| `flatpak` | Flatpak | false | Linux |
+| `flatpak` | Flatpak | true | Linux |
 | `pipx` | pipx (Python CLIツール) | true | Linux/macOS/Windows |
 | `uv` | uv tool | true | Linux/macOS/Windows |
 | `npm` | npm (Node.js) | true | Linux/macOS/Windows |
 | `nvm` | nvm (Node Version Manager) | true | Linux/macOS/Windows |
 | `rustup` | Rustup | true | Linux/macOS/Windows |
 | `cargo` | Cargo | true | Linux/macOS/Windows |
-| `gem` | Ruby gems | false | Linux/macOS/Windows |
+| `gem` | Ruby gems | true | Linux/macOS/Windows |
 | `brew` | Homebrew | true | macOS/Linux |
-| `firmware` | ファームウェア更新 | false | Linux |
+| `firmware` | ファームウェア更新 | true | Linux |
+| `scoop` | Scoop | true | Windows |
 
 ### auto_run セクション
 

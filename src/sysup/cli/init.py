@@ -5,18 +5,26 @@ richを使用した対話型メニューで、ユーザーが簡単にsysupを�
 """
 
 import shutil
+import subprocess
 import sys
 from pathlib import Path
-from typing import ClassVar
+from typing import ClassVar, Final
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
+from sysup.core.command import resolve_command
 from sysup.core.config import SysupConfig
 
 console = Console()
+
+_KEY_UP: Final[str] = "up"
+_KEY_DOWN: Final[str] = "down"
+_KEY_SPACE: Final[str] = "space"
+_KEY_ENTER: Final[str] = "enter"
+_KEY_QUIT: Final[str] = "quit"
 
 
 class PackageManagerDetector:
@@ -39,6 +47,22 @@ class PackageManagerDetector:
         "firmware": "fwupdmgr",
     }
 
+    PROBE_COMMANDS: ClassVar[dict[str, list[str]]] = {
+        "apt": ["apt", "--version"],
+        "snap": ["snap", "--version"],
+        "flatpak": ["flatpak", "--version"],
+        "pipx": ["pipx", "--version"],
+        "uv": ["uv", "--version"],
+        "npm": ["npm", "--version"],
+        "nvm": ["node", "--version"],
+        "rustup": ["rustup", "--version"],
+        "cargo": ["cargo", "--version"],
+        "gem": ["gem", "--version"],
+        "brew": ["brew", "--version"],
+        "scoop": ["scoop", "--version"],
+        "firmware": ["fwupdmgr", "--version"],
+    }
+
     @classmethod
     def get_available_managers(cls) -> dict[str, bool]:
         """利用可能なパッケージマネージャを検出.
@@ -49,8 +73,23 @@ class PackageManagerDetector:
         """
         available: dict[str, bool] = {}
         for name, command in cls.MANAGERS.items():
-            available[name] = shutil.which(command) is not None
+            if shutil.which(command) is None:
+                available[name] = False
+                continue
+
+            probe = cls.PROBE_COMMANDS.get(name, [command, "--version"])
+            available[name] = cls._probe_runnable(probe)
         return available
+
+    @staticmethod
+    def _probe_runnable(command: list[str]) -> bool:
+        """実際にコマンドが起動できるかを軽く確認する."""
+        try:
+            resolved = resolve_command(command)
+            result = subprocess.run(resolved, capture_output=True, text=True, timeout=5, check=False)
+            return result.returncode == 0
+        except Exception:
+            return False
 
     @classmethod
     def get_manager_description(cls, name: str) -> str:
@@ -177,13 +216,13 @@ def step1_detect_system() -> dict[str, bool]:
 
 
 def step2_select_mode() -> str:
-    """工程2: 実行モードの選択.
+    """工程3: 実行モードの選択.
 
     Returns:
         選択されたモード ('disabled' または 'enabled').
 
     """
-    console.print("[bold]工程 2/5: 実行モードの選択[/bold]")
+    console.print("[bold]工程 3/5: 実行モードの選択[/bold]")
     console.print("sysupの動作モードを選択してください:")
     console.print("  1. 標準モード（対話的、手動実行用）")
     console.print("  2. 自動実行モード（cronやスケジューラで定期実行用）")
@@ -203,7 +242,7 @@ def step2_select_mode() -> str:
 
 
 def step3_select_updaters(available: dict[str, bool]) -> dict[str, bool]:
-    """工程3: 更新対象の選択.
+    """工程2: 更新対象の選択.
 
     Args:
         available: 利用可能なパッケージマネージャ.
@@ -212,35 +251,25 @@ def step3_select_updaters(available: dict[str, bool]) -> dict[str, bool]:
         各マネージャの有効/無効設定.
 
     """
-    console.print("[bold]工程 3/5: 更新対象パッケージマネージャの選択[/bold]")
-    console.print("有効にするマネージャを選択してください (数字入力でトグル, Enterで確定):\n")
-
-    # テーブルで選択肢を表示
-    table = Table(title="パッケージマネージャ")
-    table.add_column("No.", style="cyan")
-    table.add_column("状態", style="green")
-    table.add_column("マネージャ", style="yellow")
-    table.add_column("説明")
-
-    # デフォルト設定を読み込み
-    default_config = SysupConfig()
-    selected = {}
+    console.print("[bold]工程 2/5: 更新対象パッケージマネージャの選択[/bold]")
 
     managers_list = list(available.keys())
-    for i, name in enumerate(managers_list, 1):
-        is_enabled = default_config.is_updater_enabled(name)
-        is_available = available[name]
-        selected[name] = is_enabled and is_available
+    selected: dict[str, bool] = {name: available[name] for name in managers_list}
 
-        status = "✓" if selected[name] else " "
-        availability = "検出済み" if is_available else "未検出"
-        description = PackageManagerDetector.get_manager_description(name)
+    if sys.stdin.isatty():
+        return _select_updaters_interactive(managers_list, selected, available)
 
-        table.add_row(str(i), status, name, f"{description} ({availability})")
+    console.print("無効化するマネージャを選択してください (数字入力でトグル, q で確定):\n")
+    return _select_updaters_numeric(managers_list, selected, available)
 
-    console.print(table)
 
-    # トグル入力ループ
+def _select_updaters_numeric(
+    managers_list: list[str],
+    selected: dict[str, bool],
+    available: dict[str, bool],
+) -> dict[str, bool]:
+    console.print(_build_updaters_table(managers_list, selected, available, cursor_index=None))
+
     while True:
         console.print(f"\n数字を入力してトグル (1-{len(managers_list)}, q で確定):")
         user_input = Prompt.ask("入力").strip().lower()
@@ -252,20 +281,129 @@ def step3_select_updaters(available: dict[str, bool]) -> dict[str, bool]:
             idx = int(user_input) - 1
             if 0 <= idx < len(managers_list):
                 name = managers_list[idx]
-                if available[name]:
-                    selected[name] = not selected[name]
-                    status = "✓" if selected[name] else " "
-                    console.print(f"[blue]{name}: {status if selected[name] else '無効に変更'}[/blue]")
+                selected[name] = not selected[name]
+                status = "✓" if selected[name] else " "
+                if selected[name] and not available[name]:
+                    console.print(f"[yellow]⚠ {name} は未検出ですが有効にしました（後でインストール可能）[/yellow]")
                 else:
-                    console.print(f"[yellow]⚠ {name} はシステムに見つかりません[/yellow]")
+                    console.print(f"[blue]{name}: {status if selected[name] else '無効に変更'}[/blue]")
             else:
                 console.print("[red]✗ 無効な選択です[/red]")
         except ValueError:
             console.print("[red]✗ 数字を入力してください[/red]")
 
     console.print("[green]✓ 選択完了[/green]\n")
-    selected_typed: dict[str, bool] = selected
-    return selected_typed
+    return selected
+
+
+def _select_updaters_interactive(
+    managers_list: list[str],
+    selected: dict[str, bool],
+    available: dict[str, bool],
+) -> dict[str, bool]:
+    cursor = 0
+    while True:
+        console.clear()
+        console.print("[bold]工程 2/5: 更新対象パッケージマネージャの選択[/bold]")
+        console.print("矢印キーで移動、スペースでトグル、Enter または q で確定:\n")
+        console.print(_build_updaters_table(managers_list, selected, available, cursor_index=cursor))
+
+        key = _read_key()
+        if key == _KEY_UP:
+            cursor = max(0, cursor - 1)
+        elif key == _KEY_DOWN:
+            cursor = min(len(managers_list) - 1, cursor + 1)
+        elif key == _KEY_SPACE:
+            name = managers_list[cursor]
+            selected[name] = not selected[name]
+        elif key in {_KEY_ENTER, _KEY_QUIT}:
+            break
+
+    console.print("[green]✓ 選択完了[/green]\n")
+    return selected
+
+
+def _build_updaters_table(
+    managers_list: list[str],
+    selected: dict[str, bool],
+    available: dict[str, bool],
+    cursor_index: int | None,
+) -> Table:
+    table = Table(title="パッケージマネージャ")
+    if cursor_index is not None:
+        table.add_column("", style="cyan", width=2)
+    table.add_column("No.", style="cyan")
+    table.add_column("状態", style="green")
+    table.add_column("マネージャ", style="yellow")
+    table.add_column("説明")
+
+    for i, name in enumerate(managers_list, 1):
+        is_available = available[name]
+        status = "✓" if selected[name] else " "
+        availability = "検出済み" if is_available else "未検出"
+        description = PackageManagerDetector.get_manager_description(name)
+
+        pointer = ">" if cursor_index == i - 1 else " "
+        row = [str(i), status, name, f"{description} ({availability})"]
+        if cursor_index is not None:
+            table.add_row(pointer, *row)
+        else:
+            table.add_row(*row)
+
+    return table
+
+
+def _read_key() -> str:
+    from sysup.core.platform import is_windows
+
+    return _read_key_windows() if is_windows() else _read_key_posix()
+
+
+def _read_key_windows() -> str:
+    import msvcrt
+
+    ch = msvcrt.getwch()
+    if ch in ("\x00", "\xe0"):
+        ch2 = msvcrt.getwch()
+        if ch2 == "H":
+            return _KEY_UP
+        if ch2 == "P":
+            return _KEY_DOWN
+        return ""
+    if ch == " ":
+        return _KEY_SPACE
+    if ch == "\r":
+        return _KEY_ENTER
+    if ch.lower() == "q":
+        return _KEY_QUIT
+    return ""
+
+
+def _read_key_posix() -> str:
+    import termios
+    import tty
+
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ch = sys.stdin.read(1)
+        if ch == "\x1b":
+            seq = sys.stdin.read(2)
+            if seq == "[A":
+                return _KEY_UP
+            if seq == "[B":
+                return _KEY_DOWN
+            return ""
+        if ch == " ":
+            return _KEY_SPACE
+        if ch in ("\r", "\n"):
+            return _KEY_ENTER
+        if ch.lower() == "q":
+            return _KEY_QUIT
+        return ""
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
 
 def step4_advanced_settings() -> dict[str, bool | str]:
@@ -448,8 +586,8 @@ def init_command() -> None:
 
         # ウィザード実行
         available = step1_detect_system()
-        mode = step2_select_mode()
         updaters = step3_select_updaters(available)
+        mode = step2_select_mode()
         settings = step4_advanced_settings()
         step5_save_config(mode, updaters, settings, existing_config)
 
