@@ -86,10 +86,10 @@ def test_check_disk_space_error(system_checker):
 @pytest.mark.skipif(os.name == "nt", reason="Windows環境ではネットワークテストをスキップ")
 def test_check_network_success(system_checker):
     """ネットワーク接続が正常な場合のテスト"""
-    with patch("subprocess.run") as mock_run:
-        mock_result = Mock()
-        mock_result.returncode = 0
-        mock_run.return_value = mock_result
+    with patch("socket.create_connection") as mock_create_connection:
+        mock_conn = MagicMock()
+        mock_conn.__enter__.return_value = mock_conn
+        mock_create_connection.return_value = mock_conn
 
         result = system_checker.check_network()
 
@@ -100,10 +100,8 @@ def test_check_network_success(system_checker):
 @pytest.mark.skipif(os.name == "nt", reason="Windows環境ではネットワークテストをスキップ")
 def test_check_network_failure(system_checker):
     """ネットワーク接続に問題がある場合のテスト"""
-    with patch("subprocess.run") as mock_run:
-        mock_result = Mock()
-        mock_result.returncode = 1
-        mock_run.return_value = mock_result
+    with patch("socket.create_connection") as mock_create_connection:
+        mock_create_connection.side_effect = OSError("Network error")
 
         result = system_checker.check_network()
 
@@ -114,10 +112,8 @@ def test_check_network_failure(system_checker):
 @pytest.mark.skipif(os.name == "nt", reason="Windows環境ではネットワークテストをスキップ")
 def test_check_network_timeout(system_checker):
     """ネットワーク接続がタイムアウトする場合のテスト"""
-    import subprocess
-
-    with patch("subprocess.run") as mock_run:
-        mock_run.side_effect = subprocess.TimeoutExpired("ping", 5)
+    with patch("socket.create_connection") as mock_create_connection:
+        mock_create_connection.side_effect = TimeoutError("timeout")
 
         result = system_checker.check_network()
 

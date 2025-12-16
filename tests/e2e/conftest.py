@@ -7,8 +7,31 @@ from pathlib import Path
 
 import pytest
 
+
+def _pty_available() -> bool:
+    """PTY が利用可能かを判定する.
+
+    CI/コンテナ環境では PTY が無効な場合があり、pexpect.spawn が
+    `OSError: out of pty devices` 等で失敗することがある。
+    """
+
+    if sys.platform == "win32":
+        return False
+
+    # `os.openpty` が無い/使えない環境があるため、実際に割り当てを試す。
+    try:
+        import os as _os
+
+        master_fd, slave_fd = _os.openpty()
+        _os.close(master_fd)
+        _os.close(slave_fd)
+        return True
+    except Exception:
+        return False
+
+
 # pexpect は Windows では利用不可
-pexpect_available = sys.platform != "win32"
+pexpect_available = sys.platform != "win32" and _pty_available()
 if pexpect_available:
     try:
         import pexpect
@@ -53,8 +76,10 @@ def temp_home():
 @pytest.fixture
 def sysup_command():
     """sysup コマンドのパスを返すフィクスチャ."""
-    # uv run sysup を使用
-    return ["uv", "run", "sysup"]
+    # `uv run` を使用。
+    # E2E テスト内では subprocess/pexpect から何度も呼ばれるため
+    # `--no-sync` を付けてリゾルブ/同期を避ける（CIでは事前に `uv sync` 済み）。
+    return ["uv", "run", "--no-sync", "sysup"]
 
 
 @pytest.fixture
@@ -66,7 +91,8 @@ def pexpect_spawn(temp_home, sysup_command):
     spawned_processes = []
 
     def _spawn(args, timeout=30, encoding="utf-8"):
-        cmd = " ".join(sysup_command + args)
+        cmd = sysup_command[0]
+        cmd_args = sysup_command[1:] + args
         env = os.environ.copy()
         env["HOME"] = str(temp_home)
         # 端末サイズを設定（richの出力に影響）
@@ -75,12 +101,7 @@ def pexpect_spawn(temp_home, sysup_command):
         # ANSIエスケープシーケンスを無効化（rich対応）
         env["NO_COLOR"] = "1"
         env["TERM"] = "dumb"
-        child = pexpect.spawn(
-            cmd,
-            timeout=timeout,
-            encoding=encoding,
-            env=env,
-        )
+        child = pexpect.spawn(cmd, cmd_args, timeout=timeout, encoding=encoding, env=env)
         spawned_processes.append(child)
         return child
 

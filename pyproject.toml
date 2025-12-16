@@ -97,6 +97,8 @@ docstring-code-format = true
 
 [tool.basedpyright]
 pythonVersion = "3.11"
+venvPath = "."
+venv = ".venv"
 typeCheckingMode = "all"
 reportUnusedVariable = true
 reportUnusedImport = true
