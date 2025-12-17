@@ -12,11 +12,11 @@ from sysup.updaters.base import BaseUpdater
 
 
 # テスト用の具体的なUpdaterクラス
-class TestUpdater(BaseUpdater):
+class DummyUpdater(BaseUpdater):
     """テスト用のUpdater実装"""
 
     def get_name(self) -> str:
-        return "TestUpdater"
+        return "DummyUpdater"
 
     def is_available(self) -> bool:
         return True
@@ -36,7 +36,7 @@ def mock_logger():
 
 def test_base_updater_initialization(mock_logger):
     """BaseUpdater初期化のテスト"""
-    updater = TestUpdater(mock_logger, dry_run=False)
+    updater = DummyUpdater(mock_logger, dry_run=False)
 
     assert updater.logger == mock_logger
     assert updater.dry_run is False
@@ -44,35 +44,35 @@ def test_base_updater_initialization(mock_logger):
 
 def test_base_updater_dry_run_mode(mock_logger):
     """BaseUpdaterドライランモードのテスト"""
-    updater = TestUpdater(mock_logger, dry_run=True)
+    updater = DummyUpdater(mock_logger, dry_run=True)
 
     assert updater.dry_run is True
 
 
 def test_get_name(mock_logger):
     """get_nameメソッドのテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
-    assert updater.get_name() == "TestUpdater"
+    assert updater.get_name() == "DummyUpdater"
 
 
 def test_is_available(mock_logger):
     """is_availableメソッドのテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     assert updater.is_available() is True
 
 
 def test_perform_update(mock_logger):
     """perform_updateメソッドのテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     assert updater.perform_update() is True
 
 
 def test_check_updates_default(mock_logger):
     """check_updatesメソッドのデフォルト実装テスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     result = updater.check_updates()
 
@@ -81,7 +81,7 @@ def test_check_updates_default(mock_logger):
 
 def test_pre_update_default(mock_logger):
     """pre_updateメソッドのデフォルト実装テスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     result = updater.pre_update()
 
@@ -90,7 +90,7 @@ def test_pre_update_default(mock_logger):
 
 def test_post_update_default(mock_logger):
     """post_updateメソッドのデフォルト実装テスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     result = updater.post_update()
 
@@ -99,7 +99,7 @@ def test_post_update_default(mock_logger):
 
 def test_run_command_success(mock_logger):
     """run_commandメソッド - 成功のテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_result = Mock()
@@ -116,7 +116,7 @@ def test_run_command_success(mock_logger):
 
 def test_run_command_windows_resolves_cmd(mock_logger):
     """run_commandメソッド - Windowsで.cmdをcmd.exe経由で実行することを確認"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("sysup.core.command.is_windows", return_value=True):
         with patch("sysup.core.command.shutil.which", return_value=r"C:\Scoop\shims\scoop.cmd"):
@@ -135,7 +135,7 @@ def test_run_command_windows_resolves_cmd(mock_logger):
 
 def test_run_command_windows_resolves_ps1(mock_logger):
     """run_commandメソッド - Windowsで.ps1をpowershell.exe経由で実行することを確認"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("sysup.core.command.is_windows", return_value=True):
         with patch("sysup.core.command.shutil.which", return_value=r"C:\Scoop\shims\scoop.ps1"):
@@ -162,7 +162,7 @@ def test_run_command_windows_resolves_ps1(mock_logger):
 
 def test_run_command_dry_run(mock_logger):
     """run_commandメソッド - ドライランモードのテスト"""
-    updater = TestUpdater(mock_logger, dry_run=True)
+    updater = DummyUpdater(mock_logger, dry_run=True)
 
     result = updater.run_command(["apt", "update"])
 
@@ -173,7 +173,7 @@ def test_run_command_dry_run(mock_logger):
 
 def test_run_command_with_check_false(mock_logger):
     """run_commandメソッド - check=Falseのテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_result = Mock()
@@ -189,7 +189,7 @@ def test_run_command_with_check_false(mock_logger):
 
 def test_run_command_error(mock_logger):
     """run_commandメソッド - エラーのテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_run.side_effect = subprocess.CalledProcessError(1, ["false"], stderr="Error occurred")
@@ -200,7 +200,7 @@ def test_run_command_error(mock_logger):
 
 def test_run_command_timeout(mock_logger):
     """run_commandメソッド - タイムアウトのテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_run.side_effect = subprocess.TimeoutExpired(["sleep", "10"], 5)
@@ -211,7 +211,7 @@ def test_run_command_timeout(mock_logger):
 
 def test_run_command_custom_timeout(mock_logger):
     """run_commandメソッド - カスタムタイムアウトのテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_result = Mock()
@@ -227,7 +227,7 @@ def test_run_command_custom_timeout(mock_logger):
 
 def test_command_exists_true(mock_logger):
     """command_existsメソッド - コマンドが存在する場合のテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_result = Mock()
@@ -241,7 +241,7 @@ def test_command_exists_true(mock_logger):
 
 def test_command_exists_false(mock_logger):
     """command_existsメソッド - コマンドが存在しない場合のテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_result = Mock()
@@ -255,7 +255,7 @@ def test_command_exists_false(mock_logger):
 
 def test_command_exists_exception(mock_logger):
     """command_existsメソッド - 例外発生時のテスト"""
-    updater = TestUpdater(mock_logger)
+    updater = DummyUpdater(mock_logger)
 
     with patch("subprocess.run") as mock_run:
         mock_run.side_effect = Exception("Command error")
