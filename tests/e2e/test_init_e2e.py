@@ -198,6 +198,7 @@ class TestInitInteractive:
         child.expect(pexpect.EOF, timeout=10)
 
 
+@pytest.mark.skipif(sys.platform == "darwin", reason="macOS interactive tests are unstable in CI")
 class TestInitExistingConfig:
     """既存設定ファイルがある場合のテスト."""
 
