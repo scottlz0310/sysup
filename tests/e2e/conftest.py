@@ -60,7 +60,11 @@ def temp_home():
     """一時的なHOMEディレクトリを作成するフィクスチャ."""
     with tempfile.TemporaryDirectory() as tmpdir:
         old_home = os.environ.get("HOME")
+        old_userprofile = os.environ.get("USERPROFILE")
         os.environ["HOME"] = tmpdir
+        # Windows環境ではUSERPROFILEも設定
+        if sys.platform == "win32":
+            os.environ["USERPROFILE"] = tmpdir
         # .config ディレクトリを事前に作成
         config_dir = Path(tmpdir) / ".config" / "sysup"
         config_dir.mkdir(parents=True, exist_ok=True)
@@ -71,6 +75,11 @@ def temp_home():
                 os.environ["HOME"] = old_home
             else:
                 os.environ.pop("HOME", None)
+            if sys.platform == "win32":
+                if old_userprofile is not None:
+                    os.environ["USERPROFILE"] = old_userprofile
+                else:
+                    os.environ.pop("USERPROFILE", None)
 
 
 @pytest.fixture
@@ -95,6 +104,9 @@ def pexpect_spawn(temp_home, sysup_command):
         cmd_args = sysup_command[1:] + args
         env = os.environ.copy()
         env["HOME"] = str(temp_home)
+        # Windows環境ではUSERPROFILEも設定
+        if sys.platform == "win32":
+            env["USERPROFILE"] = str(temp_home)
         # 端末サイズを設定（richの出力に影響）
         env["COLUMNS"] = "120"
         env["LINES"] = "40"
@@ -122,6 +134,9 @@ def run_cli(temp_home, sysup_command):
         cmd = sysup_command + args
         env = os.environ.copy()
         env["HOME"] = str(temp_home)
+        # Windows環境ではUSERPROFILEも設定
+        if sys.platform == "win32":
+            env["USERPROFILE"] = str(temp_home)
         # ANSIエスケープシーケンスを無効化
         env["NO_COLOR"] = "1"
         env["TERM"] = "dumb"
