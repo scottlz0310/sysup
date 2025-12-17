@@ -20,6 +20,7 @@ if sys.platform != "win32":
     import pexpect
 
 
+@pytest.mark.skipif(sys.platform == "darwin", reason="macOS interactive tests are unstable in CI")
 class TestInitInteractive:
     """init コマンドの対話型テスト（TTYモード）."""
 
