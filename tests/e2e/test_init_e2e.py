@@ -34,8 +34,9 @@ class TestInitInteractive:
         # 工程2への遷移を待つ（工程1は自動で進む）
         child.expect("工程 2/5", timeout=60)
 
+        # プロンプトが表示されるのを待つ
+        child.expect("q で確定", timeout=10)
         # 対話モードでqまたはEnterを押して確定
-        time.sleep(0.5)
         child.sendline("q")
 
         # 工程3: 実行モード選択
@@ -72,7 +73,7 @@ class TestInitInteractive:
 
         # 工程2を待つ（工程1は自動）
         child.expect("工程 2/5", timeout=60)
-        time.sleep(0.5)
+        child.expect("q で確定", timeout=10)
         child.sendline("q")
 
         # 工程3: 自動実行モード（2）を選択
@@ -100,7 +101,7 @@ class TestInitInteractive:
 
         # 工程2を待つ
         child.expect("工程 2/5", timeout=60)
-        time.sleep(0.5)
+        child.expect("q で確定", timeout=10)
         child.sendline("q")
 
         # 工程3: 標準モード
@@ -181,7 +182,8 @@ class TestInitInteractive:
         child.send("\x1b[A")  # Up arrow
         time.sleep(0.1)
 
-        # qで確定
+        # プロンプトを待ってqで確定
+        child.expect("q で確定", timeout=10)
         child.sendline("q")
 
         # 残りの工程を進める
