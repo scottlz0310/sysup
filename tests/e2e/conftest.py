@@ -140,6 +140,8 @@ def run_cli(temp_home, sysup_command):
         # ANSIエスケープシーケンスを無効化
         env["NO_COLOR"] = "1"
         env["TERM"] = "dumb"
+        # PythonのI/OエンコーディングをUTF-8に設定（Windows対応）
+        env["PYTHONIOENCODING"] = "utf-8"
         result = subprocess.run(
             cmd,
             input=input_text,
