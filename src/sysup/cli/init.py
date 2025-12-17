@@ -86,7 +86,9 @@ class PackageManagerDetector:
         """実際にコマンドが起動できるかを軽く確認する."""
         try:
             resolved = resolve_command(command)
-            result = subprocess.run(resolved, capture_output=True, text=True, encoding="utf-8", errors="ignore", timeout=5, check=False)
+            result = subprocess.run(
+                resolved, capture_output=True, text=True, encoding="utf-8", errors="ignore", timeout=5, check=False
+            )
             return result.returncode == 0
         except Exception:
             return False
