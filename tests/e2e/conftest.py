@@ -113,6 +113,8 @@ def pexpect_spawn(temp_home, sysup_command):
         # ANSIエスケープシーケンスを無効化（rich対応）
         env["NO_COLOR"] = "1"
         env["TERM"] = "dumb"
+        # PythonのI/OエンコーディングをUTF-8に設定
+        env["PYTHONIOENCODING"] = "utf-8"
         child = pexpect.spawn(cmd, cmd_args, timeout=timeout, encoding=encoding, env=env)
         spawned_processes.append(child)
         return child
