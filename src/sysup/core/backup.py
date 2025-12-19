@@ -82,6 +82,11 @@ class BackupManager:
         if npm_packages:
             packages["npm"] = npm_packages
 
+        # pnpm
+        pnpm_packages = self._get_pnpm_packages()
+        if pnpm_packages:
+            packages["pnpm"] = pnpm_packages
+
         # pipx
         pipx_packages = self._get_pipx_packages()
         if pipx_packages:
@@ -180,6 +185,26 @@ class BackupManager:
             if result.returncode == 0:
                 data: dict[str, dict[str, str]] = json.loads(result.stdout)  # type: ignore
                 return list(data.get("dependencies", {}).keys())
+            return None
+        except Exception:
+            return None
+
+    def _get_pnpm_packages(self) -> list[str] | None:
+        """pnpmグローバルパッケージリストを取得する.
+
+        Returns:
+            インストール済みpnpmグローバルパッケージ名のリスト. 取得失敗時はNone.
+
+        """
+        try:
+            result = subprocess.run(
+                ["pnpm", "list", "-g", "--depth=0", "--json"], capture_output=True, text=True, timeout=30
+            )
+            if result.returncode == 0:
+                data_list: list[dict[str, dict[str, str]]] = json.loads(result.stdout)  # type: ignore
+                # pnpm returns an array with a single object
+                if data_list and len(data_list) > 0:
+                    return list(data_list[0].get("dependencies", {}).keys())
             return None
         except Exception:
             return None

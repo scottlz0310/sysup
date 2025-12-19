@@ -24,6 +24,7 @@ class UpdaterConfig(BaseModel):
         pipx: pipxパッケージマネージャを有効にする.
         uv: uv toolパッケージマネージャを有効にする.
         npm: npmパッケージマネージャを有効にする.
+        pnpm: pnpmパッケージマネージャを有効にする.
         nvm: nvmバージョンマネージャを有効にする.
         rustup: Rustupツールチェーンマネージャを有効にする.
         cargo: Cargoパッケージマネージャを有効にする.
@@ -40,6 +41,7 @@ class UpdaterConfig(BaseModel):
     pipx: bool = True
     uv: bool = True
     npm: bool = True
+    pnpm: bool = True
     nvm: bool = True
     rustup: bool = True
     cargo: bool = True

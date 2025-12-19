@@ -42,6 +42,7 @@ def mock_all_updaters():
         patch("sysup.cli.cli.SnapUpdater", return_value=mock),
         patch("sysup.cli.cli.BrewUpdater", return_value=mock),
         patch("sysup.cli.cli.NpmUpdater", return_value=mock),
+        patch("sysup.cli.cli.PnpmUpdater", return_value=mock),
         patch("sysup.cli.cli.PipxUpdater", return_value=mock),
         patch("sysup.cli.cli.UvUpdater", return_value=mock),
         patch("sysup.cli.cli.RustupUpdater", return_value=mock),

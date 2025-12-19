@@ -1,4 +1,4 @@
-"""追加Updaterの基本テスト（cargo, npm, pipx, rustup, snap, flatpak, gem, firmware, nvm）"""
+"""追加Updaterの基本テスト（cargo, npm, pnpm, pipx, rustup, snap, flatpak, gem, firmware, nvm）"""
 
 import subprocess
 import tempfile
@@ -15,6 +15,7 @@ from sysup.updaters.gem import GemUpdater
 from sysup.updaters.npm import NpmUpdater
 from sysup.updaters.nvm import NvmUpdater
 from sysup.updaters.pipx import PipxUpdater
+from sysup.updaters.pnpm import PnpmUpdater
 from sysup.updaters.rustup import RustupUpdater
 from sysup.updaters.snap import SnapUpdater
 
@@ -83,6 +84,39 @@ def test_npm_is_available(mock_logger):
 def test_npm_perform_update(mock_logger):
     """NpmUpdater - perform_updateのテスト"""
     updater = NpmUpdater(mock_logger)
+
+    with patch.object(updater, "is_available", return_value=True):
+        with patch.object(updater, "run_command") as mock_run:
+            mock_result = Mock()
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+
+            result = updater.perform_update()
+            assert result is True
+
+
+# ======================
+# Pnpm Updater Tests
+# ======================
+
+
+def test_pnpm_get_name(mock_logger):
+    """PnpmUpdater - get_nameのテスト"""
+    updater = PnpmUpdater(mock_logger)
+    assert updater.get_name() == "pnpm"
+
+
+def test_pnpm_is_available(mock_logger):
+    """PnpmUpdater - is_availableのテスト"""
+    updater = PnpmUpdater(mock_logger)
+
+    with patch.object(updater, "command_exists", return_value=True):
+        assert updater.is_available() is True
+
+
+def test_pnpm_perform_update(mock_logger):
+    """PnpmUpdater - perform_updateのテスト"""
+    updater = PnpmUpdater(mock_logger)
 
     with patch.object(updater, "is_available", return_value=True):
         with patch.object(updater, "run_command") as mock_run:

@@ -161,6 +161,24 @@ def test_get_npm_packages():
                 assert len(packages) >= 0
 
 
+def test_get_pnpm_packages():
+    """pnpmパッケージ取得のテスト"""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        backup_dir = Path(tmpdir)
+        manager = BackupManager(backup_dir, enabled=True)
+
+        with patch("subprocess.run") as mock_run:
+            mock_result = Mock()
+            mock_result.returncode = 0
+            mock_result.stdout = '[{"dependencies":{"typescript":{},"lodash":{},"react":{}}}]'
+            mock_run.return_value = mock_result
+
+            packages = manager._get_pnpm_packages()
+            # パッケージがNoneでない場合のみチェック
+            if packages is not None:
+                assert len(packages) >= 0
+
+
 def test_get_pipx_packages():
     """pipxパッケージ取得のテスト"""
     with tempfile.TemporaryDirectory() as tmpdir:

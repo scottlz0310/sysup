@@ -9,6 +9,7 @@ flatpak = true
 pipx = true
 uv = true
 npm = true
+pnpm = true
 nvm = true
 rustup = true
 cargo = true
