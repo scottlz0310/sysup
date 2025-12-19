@@ -7,12 +7,12 @@
 [![Code Coverage](https://img.shields.io/badge/coverage-87.41%25-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/scottlz0310/sysup)
 
-最新リリース: **v0.9.0**
+最新リリース: **v0.10.0**
 
 ## 概要
 
 `sysup`は、複数のパッケージマネージャを一括で更新できるPython製のCLIツールです。
-APT、Snap、Homebrew、npm、Rustupなど、13種類のパッケージマネージャに対応しています。
+APT、Snap、Homebrew、npm、pnpm、Rustupなど、14種類のパッケージマネージャに対応しています。
 
 ### 特徴
 
@@ -41,6 +41,7 @@ APT、Snap、Homebrew、npm、Rustupなど、13種類のパッケージマネー
 
 #### クロスプラットフォーム
 - **npm** - Node.jsグローバルパッケージ
+- **pnpm** - 高速Node.jsパッケージマネージャ
 - **nvm** - Node Version Manager
 - **pipx** - Python CLIツール
 - **uv tool** - Python CLIツール（uvによる管理）
@@ -77,10 +78,10 @@ Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 ```bash
 # uvで
-uv tool install git+https://github.com/scottlz0310/sysup.git@v0.9.0
+uv tool install git+https://github.com/scottlz0310/sysup.git@v0.10.0
 
 # pipxで
-pipx install git+https://github.com/scottlz0310/sysup.git@v0.9.0
+pipx install git+https://github.com/scottlz0310/sysup.git@v0.10.0
 ```
 
 ### ローカル開発モード
@@ -225,6 +226,7 @@ scoop = true
 # クロスプラットフォーム
 pipx = true
 npm = true
+pnpm = true
 nvm = true
 rustup = true
 cargo = true

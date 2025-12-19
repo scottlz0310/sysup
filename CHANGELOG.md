@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+- SBOM生成の自動化
+- 構造化ログの導入
+
+## [0.10.0] - 2025-12-19
+
+### Added
+- **pnpm updater**: pnpmグローバルツール更新機能を追加
+  - `pnpm update -g` でグローバルパッケージを更新
+  - Windows/Linux/macOS対応
+  - `sysup init` での自動検出に対応
+  - パッケージリストのバックアップ機能に対応
+  - npmからpnpmへの移行基盤を整備
+
+### Changed
+- **対応パッケージマネージャ数**: 13種類から14種類に拡大
+- **README**: pnpm対応を追記、インストール手順をv0.10.0に更新
+
+## [0.9.0] - 2025-12-16
+
 ### Added
 - **E2Eテスト整備**: pexpectを使用した対話型CLI（init コマンド）のE2Eテストを追加
   - TTYモードでの矢印キー操作、スペースでのトグル、qキーでの確定をテスト
@@ -18,12 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **テスト戦略**: 対話型CLI（TTY/キー入力）のテストはE2Eで担保し、ユニットテストは仕様が固まるまで最小限にする方針を実装
-
-### Planned
-- SBOM生成の自動化
-- 構造化ログの導入
-
-## [0.9.0] - 2025-12-16
 
 ### Changed
 - **init コマンド**: 工程2で検出済みupdaterを選択（デフォルトは検出済みのみ有効）、工程3で実行モード選択に変更。TTYでは矢印キー移動+スペースでトグル、非TTYでは番号入力トグルにフォールバック。
