@@ -33,6 +33,7 @@ from sysup.updaters.gem import GemUpdater
 from sysup.updaters.npm import NpmUpdater
 from sysup.updaters.nvm import NvmUpdater
 from sysup.updaters.pipx import PipxUpdater
+from sysup.updaters.pnpm import PnpmUpdater
 from sysup.updaters.rustup import RustupUpdater
 from sysup.updaters.scoop import ScoopUpdater
 from sysup.updaters.snap import SnapUpdater
@@ -223,6 +224,7 @@ def show_available_updaters(logger: SysupLogger, config: SysupConfig) -> None:
         ("brew", BrewUpdater(logger, config.general.dry_run)),
         ("scoop", ScoopUpdater(logger, config.general.dry_run)),
         ("npm", NpmUpdater(logger, config.general.dry_run)),
+        ("pnpm", PnpmUpdater(logger, config.general.dry_run)),
         ("pipx", PipxUpdater(logger, config.general.dry_run)),
         ("uv", UvUpdater(logger, config.general.dry_run)),
         ("rustup", RustupUpdater(logger, config.general.dry_run)),
@@ -321,6 +323,8 @@ def run_updates(logger: SysupLogger, config: SysupConfig, checker: SystemChecker
         updaters.append(("scoop", ScoopUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("npm"):
         updaters.append(("npm", NpmUpdater(logger, config.general.dry_run)))
+    if config.is_updater_enabled("pnpm"):
+        updaters.append(("pnpm", PnpmUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("pipx"):
         updaters.append(("pipx", PipxUpdater(logger, config.general.dry_run)))
     if config.is_updater_enabled("uv"):
