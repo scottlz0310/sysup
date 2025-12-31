@@ -6,6 +6,7 @@ Clickライブラリを使用して、各種オプションとサブコマンド
 """
 
 import atexit
+import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -20,6 +21,7 @@ from sysup.core.checks import SystemChecker
 from sysup.core.config import SysupConfig
 from sysup.core.logging import SysupLogger
 from sysup.core.notification import Notifier
+from sysup.core.platform import is_windows
 from sysup.core.self_update import SelfUpdater
 from sysup.core.stats import StatsManager
 from sysup.core.wsl import WSLIntegration
@@ -346,7 +348,26 @@ def run_updates(logger: SysupLogger, config: SysupConfig, checker: SystemChecker
         logger.warning("有効なupdaterがありません")
         return
 
+    sudo_required = {"apt", "snap", "firmware"}
+    if config.general.parallel_updates:
+        updaters.sort(key=lambda item: item[0] not in sudo_required)
+
     total_updaters = len(updaters)
+
+    if (
+        config.general.parallel_updates
+        and not is_windows()
+        and not config.general.dry_run
+        and any(name in sudo_required and updater.is_available() for name, updater in updaters)
+    ):
+        logger.info("並列更新のため、sudo認証を事前に実行します")
+        try:
+            subprocess.run(["sudo", "-v"], check=True)
+        except subprocess.CalledProcessError:
+            logger.warning("sudo認証に失敗しました。sudoが必要な更新は失敗する可能性があります")
+            if auto_run:
+                logger.error("自動実行モードではsudo認証に失敗すると継続できません")
+                return
 
     if config.general.parallel_updates:
         # 並列更新
