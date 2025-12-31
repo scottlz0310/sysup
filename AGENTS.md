@@ -24,6 +24,7 @@
 - Ruffで整形（ダブルクォート）とlintを実施。
 - 全関数に型ヒント、公開APIにはGoogleスタイルDocstringを必須。
 - テストの命名: `tests/test_*.py`, `Test*`, `test_*`。
+- セッション完了時はコード品質をチェックしてからコミット。
 
 ## Testing Guidelines
 - フレームワークはpytest（厳格設定は `pyproject.toml` を参照）。

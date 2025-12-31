@@ -427,8 +427,6 @@ def run_updates(logger: SysupLogger, config: SysupConfig, checker: SystemChecker
             import time
 
             time.sleep(5)
-            import subprocess
-
             subprocess.run(["sudo", "reboot"])
         else:
             logger.warning("後で手動で再起動してください")
