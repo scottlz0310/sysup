@@ -363,6 +363,11 @@ def run_updates(logger: SysupLogger, config: SysupConfig, checker: SystemChecker
         logger.info("並列更新のため、sudo認証を事前に実行します")
         try:
             subprocess.run(["sudo", "-v"], check=True)
+        except FileNotFoundError:
+            logger.warning("sudoコマンドが見つかりません。sudoが必要な更新は失敗する可能性があります")
+            if auto_run:
+                logger.error("自動実行モードではsudoが必要な更新を続行できません")
+                return
         except subprocess.CalledProcessError:
             logger.warning("sudo認証に失敗しました。sudoが必要な更新は失敗する可能性があります")
             if auto_run:

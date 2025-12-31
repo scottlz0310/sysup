@@ -467,6 +467,37 @@ def test_run_updates_parallel_mode():
         logger.close()
 
 
+def test_run_updates_parallel_mode_with_sudo_preauth():
+    """run_updates - 並列更新時にsudo事前認証を行うテスト"""
+    from sysup.cli.cli import run_updates
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        logger = SysupLogger(Path(tmpdir), "INFO")
+        config = SysupConfig()
+        config.general.parallel_updates = True
+        checker = MagicMock()
+
+        checker.check_daily_run.return_value = True
+        checker.check_disk_space.return_value = True
+        checker.check_network.return_value = True
+        checker.check_sudo_available.return_value = True
+        checker.check_reboot_required.return_value = False
+
+        mock_apt = MagicMock()
+        mock_apt.is_available.return_value = True
+        mock_apt.perform_update.return_value = True
+        mock_apt.get_name.return_value = "APT"
+
+        with mock_all_updaters():
+            with patch("sysup.cli.cli.AptUpdater", return_value=mock_apt):
+                with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
+                    with patch("sysup.cli.cli.is_windows", return_value=False):
+                        with patch("sysup.cli.cli.subprocess.run") as mock_run:
+                            run_updates(logger, config, checker, auto_run=True, force=False)
+                            mock_run.assert_called_once_with(["sudo", "-v"], check=True)
+        logger.close()
+
+
 def test_run_updates_reboot_required():
     """run_updates - 再起動が必要な場合のテスト"""
     from sysup.cli.cli import run_updates
