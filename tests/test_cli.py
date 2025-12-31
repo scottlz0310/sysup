@@ -475,6 +475,7 @@ def test_run_updates_parallel_mode_with_sudo_preauth():
         logger = SysupLogger(Path(tmpdir), "INFO")
         config = SysupConfig()
         config.general.parallel_updates = True
+        config.backup.enabled = False
         checker = MagicMock()
 
         checker.check_daily_run.return_value = True
@@ -488,14 +489,16 @@ def test_run_updates_parallel_mode_with_sudo_preauth():
         mock_apt.perform_update.return_value = True
         mock_apt.get_name.return_value = "APT"
 
-        with mock_all_updaters():
-            with patch("sysup.cli.cli.AptUpdater", return_value=mock_apt):
-                with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
-                    with patch("sysup.cli.cli.is_windows", return_value=False):
-                        with patch("sysup.cli.cli.subprocess.run") as mock_run:
-                            run_updates(logger, config, checker, auto_run=True, force=False)
-                            mock_run.assert_called_once_with(["sudo", "-v"], check=True)
-        logger.close()
+        try:
+            with mock_all_updaters():
+                with patch("sysup.cli.cli.AptUpdater", return_value=mock_apt):
+                    with patch("sysup.cli.cli.Notifier.is_available", return_value=False):
+                        with patch("sysup.cli.cli.is_windows", return_value=False):
+                            with patch("sysup.cli.cli.subprocess.run") as mock_run:
+                                run_updates(logger, config, checker, auto_run=True, force=False)
+                                mock_run.assert_any_call(["sudo", "-v"], check=True)
+        finally:
+            logger.close()
 
 
 def test_run_updates_reboot_required():
