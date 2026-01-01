@@ -80,11 +80,14 @@ alias up='sudo -v && sysup'
 
 **2. sudoersでパスワードなし実行を許可（上級者向け）**
 ```bash
-sudo visudo
+# /etc/sudoers.d に専用ファイルを作成（構文チェック付き）
+sudo visudo -f /etc/sudoers.d/apt-snap-nopasswd
 
 # 以下を追加（YOUR_USERNAMEを実際のユーザー名に置換）
-YOUR_USERNAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get, /usr/bin/snap
+# sudoers内では$USERは展開されません
+YOUR_USERNAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade -y, /usr/bin/apt autoremove -y, /usr/bin/apt autoclean, /usr/bin/snap refresh
 ```
+`apt-get`を使う運用なら、同様に`/usr/bin/apt-get ...`の行も追加してください。
 
 **注意：** セキュリティリスクがあるため、個人環境でのみ推奨します。
 

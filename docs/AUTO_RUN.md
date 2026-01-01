@@ -208,14 +208,20 @@ Defaults timestamp_timeout=60
 
 ### オプション2: 特定コマンドのパスワード不要化（非推奨）
 
-セキュリティリスクがあるため、慎重に検討してください。
+セキュリティリスクがあるため、慎重に検討してください。sysupが実行するコマンドに絞って許可する例です。
 
 ```bash
-sudo visudo
+# /etc/sudoers.d に専用ファイルを作成（構文チェック付き）
+sudo visudo -f /etc/sudoers.d/apt-snap-nopasswd
 
 # 以下を追加（YOUR_USERNAMEを実際のユーザー名に置換）
-YOUR_USERNAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt autoremove, /usr/bin/snap refresh
+# sudoers内では$USERは展開されません
+YOUR_USERNAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade -y, /usr/bin/apt autoremove -y, /usr/bin/apt autoclean, /usr/bin/snap refresh
 ```
+
+**補足:**
+- sysupは`apt`を使用します。`apt-get`を使う運用なら、同様に`/usr/bin/apt-get ...`を追加してください。
+- ファイルの権限は`0440`が推奨です（`visudo -f`で作成すれば問題ありません）。
 
 ### オプション3: 事前認証（WSL推奨）
 
