@@ -42,7 +42,7 @@ repos:
 
   # Security checks
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.9.2
+    rev: 1.9.3
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]  # -ll: Low重要度を無視
